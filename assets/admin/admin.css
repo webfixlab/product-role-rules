@@ -1,0 +1,636 @@
+.proler-container {
+    padding-bottom: 15px;
+}
+.proler-container select {
+    float: none !important;
+}
+.proler-item {
+    padding: 20px 0;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    position: relative;
+}
+.proler-container label {
+    margin: 0 !important;
+    font-size: 12px;
+}
+td.role-discount input {
+    float: left;
+    width: 50%;
+}
+.role-discount input, .role-qty input {
+    width: 80px;
+}
+.proler-items .proler-item:first-child {
+    border-top: 1px solid #ccc;
+    margin-top: 10px;
+}
+table.form-table.role-table.proler-roletable {
+    table-layout: fixed;
+}
+.section.new-user-role {
+    display: grid;
+    grid-template-columns: 1.75fr 1fr;
+}
+.create-role-wrap .error {
+    color: #b32d2e;
+}
+.user-role-list ul {
+    background: #fefefe;
+    padding: 15px 20px 9px 15px;
+}
+.user-role-list ul li {
+    font-weight: 600;
+}
+td.role-price input, td.role-placeholder input {
+    width: 95% !important;
+}
+.form-table .disable-me {
+    width: 80px;
+}
+th.hide-head {
+    max-width: 70px;
+}
+span.proler-delete {
+    float: right;
+}
+.proler-ptable {
+    padding: 0 16px;
+}
+.pri-buttons {
+    float: right;
+}
+span.dashicons.dashicons-trash {
+    font-size: 20px;
+    color: #c1c1c1;
+    line-height: 28px;
+    margin-left: 20px;
+}
+span.dashicons.dashicons-trash:hover {
+    color: #b32d2e;
+    cursor: pointer;
+}
+table.form-table.role-table {
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+table.form-table.role-table th {
+    border-bottom: 2px solid #999;
+    width: 100px;
+}
+td.role-qty input {
+    width: 80%;
+}
+table.form-table.role-table td {
+    padding: 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    padding-top: 15px;
+}
+table.form-table.role-table td:last-child {
+/*    text-align: right;*/
+}
+#new-role-global span, button.button.new-role span {
+    position: relative;
+    top: 4px;
+}
+#new-role-global {
+    border: none;
+}
+#col9-special {
+    width: 73%;
+    margin-right: 2%;
+}
+.prolersg-role-section h2 {
+    margin-bottom: 0;
+}
+#set-role {
+    border-top: 1px solid #ccc;
+    margin-bottom: 0;
+    padding-top: 15px;
+}
+.proler-header {
+    padding: 0 9px;
+    margin-bottom: 10px;
+}
+.woocommerce_options_panel .proler-item label {
+    margin: 0;
+}
+.proler-edit input[type="text"], .proler-item input[type="text"] {
+    width: inherit !important;
+}
+
+div#proler_product_data_tab .pr-settings-content{
+    margin-top: 20px;
+}
+#woocommerce-product-data ul.wc-tabs li.role_based_pricing_options a::before{
+    content: "\f110";
+}
+
+.pr-settings-content, .proler-item .proler-select {
+    padding: 0 14px;
+}
+.role-button {
+    padding: 0 9px;
+    margin: 15px 0 0 0;
+}
+.proler-hidefirst{
+    display: none;
+}
+option.wfl-nopro {
+    color: #FF8C00 !important;
+}
+.pr-settings-content > label {
+    position: relative;
+    top: 10px;
+}
+/* Popup PRO Teaser */
+.proler-popup {
+    transition: 0.3s;
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000e8;
+    text-align: center;
+    z-index: 999999;
+}
+.admin-bar .proler-popup {
+    top: 32px;
+}
+.proler-popup:hover{
+    opacity: 1;
+}
+.proler-popup .popup-close {
+    color: #fff;
+    font-size: 25px;
+    position: absolute;
+    right: 13px;
+    top: 10px;
+    background: red;
+    padding: 5px 15px;
+    border-radius: 50%;
+}
+.proler-popup .popup-close:hover {
+    cursor: pointer;
+}
+
+/* Other plugin code */
+.proler-stick-heading .proler-heading{
+    -webkit-box-shadow: 0 8px 16px 0 rgb(20 20 20 / 30%);
+    box-shadow: 0 8px 16px 0 rgb(20 20 20 / 30%);
+}
+.proler-heading{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    background: #fff;
+    margin-left: -20px;
+    padding: 12px 0 12px 40px;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+}
+.proler-heading h1 {
+    font-size: 108%;
+}
+.proler-heading-desc{
+    position: absolute;
+    right: 225px;
+    top: 20px;
+}
+.proler-heading-desc p{
+    margin: 0;
+}
+/* nav items */
+a.nav-tab {
+    cursor: pointer;
+}
+.proler-nav-orange {
+    background: #FF8C00;
+    color: white;
+    border-color: #FFA500;
+    width: 125px;
+    text-align: center;
+}
+/* sidebar */
+.proler-sidebar{
+    float: right;
+    margin-top: 43px;
+}
+.col-12{
+    width: 100%;
+}
+.col-9{
+    width: 75%;
+    float: left;
+}
+.col-6{
+    width: 50%;
+}
+.col-3{
+    width: 25%;
+}
+.col-12, .col-9, .col-6, .col-3{
+    display: inline-block;
+}
+.proler-notice{
+    padding-top: 70px;
+    margin-right: 10px;
+}
+
+/* admin sidebar promo */
+.proler-sidebar .sidebar_top{
+    background-image: url(../images/admin-banner.svg);
+    background-repeat: no-repeat;
+    background-position:bottom;
+    padding: 20px 20px 20px 20px;
+    background-color: #ffffff;
+    background-size: cover;
+}
+.proler-sidebar .sidebar_top h1{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 26px;
+    font-weight: bold;
+    color: #ffffff;
+    padding-bottom: 5px;
+    line-height: 1.2;
+}
+.proler-sidebar .sidebar_top .price_side{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 17px;
+    color: #fff;
+    padding-bottom: 20px;
+}
+.proler-sidebar .sidebar_top .tagline_side{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13.5px;
+    color: #fff;
+    padding-bottom: 30px;
+}
+.proler-sidebar .sidebar_top a{
+    height: 28px;
+    width:100px;
+    color: #ffffff;
+    background: #FF8C00;
+    border: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+    padding-top:10px;
+    padding-left:10px;
+    text-decoration: none;
+}
+.proler-sidebar .sidebar_top a:hover{
+    height: 28px;
+    width:100px;
+    color: #5a47d5;
+    background: #ffffff;
+    border: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+}
+.proler-sidebar .sidebar_bottom{
+    background: #ffffff;
+    padding: 20px 20px;
+}
+.proler-sidebar .support{
+    background: #ffffff;
+    padding:10px;
+    margin-top: 5px;
+}
+
+/* The Modal (background) */
+.mpc-popup {
+    transition: 0.3s;
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000e8;
+    text-align: center;
+    z-index: 999999;
+}
+.admin-bar .mpc-popup {
+    top: 32px;
+}
+#mpcpop:hover {opacity: 1;}
+/* Modal Content (image) */
+#mpcpop img {
+    margin: auto;
+    display: block;
+    margin-top: 5%;
+    max-height: 400px;
+    width: 50%;
+    object-fit: contain;
+    border-radius: 10px;
+}
+/* Add Animation */
+#mpcpop img {
+  -webkit-animation-name: zoom;
+  -webkit-animation-duration: 0.6s;
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+h4.mpcpop-title {
+    color: #fff;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.wfl-popup .close {
+    color: #fff;
+    font-size: 15px;
+    line-height: 20px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #ae9cff;
+    width: 20px;
+    height: 20px;
+}
+
+#mpcpop .mpcpop-close:hover {
+    cursor: pointer;
+}
+.mpc-single-active .mpc-single-price {
+    /*font-size: 130%;*/
+    font-weight: 600;
+}
+p.mpcpop-price {
+    color: #fff;
+}
+select.mpc-highlighter{
+    border: 1px solid #e74c3c;
+}
+.mpc-popify{
+    display: block;
+}
+.image-wrap {
+    margin: 0;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-image: url(../images/admin-banner.svg);
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-position: top;
+    background-size: cover;
+    padding: 20px 20px 20px 20px;
+    color: #fff;
+    width: 500px;
+}
+.mpc-focus {
+    font-size: 22px;
+    margin-top: 12px;
+}
+.mpc-focus span {
+    color: #FF8C00;
+}
+.mpc-focus a {
+    background: #FF8C00;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    padding: 11px 13px;
+    margin: 40px;
+}
+.mpc-focus a:hover {
+    color: #5a47d5;
+    background: #ffffff;
+}
+.mpcex-features {
+    font-size: 16px;
+    line-height: 1.3;
+}
+.mpcex-features h4 {
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+.mpcex-features ul {
+    margin-top: 0;
+}
+.mpcex-features ul li {
+    font-size: 14px;
+    line-height: 1.4;
+    font-style: italic;
+}
+.mpcex-features a {
+    color: #000;
+    font-weight: 700;
+}
+.mpcex-features a:hover {
+    text-decoration: none;
+}
+.pro-label::after {
+    font-family: dashicons;
+    display: inline-block;
+    line-height: 1;
+    font-weight: 400;
+    content: "";
+    color: rgb(255, 140, 0);
+    position: relative;
+    top: 3px;
+    font-size: 16px;
+    margin-left: 3px;
+}
+.wfl-nopro-soft {
+    color: darkorange;
+}
+/* switch */
+.proler-container label.switch {
+    width: 60px;
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 6px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: #2196F3;
+}
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}
+.switch-field {
+    display: flex;
+    margin-bottom: 36px;
+    overflow: hidden;
+}  
+.switch-field input {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
+}  
+.proler-container .switch-field label {
+    background-color: #fefefe;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    line-height: 1;
+    text-align: center;
+    padding: 8px 16px;
+    margin-right: -1px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+/*    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);*/
+    transition: all 0.1s ease-in-out;
+    width: 75px;
+}  
+.proler-ptable th {
+    text-align: left;
+}
+.switch-field label:hover {
+    cursor: pointer;
+}  
+.switch-field input[type="radio"]:checked + label {
+    background-color: #2196F3;
+    box-shadow: none;
+    color: #fff;
+}
+.switch-field .swatch-item:first-of-type label {
+    border-radius: 4px 0 0 4px;
+    border-right: 0;
+}  
+.switch-field .swatch-item:last-of-type label {
+    border-radius: 0 4px 4px 0;
+    border-left: 0;
+}
+
+span.delete {
+    line-height: 30px;
+    float: right;
+}
+input.pricetxt{
+    width: 95%;
+}
+.proler-ptable .proler-pissue, .proler-ptable .proler-pissue:focus {
+    border: 1px solid red;
+}
+
+.proler-noclick{
+    opacity: 0.5;
+    pointer-events: none;
+}
+.role-table {
+    position: relative;
+}
+.pr-settings {
+    margin: 1.5em 0;
+}
+.pri-head {
+    display: block;
+    cursor: pointer;
+    padding: .75em;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+.pri-content {
+    background: #fdfdfd;
+    padding: 1em 2em;
+    border-bottom: 1px solid #eee;
+}
+.pri-content table {
+    width: 100%;
+}
+.pri-content table tr td:first-child {
+    width: 80px;
+}
+.pri-content table tr td:nth-child(3) {
+    width: 135px;
+}
+.pri-content table input[type="text"] {
+    width: 80%;
+}
+.pri-content table input.qty-field {
+    width: 100%;
+}
+button.button.pri-new-item {
+    position: absolute;
+    right: 0;
+}
+#proler_product_data_tab button.button.pri-new-item {
+    position: static;
+    margin-left: 1em;
+}
+#proler_product_data_tab .pri-content table input[type="text"] {
+    margin-right: 5px;
+}
+.pr-disabled select.proler-roles {
+    opacity: .5;
+    pointer-events: none;
+}
+.pr-disabled .pri-content {
+    opacity: .5;
+    pointer-events: none;
+}
+
+
+
+
+
+
+
+@media screen and (max-width: 767px) {
+    .col-12, .col-9, .col-6, .col-3, #col9-special {
+        width: 100%;
+        display: block;
+    }
+}
