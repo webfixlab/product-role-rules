@@ -130,8 +130,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 // if price is hidden, show this message instead of the blank price
                 if( isset( $rd['hide_txt'] ) ) $rdt[$role]['hide_txt']           = $this->input_sanitize( $rd['hide_txt'] );
                 
-                // role specific sale price
-                if( isset( $rd['disable'] ) ) $rdt[$role]['disable']             = sanitize_key( $rd['disable'] );
+                if( isset( $rd['pr_enable'] ) ) $rdt[$role]['pr_enable']         = sanitize_key( $rd['pr_enable'] );
                 
                 if( isset( $rd['discount'] ) ) $rdt[$role]['discount']           = $this->input_sanitize( $rd['discount'] );
                 if( isset( $rd['discount_type'] ) ) $rdt[$role]['discount_type'] = $this->input_sanitize( $rd['discount_type'] );
@@ -362,7 +361,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 
             foreach( $data['roles'] as $role => $rd ){
                 
-                $disable = isset( $rd['disable'] ) && '1' === $rd['disable'] ? 'pr-disabled' : '';;
+                $disable = isset( $rd['pr_enable'] ) && '1' === $rd['pr_enable'] ? '' : 'pr-disabled';
 
                 echo sprintf(
                     '<div class="pr-item %s">',
@@ -383,7 +382,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 <?php $this->get_roles( $role ); ?>
                 <div class="pri-buttons">
                     <label class="switch">
-                        <input type="checkbox" name="disable" value="Yes" <?php echo isset( $rd['disable'] ) && '1' === $rd['disable'] ? 'checked' : ''; ?>>
+                        <input type="checkbox" name="pr_enable" value="Yes" <?php echo isset( $rd['pr_enable'] ) && '1' !== $rd['pr_enable'] ? '' : 'checked'; ?>>
                         <span class="slider round"></span>
                     </label>
                     <span class="pri-delete dashicons dashicons-trash"></span>
@@ -474,7 +473,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     'slug' => 'settings',
                     'url' => get_admin_url( null, 'admin.php?page=proler-settings' ),
                     'name' => 'Global Settings',
-                    'icon' => 'admin-settings',
+                    'icon' => 'dashicons dashicons-admin-settings',
                     'target' => 'general',
                     'class' => ''
                 ),
@@ -482,7 +481,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     'slug' => 'newrole',
                     'url' => get_admin_url( null, 'admin.php?page=proler-newrole' ),
                     'name' => 'Add New Role',
-                    'icon' => 'admin-users',
+                    'icon' => 'dashicons dashicons-admin-users',
                     'target' => 'new-user-role',
                     'class' => ''
                 ),
@@ -490,7 +489,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     'slug' => 'pro',
                     'url' => $proler__['plugin']['free_url'],
                     'name' => 'Get PRO',
-                    'icon' => 'admin-users',
+                    'icon' => '',
                     'target' => 'get-pro',
                     'class' => 'proler-nav-orange'
                 )
@@ -498,13 +497,13 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 
             foreach( $pages as $menu ){
                 echo sprintf(
-                    '<a class="nav-tab %s %s" href="%s" data-target="%s" target="%s"><span class="dashicons dashicons-%s"></span> %s</a>',
+                    '<a class="nav-tab %s %s" href="%s" data-target="%s" target="%s"><span class="%s"></span> %s</a>',
                     $menu['slug'] === $this->page ? esc_attr( 'nav-tab-active' ) : '',
                     esc_attr( $menu['class'] ),
                     esc_url( $menu['url'] ),
                     esc_attr( $menu['target'] ),
                     'pro' === $menu['slug'] ? '_blank' : '',
-                    esc_attr( $menu['icon'] ),
+                    esc_html( $menu['icon'] ),
                     esc_html( $menu['name'] )
                 );
             }

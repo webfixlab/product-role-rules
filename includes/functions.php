@@ -11,9 +11,9 @@ function proler_get_price( $price, $product, $only_price = false ){
         return $price;
     }
 
-    $is_disable = isset( $data['disable'] ) && ! empty( $data['disable'] ) ? (boolean) $data['disable'] : false;
+    $enable = isset( $data['pr_enable'] ) && ! empty( $data['pr_enable'] ) ? (boolean) $data['pr_enable'] : true;
 
-    if( $is_disable ){
+    if( false === $enable ){
         return $price;
     }
 

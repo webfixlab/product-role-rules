@@ -52,8 +52,8 @@ if ( ! class_exists( 'ProlerPlugin' ) ) {
             $data = array();
             if( 
                 false === $rrd['role'] || (
-                    isset( $rrd['role']['disable'] ) && (
-                        '1' === $rrd['role']['disable'] || true === $rrd['role']['disable']
+                    isset( $rrd['role']['pr_enable'] ) && (
+                        '1' === $rrd['role']['pr_enable'] || true === $rrd['role']['pr_enable']
                     )
                 )
             ){
@@ -140,12 +140,12 @@ if ( ! class_exists( 'ProlerPlugin' ) ) {
         }
         public function get_prices( $data ){
 
-            $is_disable = isset( $data['disable'] ) && ! empty( $data['disable'] ) ? (boolean) $data['disable'] : false;
+            $enable = isset( $data['pr_enable'] ) && ! empty( $data['pr_enable'] ) ? (boolean) $data['pr_enable'] : true;
             $has_price = isset( $data['regular_price'] ) && ! empty( $data['regular_price'] ) ? true : false;
             $has_discount = isset( $data['discount'] ) && ! empty( $data['discount'] ) ? true : false;
 
             // when price filtering is not applicable.
-            if( empty( $data ) || true === $is_disable ){
+            if( empty( $data ) || false === $enable ){
                 return false;
             }elseif( ! $has_price && ! $has_discount ){
                 return false;

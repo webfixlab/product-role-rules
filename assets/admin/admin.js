@@ -59,12 +59,12 @@
                 });
             }
         });
-        $( '.pr-settings' ).on( 'click', 'input[name="disable"]', function(e){
+        $( '.pr-settings' ).on( 'click', 'input[name="pr_enable"]', function(e){
             
             var content = $(this).closest( '.pr-item' );
             content.removeClass( 'pr-disabled' );
 
-            if( $(this).is( ':checked' ) ){
+            if( ! $(this).is( ':checked' ) ){
                 content.addClass( 'pr-disabled' );
             }
 
@@ -72,9 +72,19 @@
 
         $( '.pri-new-item' ).on( 'click', function(){
 
-            $( '.pr-settings' ).append( '<div class="pr-item">' + $( '.pr-demo-item' ).html() + '</div>' );
+            $( '.pr-settings' ).append( '<div class="pr-item pr-newborn">' + $( '.pr-demo-item' ).html() + '</div>' );
+            $( '.pr-settings' ).find( '.pr-newborn .pri-head' ).trigger( 'click' );
+            $( '.pr-settings' ).find( '.pr-newborn' ).removeClass( 'pr-newborn');
 
         });
+        
+        // init - frontend on load.
+        if( typeof $( '.pr-settings' ).find( '.pr-item' ) == 'undefined' || $( '.pr-settings' ).find( '.pr-item' ).length == 0 ){
+            $( '.pri-new-item' ).trigger( 'click' );
+        }
+
+
+
 
         $( 'body' ).on( 'click', 'input[name="proler_stype"]', function(){
             var v = $(this).val();
@@ -151,8 +161,8 @@
             }
             data['max_qty'] = max_qty;
 
-            if( row.find( 'input[name="disable"]' ).is( ':checked' ) ){
-                data[ 'disable' ] = true;
+            if( row.find( 'input[name="pr_enable"]' ).is( ':checked' ) ){
+                data[ 'pr_enable' ] = true;
             }
 
             return data;
