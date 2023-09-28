@@ -175,7 +175,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             <div id="proler_product_data_tab" class="panel woocommerce_options_panel">
                 <div class="proler-container">
                     <div class="pr-settings-content">
-                        <label>Role pricing</label>
+                        <h4>Select an option</h4>
                         <?php $this->settings_type(); ?>
                     </div>
                     <div class="pr-settings" style="display:<?php echo esc_attr( $display ); ?>;">
@@ -342,11 +342,11 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             // show notice.
             if( 'default' === $value ){
                 ?>
-                <span class="prs-notice">Visit Global Settings page <a href="<?php echo esc_url( admin_url( 'admin.php?page=proler-settings' ) ); ?>">here</a>.</span>
+                <span class="prs-notice"><a href="<?php echo esc_url( admin_url( 'admin.php?page=proler-settings' ) ); ?>">View Global Settings</a>.</span>
                 <?php
             }else if( 'disable' === $value ){
                 ?>
-                <span class="prs-notice">Role Based Settings is disabled for this product.</span>
+                <span class="prs-notice"><em>Role Based Pricing is disabled for this product.</em></span>
                 <?php
             }
 
