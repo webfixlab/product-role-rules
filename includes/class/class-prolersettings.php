@@ -416,7 +416,12 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                         <option value="price" <?php echo 'price' === $discount_type ? 'selected' : ''; ?>><?php echo get_woocommerce_currency_symbol(); ?></option>
                     </select>
                 </td>
-                <td>Minimum Quantity</td>
+                <td>
+                    Minimum Quantity
+                    <?php if( ! empty( $pro_class ) ) : ?>
+                        <div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new">PRO</div>
+                    <?php endif; ?>
+                </td>
                 <td>
                     <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="min_qty" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" data-protxt="Minimum quantity">
                 </td>
@@ -430,7 +435,12 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                         <span class="slider round"></span>
                     </label>
                 </td>
-                <td>Maximum Quantity</td>
+                <td>
+                    Maximum Quantity
+                    <?php if( ! empty( $pro_class ) ) : ?>
+                        <div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new">PRO</div>
+                    <?php endif; ?>
+                </td>
                 <td>
                     <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="max_qty" value="<?php echo isset( $rd['max_qty'] ) ? esc_attr( $rd['max_qty'] ) : ''; ?>"data-protxt="Maximum quantity">
                 </td>
