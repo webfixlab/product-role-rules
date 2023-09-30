@@ -96,7 +96,7 @@
                 $( '.pr-settings' ).hide( 'slow' );
                 $( '.pri-new-item' ).hide( 'slow' );
 
-                $( '.pr-settings-content' ).append( '<span class="prs-notice">Visit Global Settings page <a href="' + proler.settings_page + '">here</a>.</span>' );
+                $( '.pr-settings-content' ).append( '<span class="prs-notice">View Global Settings<a href="' + proler.settings_page + '">here</a>.</span>' );
 
             }else if( v == 'proler-based' ){
 
@@ -108,7 +108,7 @@
                 $( '.pr-settings' ).hide( 'slow' );
                 $( '.pri-new-item' ).hide( 'slow' );
 
-                $( '.pr-settings-content' ).append( '<span class="prs-notice">Role Based Settings is disabled for this product.</span>' );
+                $( '.pr-settings-content' ).append( '<span class="prs-notice">Role Based Pricing is disabled for this product.</span>' );
 
             }
         });
