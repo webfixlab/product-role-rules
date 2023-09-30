@@ -249,9 +249,6 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                         </p>
                     </div>
                 </div>
-                <div class="proler-notice">
-                    <?php $this->show_notice(); ?>
-                </div>
                 <div class="col-12">
                     <div class="col-9" id="col9-special">
                         <form action="" method="POST">
@@ -530,6 +527,16 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 }
             }
 
+            if( ! isset( $_POST ) || ! isset( $_POST['proler_data'] ) ){
+                return;
+            }
+            
+            ?>
+            <div class="pr-notice">
+                Settings Saved.
+            </div>
+            <?php
+
         }
 
 
@@ -543,6 +550,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 <div class="prolersg-role-section">
                     <div class="role-table">
                         <h2>Role Based Pricing</h2>
+                        <?php $this->show_notice(); ?>
                         <div class="pr-settings">
                             <?php $this->all_role_settings_wrap(); ?>
                             <div class="pr-demo-item" style="display:none;">

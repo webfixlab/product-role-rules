@@ -137,7 +137,7 @@ if ( ! class_exists( 'ProlerPlugin' ) ) {
         }
         public function get_prices( $data ){
 
-            $enable = isset( $data['pr_enable'] ) && ! empty( $data['pr_enable'] ) ? (boolean) $data['pr_enable'] : true;
+            $enable = ! isset( $data['pr_enable'] ) || empty( $data['pr_enable'] ) ? false : true;
             $has_price = isset( $data['regular_price'] ) && ! empty( $data['regular_price'] ) ? true : false;
             $has_discount = isset( $data['discount'] ) && ! empty( $data['discount'] ) ? true : false;
 
