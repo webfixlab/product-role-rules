@@ -96,7 +96,7 @@
                 $( '.pr-settings' ).hide( 'slow' );
                 $( '.pri-new-item' ).hide( 'slow' );
 
-                $( '.pr-settings-content' ).append( '<span class="prs-notice">View Global Settings<a href="' + proler.settings_page + '">here</a>.</span>' );
+                $( '.pr-settings-content' ).append( '<span class="prs-notice"><a href="' + proler.settings_page + '">View Global Settings</a>.</span>' );
 
             }else if( v == 'proler-based' ){
 

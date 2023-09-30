@@ -532,9 +532,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             }
             
             ?>
-            <div class="pr-notice">
-                Settings Saved.
-            </div>
+            <div class="pr-notice"><span class="dashicons dashicons-yes"></span> Settings saved successfully.</div>
             <?php
 
         }
@@ -550,7 +548,6 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 <div class="prolersg-role-section">
                     <div class="role-table">
                         <h2>Role Based Pricing</h2>
-                        <?php $this->show_notice(); ?>
                         <div class="pr-settings">
                             <?php $this->all_role_settings_wrap(); ?>
                             <div class="pr-demo-item" style="display:none;">
@@ -570,6 +567,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 <?php wp_nonce_field( 'proler_settings' ); ?>                    
                 <input type="submit" value="Save changes" class="button-primary woocommerce-save-button roletable-save">
             </div>
+            <?php $this->show_notice(); ?>
             <?php
 
         }

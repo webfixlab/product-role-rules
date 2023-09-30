@@ -4,6 +4,10 @@
 .proler-container select {
     float: none !important;
 }
+.pr-notice {
+    color: green;
+    margin-top: 1em;
+}
 .proler-item {
     padding: 20px 0;
     border-bottom: 1px solid #ccc;
@@ -19,7 +23,7 @@
 }
 .ribbon_pro span {
     display: inline-block;
-    color: #f84f09;
+    color: #FF8C00;
 }
 td.role-discount input {
     float: left;
@@ -186,24 +190,21 @@ option.wfl-nopro {
     -webkit-box-shadow: 0 8px 16px 0 rgb(20 20 20 / 30%);
     box-shadow: 0 8px 16px 0 rgb(20 20 20 / 30%);
 }
-.proler-heading{
+.proler-heading {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     background: #fff;
     margin-left: -20px;
-    padding: 12px 0 12px 40px;
-    position: fixed;
+    padding: 12px 0 12px 20px;
     width: 100%;
     z-index: 10;
 }
 .proler-heading h1 {
     font-size: 108%;
 }
-.proler-heading-desc{
-    position: absolute;
-    right: 225px;
-    top: 20px;
+.proler-heading-desc {
+    margin: .67em .67em;
 }
 .proler-heading-desc p{
     margin: 0;
