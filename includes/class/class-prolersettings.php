@@ -417,10 +417,10 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     </select>
                 </td>
                 <td>
-                    Minimum Quantity
                     <?php if( ! empty( $pro_class ) ) : ?>
-                        <div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new">PRO</div>
+                        <div class="ribbon_pro"><span>PRO</span></div>
                     <?php endif; ?>
+                    Minimum Quantity
                 </td>
                 <td>
                     <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="min_qty" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" data-protxt="Minimum quantity">
@@ -436,10 +436,10 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     </label>
                 </td>
                 <td>
-                    Maximum Quantity
                     <?php if( ! empty( $pro_class ) ) : ?>
-                        <div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new">PRO</div>
+                        <div class="ribbon_pro"><span>PRO</span></div>
                     <?php endif; ?>
+                    Maximum Quantity
                 </td>
                 <td>
                     <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="max_qty" value="<?php echo isset( $rd['max_qty'] ) ? esc_attr( $rd['max_qty'] ) : ''; ?>"data-protxt="Maximum quantity">
