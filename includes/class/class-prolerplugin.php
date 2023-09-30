@@ -49,19 +49,16 @@ if ( ! class_exists( 'ProlerPlugin' ) ) {
                 $rrd['role'] = $rd;
             }
 
-            $data = array();
-            if( 
-                false === $rrd['role'] || (
-                    isset( $rrd['role']['pr_enable'] ) && (
-                        '1' === $rrd['role']['pr_enable'] || true === $rrd['role']['pr_enable']
-                    )
-                )
-            ){
-                $data = $rrd['global'];
-            }else{
-                $data = $rrd['role'];
+            if( false === $rrd['role'] ){
+                return $rrd['global'];
             }
-            return $data;
+            
+            if( ! isset( $rrd['role']['pr_enable'] ) || empty( $rrd['role']['pr_enable'] ) ){
+                return $rrd['global'];
+            }
+            
+            return $rrd['role'];
+
         }
         public function settings(){
 
@@ -77,7 +74,7 @@ if ( ! class_exists( 'ProlerPlugin' ) ) {
                 $data = get_option( 'proler_role_table' );
 
                 if ( ! empty( $data ) ) {
-                    return $this->extract_settings( $data );
+                    return $this->extract_settings( $data['roles'] );
                 }
             }
 

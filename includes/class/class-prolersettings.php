@@ -382,7 +382,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 <?php $this->get_roles( $role ); ?>
                 <div class="pri-buttons">
                     <label class="switch">
-                        <input type="checkbox" name="pr_enable" value="Yes" <?php echo isset( $rd['pr_enable'] ) && '1' !== $rd['pr_enable'] ? '' : 'checked'; ?>>
+                        <input type="checkbox" name="pr_enable" value="Yes" <?php echo isset( $rd['pr_enable'] ) && '1' === $rd['pr_enable'] ? 'checked' : ''; ?>>
                         <span class="slider round"></span>
                     </label>
                     <span class="pri-delete dashicons dashicons-trash"></span>
