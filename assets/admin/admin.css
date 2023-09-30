@@ -14,16 +14,12 @@
     margin: 0 !important;
     font-size: 12px;
 }
+.ribbon_pro {
+    display: inline-block;
+}
 .ribbon_pro span {
     display: inline-block;
-    border-radius: 50px;
-    background-color: #f84f09;
-    padding: 0px 15px;
-    font-size: 0.7em;
-    letter-spacing: 1px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #fff;
+    color: #f84f09;
 }
 td.role-discount input {
     float: left;
@@ -592,23 +588,24 @@ input.pricetxt{
 }
 .pri-content {
     background: #fdfdfd;
-    padding: 1em 2em;
+    padding: .50em 1em;
     border-bottom: 1px solid #eee;
 }
 .pri-content table {
     width: 100%;
+    border-spacing: 1em 1em;
 }
 .pri-content table tr td:first-child {
     width: 80px;
 }
-.pri-content table tr td:nth-child(3) {
+.pri-content table tr td.prr-qty-field {
     width: 135px;
 }
 .pri-content table input[type="text"] {
     width: 80%;
 }
 .pri-content table input.qty-field {
-    width: 100%;
+    width: 91%;
 }
 button.button.pri-new-item {
     position: absolute;
@@ -629,12 +626,63 @@ button.button.pri-new-item {
     opacity: .5;
     pointer-events: none;
 }
-
+.pri-content select {
+    position: relative;
+}
 
 
 @media screen and (max-width: 767px) {
     .col-12, .col-9, .col-6, .col-3, #col9-special {
         width: 100%;
         display: block;
+    }
+    .proler-heading {
+        display: block;
+    }
+    .proler-heading-desc {
+        position: static;
+    }
+    .proler-admin-wrap a.nav-tab {
+        width: inherit;
+        margin-right: 3px;
+        padding: 5px 5px;
+    }
+    .pri-content table tr td {
+        width: 100%;
+        display: block;
+    }
+    .pri-content table tr td:nth-child(2n) {
+        margin-bottom: 18px;
+    }
+    .pri-content table input[type="text"] {
+        width: 75%;
+    }
+    .image-wrap {
+        width: 80%;
+    }
+    .mpc-focus a {
+        margin-bottom: 10px;
+    }
+    .mpc-focus span {
+        line-height: 2;
+    }
+    .proler-container .switch-field label {
+        padding: 5px;
+    }
+    .pri-buttons {
+        width: 100px;
+    }
+    .proler-container label.switch {
+        width: 60px;
+        display: inline-block;
+    }
+    .pri-buttons span {
+        float: right;
+    }
+    .proler-container .pri-content table {
+        border-spacing: 0em 1em;
+    }
+    .proler-container .pri-content table input.qty-field {
+        margin-bottom: 1em;
     }
 }

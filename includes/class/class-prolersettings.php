@@ -416,17 +416,6 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                         <option value="price" <?php echo 'price' === $discount_type ? 'selected' : ''; ?>><?php echo get_woocommerce_currency_symbol(); ?></option>
                     </select>
                 </td>
-                <td>
-                    <?php if( ! empty( $pro_class ) ) : ?>
-                        <div class="ribbon_pro"><span>PRO</span></div>
-                    <?php endif; ?>
-                    Minimum Quantity
-                </td>
-                <td>
-                    <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="min_qty" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" data-protxt="Minimum quantity">
-                </td>
-            </tr>
-            <tr>
                 <td>Hide Price</td>
                 <td>
                     <input type="text" name="hide_txt" placeholder="Placeholder text if price is hidden" value="<?php echo isset( $rd['hide_txt'] ) ? esc_html( $rd['hide_txt'] ) : ''; ?>">
@@ -435,11 +424,22 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                         <span class="slider round"></span>
                     </label>
                 </td>
-                <td>
+            </tr>
+            <tr>
+                <td class="prr-qty-field">
+                    Minimum Quantity
                     <?php if( ! empty( $pro_class ) ) : ?>
-                        <div class="ribbon_pro"><span>PRO</span></div>
+                        <div class="ribbon_pro"><span class="dashicons dashicons-lock"></span></div>
                     <?php endif; ?>
+                </td>
+                <td>
+                    <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="min_qty" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" data-protxt="Minimum quantity">
+                </td>
+                <td class="prr-qty-field">
                     Maximum Quantity
+                    <?php if( ! empty( $pro_class ) ) : ?>
+                        <div class="ribbon_pro"><span class="dashicons dashicons-lock"></span></div>
+                    <?php endif; ?>
                 </td>
                 <td>
                     <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="max_qty" value="<?php echo isset( $rd['max_qty'] ) ? esc_attr( $rd['max_qty'] ) : ''; ?>"data-protxt="Maximum quantity">
