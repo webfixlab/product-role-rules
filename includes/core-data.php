@@ -20,7 +20,7 @@ $proler__                  = array(
 );
 
 $proler__['plugin']        = array(
-    'version'              => '2.0.5',
+    'version'              => '3.0',
     'screen'               => array(
         'toplevel_page_proler-settings', // main setting page
         'role-pricing_page_proler-newrole',

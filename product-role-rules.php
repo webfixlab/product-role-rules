@@ -5,7 +5,7 @@ Plugin URI: https://webfixlab.com/plugins/role-based-pricing-woocommerce/
 Description: EASY to use and super FAST WooCommerce product role based pricing solution to add different prices for different roles.
 Author: WebFix Lab
 Author URI: https://webfixlab.com/
-Version: 2.0.5
+Version: 3.0
 Requires at least: 4.9
 Tested up to: 6.2.2
 Requires PHP: 7.0
