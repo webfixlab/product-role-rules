@@ -7,11 +7,11 @@ Author: WebFix Lab
 Author URI: https://webfixlab.com/
 Version: 3.0
 Requires at least: 4.9
-Tested up to: 6.2.2
+Tested up to: 6.3.1
 Requires PHP: 7.0
 Tags: role based pricing, dynamic pricing, wholesale pricing, prices by user role, hide price
 WC requires at least: 3.6
-WC tested up to: 7.7.2
+WC tested up to: 8.1.1
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: product-role-rules

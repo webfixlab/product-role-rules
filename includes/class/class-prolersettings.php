@@ -311,7 +311,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             $types = array(
                 'default' => 'Global Settings',
                 'proler-based' => 'Product Based',
-                'disable' => 'Disable Role Pricing'
+                'disable' => 'Disable Pricing'
             );
 
             echo '<div class="switch-field">';
@@ -415,7 +415,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 </td>
                 <td>Hide Price</td>
                 <td>
-                    <input type="text" name="hide_txt" placeholder="Placeholder text if price is hidden" value="<?php echo isset( $rd['hide_txt'] ) ? esc_html( $rd['hide_txt'] ) : ''; ?>">
+                    <input type="text" name="hide_txt" placeholder="text if price hide" value="<?php echo isset( $rd['hide_txt'] ) ? esc_html( $rd['hide_txt'] ) : ''; ?>">
                     <label class="switch">
                         <input type="checkbox" name="hide_price" value="Yes" <?php echo isset( $rd['hide_price'] ) && '1' === $rd['hide_price'] ? 'checked' : ''; ?>>
                         <span class="slider round"></span>
@@ -424,7 +424,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             </tr>
             <tr>
                 <td class="prr-qty-field">
-                    Minimum Quantity
+                    Minimum Qty
                     <?php if( ! empty( $pro_class ) ) : ?>
                         <div class="ribbon_pro"><span class="dashicons dashicons-lock"></span></div>
                     <?php endif; ?>
@@ -433,7 +433,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="min_qty" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" data-protxt="Minimum quantity">
                 </td>
                 <td class="prr-qty-field">
-                    Maximum Quantity
+                    Maximum Qty
                     <?php if( ! empty( $pro_class ) ) : ?>
                         <div class="ribbon_pro"><span class="dashicons dashicons-lock"></span></div>
                     <?php endif; ?>
@@ -548,6 +548,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 <div class="prolersg-role-section">
                     <div class="role-table">
                         <h2>Role Based Pricing</h2>
+                        <p><em>Click the role bars below to expand.</em></p>
                         <div class="pr-settings">
                             <?php $this->all_role_settings_wrap(); ?>
                             <div class="pr-demo-item" style="display:none;">

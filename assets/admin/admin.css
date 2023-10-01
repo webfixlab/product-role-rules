@@ -603,10 +603,10 @@ input.pricetxt{
     width: 135px;
 }
 .pri-content table input[type="text"] {
-    width: 80%;
+    
 }
 .pri-content table input.qty-field {
-    width: 91%;
+
 }
 button.button.pri-new-item {
     position: absolute;
