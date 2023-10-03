@@ -40,51 +40,6 @@
 
 
 
-        $( '.pr-settings' ).on( 'click', '.pri-head', function(e){
-
-            // hide or show (slideup or down) content.
-            if( e.target.tagName.toLowerCase() == 'div' ){
-                $(this).closest( '.pr-item' ).find( '.pri-content' ).slideToggle( 'slow' );
-            }
-
-
-        });
-        $( '.pr-settings' ).on( 'click', '.pri-delete', function(e){
-            
-            var content = $(this).closest( '.pr-item' );
-
-            if( confirm( 'Are you sure?' ) ){
-                content.hide( 'slow', function(){
-                    content.remove();
-                });
-            }
-        });
-        $( '.pr-settings' ).on( 'click', 'input[name="pr_enable"]', function(e){
-            
-            var content = $(this).closest( '.pr-item' );
-            content.removeClass( 'pr-disabled' );
-
-            if( ! $(this).is( ':checked' ) ){
-                content.addClass( 'pr-disabled' );
-            }
-
-        });
-
-        $( '.pri-new-item' ).on( 'click', function(){
-
-            $( '.pr-settings' ).append( '<div class="pr-item pr-newborn">' + $( '.pr-demo-item' ).html() + '</div>' );
-            $( '.pr-settings' ).find( '.pr-newborn .pri-head' ).trigger( 'click' );
-            $( '.pr-settings' ).find( '.pr-newborn' ).removeClass( 'pr-newborn');
-
-        });
-        
-        // init - frontend on load.
-        if( typeof $( '.pr-settings' ).find( '.pr-item' ) == 'undefined' || $( '.pr-settings' ).find( '.pr-item' ).length == 0 ){
-            $( '.pri-new-item' ).trigger( 'click' );
-        }
-
-
-
 
         $( 'body' ).on( 'click', 'input[name="proler_stype"]', function(){
             var v = $(this).val();
@@ -92,25 +47,13 @@
             $( '.prs-notice' ).remove();
 
             if( v == 'default' ){
-
-                $( '.pr-settings' ).hide( 'slow' );
-                $( '.pri-new-item' ).hide( 'slow' );
-
-                $( '.pr-settings-content' ).append( '<span class="prs-notice"><a href="' + proler.settings_page + '">View Global Settings</a>.</span>' );
-
+                $( '.role-settings-content' ).hide( 'slow' );
             }else if( v == 'proler-based' ){
-
-                $( '.pr-settings' ).show( 'slow' );
-                $( '.pri-new-item' ).show( 'slow' );
-                
+                $( '.role-settings-content' ).show( 'slow' );
             }else{
-
-                $( '.pr-settings' ).hide( 'slow' );
-                $( '.pri-new-item' ).hide( 'slow' );
-
-                $( '.pr-settings-content' ).append( '<span class="prs-notice">Role Based Pricing is disabled for this product.</span>' );
-
+                $( '.role-settings-content' ).hide( 'slow' );
             }
+
         });
 
 
@@ -197,8 +140,61 @@
             }
         }
 
+        
+
+        function toggle_button( btn ){
+            var wrap = btn.closest( '.hurkanSwitch-switch-box' );
+    
+            wrap.find( '.hurkanSwitch-switch-item' ).each(
+                function(){
+                    if ( $( this ).hasClass( 'active' ) ) {
+                        $( this ).removeClass( 'active' );
+                    } else {
+                        $( this ).addClass( 'active' );
+                    }
+                }
+            );
+    
+            btn.closest( '.mpcdp_settings_option_field' ).find( 'input[type="checkbox"]' ).trigger( 'click' );
+        }
+        $( '.pr-settings' ).on( 'click', '.hurkanSwitch-switch-item',  function(e){
+            toggle_button( $( this ) );
+        });
+        $( '.pr-settings' ).on( 'click', '.mpc-opt-sc-btn.edit', function(){
+            $(this).closest( '.pr-item' ).find( '.mpcdp_settings_option' ).each(function(){
+                if( ! $(this).hasClass( 'visible' ) ){
+                    $(this).toggle( 'slow' );
+                }
+            });
+        });
+        $( '.pr-settings' ).on( 'click', '.mpc-opt-sc-btn.delete', function(){
+            $(this).closest( '.pr-item' ).hide( 'slow', function(){
+                $(this).closest( '.pr-item' ).remove();
+            });
+        });
+        $( '.mpc-opt-sc-btn.add-new' ).on( 'click', function(){
+            $( '.pr-settings' ).append( '<div class="mpcdp_settings_toggle pr-item">' + $( '.demo-item' ).html() + '</div>' );
+        });
+
+
+
+        // init - frontend on load.
+        if( typeof $( '.pr-settings' ).find( '.pr-item' ) == 'undefined' || $( '.pr-settings' ).find( '.pr-item' ).length == 0 ){
+            $( '.mpc-opt-sc-btn.add-new' ).trigger( 'click' );
+        }
+        // init - admin product edit page.
+        if( typeof $( 'input[name="proler_stype"]:checked' ).val() != 'undefined' ){
+            var v = $( 'input[name="proler_stype"]:checked' ).val();
+
+            if( v != 'proler-based' && $( '.role-settings-content' ).is( ':visible' ) ){
+                $( '.role-settings-content' ).hide();
+            }
+        }
+
+
+
         // single product update/save button clicked event
-        $( 'input[type="submit"]' ).on( 'click', function(e){
+        $( 'input[type="submit"],button.mpcdp_submit_button' ).on( 'click', function(e){
             // e.preventDefault();
 
             var data = get_settings();

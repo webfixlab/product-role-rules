@@ -8,21 +8,19 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
     class ProlerSettings {
         private $data; // role based settings data array.
         private $page; // current settings page slug.
-        private $is_settings; // flag to identify if it's plugin settings page or single product edit page.
-
 
 
         function __construct(){}
         public function init(){
 
             add_action( 'admin_init', array( $this, 'save_plugin_settings' ) );
-            add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+            add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
             add_action( 'save_post', array( $this, 'save_settings' ), 10, 3 );
             add_action( 'woocommerce_ajax_save_product_variations', array( $this, 'save_settings' ), 1 );
 
             // woocommerce product data tab, tab and menu.
-            add_filter( 'woocommerce_product_data_tabs', array( $this, 'add_data_tab' ), 10, 1 );
+            add_filter( 'woocommerce_product_data_tabs', array( $this, 'data_tab' ), 10, 1 );
             add_action( 'woocommerce_product_data_panels', array( $this, 'data_tab_content' ) );
 
         }
@@ -43,48 +41,6 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     $this->add_new_role();
                 }
 
-            }
-
-        }
-        public function add_admin_menu(){
-
-            global $proler__;
-
-            // Main menu
-            add_menu_page( 
-                'WooCommerce Role',
-                'Role Pricing',
-                'manage_options',
-                'proler-settings',
-                array( $this, 'global_settings_page' ),
-                plugin_dir_url( PROLER ) . 'assets/images/admin-icon.svg',
-                56
-            );
-
-            // settings submenu - settings
-            add_submenu_page(
-                'proler-settings',
-                'WooCommerce Role - Settings',
-                'Role Pricing',
-                'manage_options',
-                'proler-settings'
-            );
-
-            // settings submenu - Add new role
-            add_submenu_page(
-                'proler-settings',
-                'Add new user role',
-                'Add New Role',
-                'manage_options',
-                'proler-newrole',
-                array( $this, 'new_role_page' )
-            );
-            
-            // conditional extra links
-            global $submenu;
-            $label = '';
-            if( $proler__['prostate'] == 'none' ){
-                $submenu['proler-settings'][] = array( '<span style="color: #ff8921;">Get PRO</span>', 'manage_options', esc_url( $proler__['prolink'] ) );
             }
 
         }
@@ -147,487 +103,6 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             }else{
                 update_option( 'proler_role_table', $data );
             }
-
-        }
-        public function add_data_tab( $default_tabs ) {
-
-            $default_tabs['role_based_pricing'] = array(
-                'label'   =>  __( 'Role Based Pricing', 'proler' ),
-                'target'  =>  'proler_product_data_tab', // data tab panel id to focus.
-                'priority' => 60,
-                'class'   => array()
-            );
-        
-            return $default_tabs;
-        
-        }
-        public function data_tab_content() {
-            // post edit page.
-
-            $data = $this->get_settings();
-            $this->data = $data;
-            $this->is_settings = false;
-
-
-            $display = isset( $data['proler_stype'] ) && 'proler-based' === $data['proler_stype'] ? 'block' : 'none';
-
-            ?>
-            <div id="proler_product_data_tab" class="panel woocommerce_options_panel">
-                <div class="proler-container">
-                    <div class="pr-settings-content">
-                        <h4>Select an option</h4>
-                        <?php $this->settings_type(); ?>
-                    </div>
-                    <div class="pr-settings" style="display:<?php echo esc_attr( $display ); ?>;">
-                        <?php $this->all_role_settings_wrap(); ?>
-                        <div class="pr-demo-item" style="display:none;">
-                            <?php $this->role_settings_wrap(); ?>
-                        </div>
-                    </div>
-                    <button type="button" class="button pri-new-item" style="display:<?php echo esc_attr( $display ); ?>;">Add new</button>
-                    <div class="proler-input">
-                        <input type="hidden" name="proler_data" value="">
-                    </div>
-                </div>
-                <?php include( PROLER_PATH . 'templates/admin/popup.php' ); ?>
-            </div>
-            <?php
-        
-        }
-
-
-
-        public function global_settings_page(){
-
-            $this->data = $this->get_settings();
-            $this->page = 'settings';
-
-            $this->settings_page();
-            
-        }
-        public function new_role_page(){
-
-            $this->page = 'newrole';
-            $this->settings_page();
-
-        }
-
-
-
-        public function settings_page(){
-
-            // check user capabilities
-            if ( ! current_user_can( 'manage_options' ) ) return;
-        
-            // check if the user have submitted the settings
-            // WordPress will add the "settings-updated" $_GET parameter to the url
-            if ( isset( $_GET['settings-updated'] ) ) {
-                // add settings saved message with the class of "updated"
-                add_settings_error( 'wporg_messages', 'wporg_message', __( 'Settings Saved', 'wporg' ), 'updated' );
-            }
-        
-            // show error/update messages
-            settings_errors( 'wporg_messages' );
-
-            $this->load_settings_template();
-
-        }
-        public function load_settings_template(){
-
-            // plugin settings page.
-
-            global $proler__;
-            $this->is_settings = true;
-
-            ?>
-            <div class="proler-admin-wrap">
-                <div class="proler-heading">
-                    <h1 class=""><?php echo esc_html( $proler__['plugin_name'] ); ?> - Settings</h1>
-                    <div class="proler-heading-desc">
-                        <p>
-                            <a href="<?php echo esc_url( $proler__['plugin']['docs'] ); ?>" target="_blank">DOCUMENTATION</a> | <a href="<?php echo esc_url( $proler__['plugin']['request_quote'] ); ?>" target="_blank">SUPPORT</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="col-9" id="col9-special">
-                        <form action="" method="POST">
-                            <div class="row">
-                                <nav class="nav-tab-wrapper woo-nav-tab-wrapper">
-                                    <?php $this->settings_menu(); ?>
-                                </nav>
-                            </div>
-                            <div class="wrabpa-sections">
-                                <?php
-                                    if( 'settings' === $this->page ){
-                                        $this->global_settings_section();
-                                    }else if( 'newrole' === $this->page ){
-                                        $this->new_role_section();
-                                    }
-                                ?>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-3">
-                        <?php include( PROLER_PATH . 'templates/admin/sidebar.php' ); ?>
-                    </div>
-                    <?php
-                    include( PROLER_PATH . 'templates/admin/popup.php' ); ?>
-                </div>
-            </div>
-            <?php
-
-        }
-
-
-
-        public function get_settings(){
-
-            global $post;
-
-            if( isset( $post->ID ) ){
-                $data = get_post_meta( $post->ID, 'proler_data', true );
-
-            }else{
-                $data = get_option( 'proler_role_table' );
-            }
-            
-            if( empty( $data ) ){
-                return array();
-            }
-
-            return $data;
-
-        }
-        public function settings_type(){
-
-            $data = $this->data;
-
-            $value = 'default';
-            if( ! empty( $data ) && isset( $data['proler_stype'] ) ){
-                $value = $data['proler_stype'];
-            }
-
-            $types = array(
-                'default' => 'Global Settings',
-                'proler-based' => 'Product Based',
-                'disable' => 'Disable Pricing'
-            );
-
-            echo '<div class="switch-field">';
-
-            foreach( $types as $v => $label ){
-                $checked = $v === $value ? 'checked' : '';
-
-                echo '<div class="swatch-item">';
-
-                echo sprintf(
-                    '<input type="radio" id="proler_stype_%s" name="proler_stype" value="%s" %s><label for="proler_stype_%s">%s</label>',
-                    esc_attr( $v ),
-                    esc_attr( $v ),
-                    esc_attr( $checked ),
-                    esc_attr( $v ),
-                    esc_html( $label )
-                );
-
-                echo '</div>';
-                
-            }
-
-            echo '</div>';
-
-            // show notice.
-            if( 'default' === $value ){
-                ?>
-                <span class="prs-notice"><a href="<?php echo esc_url( admin_url( 'admin.php?page=proler-settings' ) ); ?>">View Global Settings</a>.</span>
-                <?php
-            }else if( 'disable' === $value ){
-                ?>
-                <span class="prs-notice"><em>Role Based Pricing is disabled for this product.</em></span>
-                <?php
-            }
-
-        }
-        public function all_role_settings_wrap(){
-            
-            $data = $this->data;
-
-            if( empty( $data ) || ! isset( $data['roles'] ) ){
-                return;
-            }
-
-            foreach( $data['roles'] as $role => $rd ){
-                
-                $disable = ! isset( $rd['pr_enable'] ) || '1' === $rd['pr_enable'] ? '' : 'pr-disabled';
-
-                echo sprintf(
-                    '<div class="pr-item %s">',
-                    esc_attr( $disable )
-                );
-
-                $this->role_settings_wrap( $role, $rd );
-                
-                echo '</div>';
-
-            }
-
-        }
-        public function role_settings_wrap( $role = '', $rd = array() ){
-
-            ?>
-            <div class="pri-head">
-                <?php $this->get_roles( $role ); ?>
-                <div class="pri-buttons">
-                    <label class="switch">
-                        <input type="checkbox" name="pr_enable" value="Yes" <?php echo ! isset( $rd['pr_enable'] ) || '1' === $rd['pr_enable'] ? 'checked' : ''; ?>>
-                        <span class="slider round"></span>
-                    </label>
-                    <span class="pri-delete dashicons dashicons-trash"></span>
-                </div>
-            </div>
-            <div class="pri-content" style="display:none;">
-                <table>
-                    <tbody>
-                        <?php $this->role_settings( $rd ); ?>
-                    </tbody>
-                </table>
-            </div>
-            <?php
-
-        }
-        public function role_settings( $rd ){
-
-            global $proler__;
-
-            $discount_type = isset( $rd['discount_type'] ) ? $rd['discount_type']  : '';
-
-            $pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
-
-            ?>
-            <tr>
-                <td>Discount</td>
-                <td>
-                    <input type="text" class="wc_input_price" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>" placeholder="">
-                    <select name="discount_type">
-                        <option value="percent" <?php echo 'percent' === $discount_type ? 'selected' : ''; ?>>%</option>
-                        <option value="price" <?php echo 'price' === $discount_type ? 'selected' : ''; ?>><?php echo get_woocommerce_currency_symbol(); ?></option>
-                    </select>
-                </td>
-                <td>Hide Price</td>
-                <td>
-                    <input type="text" name="hide_txt" placeholder="text if price hide" value="<?php echo isset( $rd['hide_txt'] ) ? esc_html( $rd['hide_txt'] ) : ''; ?>">
-                    <label class="switch">
-                        <input type="checkbox" name="hide_price" value="Yes" <?php echo isset( $rd['hide_price'] ) && '1' === $rd['hide_price'] ? 'checked' : ''; ?>>
-                        <span class="slider round"></span>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="prr-qty-field">
-                    Minimum Qty
-                    <?php if( ! empty( $pro_class ) ) : ?>
-                        <div class="ribbon_pro"><span class="dashicons dashicons-lock"></span></div>
-                    <?php endif; ?>
-                </td>
-                <td>
-                    <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="min_qty" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" data-protxt="Minimum quantity">
-                </td>
-                <td class="prr-qty-field">
-                    Maximum Qty
-                    <?php if( ! empty( $pro_class ) ) : ?>
-                        <div class="ribbon_pro"><span class="dashicons dashicons-lock"></span></div>
-                    <?php endif; ?>
-                </td>
-                <td>
-                    <input type="text" class="qty-field wc_input_price <?php echo esc_attr( $pro_class ); ?>" name="max_qty" value="<?php echo isset( $rd['max_qty'] ) ? esc_attr( $rd['max_qty'] ) : ''; ?>"data-protxt="Maximum quantity">
-                </td>
-            </tr>
-            <?php
-
-        }
-
-        
-        
-        public function get_roles( $selected ){
-
-            global $proler__;
-            ?>
-            <select name="proler_roles" class="proler-roles">
-                <option value="">Choose a role</option>
-                <option value="global" <?php echo 'global' === $selected ? 'selected' : ''; ?>>Global</option>
-                <?php
-                foreach( wp_roles()->roles as $role => $role_data ){
-                    $name = $role_data['name'];
-
-                    // if given value and this one match, make it selected
-                    $s = '';
-                    if( $role == $selected ) $s = ' selected';
-
-                    echo sprintf( '<option value="%s" %s>%s</option>', esc_attr( $role ), esc_html( $s ), esc_html( $name ) );
-                }
-                ?>
-                <option value="visitor"<?php echo $selected == 'visitor' ? ' selected' : '';  ?>><?php echo esc_html( $proler__['visitor_role_label'] ); ?></option>
-            </select>
-            <?php
-
-        }
-        public function settings_menu(){
-
-            global $proler__;
-
-            $pages = array(
-                array(
-                    'slug' => 'settings',
-                    'url' => get_admin_url( null, 'admin.php?page=proler-settings' ),
-                    'name' => 'Global Settings',
-                    'icon' => 'dashicons dashicons-admin-settings',
-                    'target' => 'general',
-                    'class' => ''
-                ),
-                array(
-                    'slug' => 'newrole',
-                    'url' => get_admin_url( null, 'admin.php?page=proler-newrole' ),
-                    'name' => 'Add New Role',
-                    'icon' => 'dashicons dashicons-admin-users',
-                    'target' => 'new-user-role',
-                    'class' => ''
-                ),
-                array(
-                    'slug' => 'pro',
-                    'url' => $proler__['plugin']['free_url'],
-                    'name' => 'Get PRO',
-                    'icon' => '',
-                    'target' => 'get-pro',
-                    'class' => 'proler-nav-orange'
-                )
-            );
-
-            foreach( $pages as $menu ){
-                echo sprintf(
-                    '<a class="nav-tab %s %s" href="%s" data-target="%s" target="%s"><span class="%s"></span> %s</a>',
-                    $menu['slug'] === $this->page ? esc_attr( 'nav-tab-active' ) : '',
-                    esc_attr( $menu['class'] ),
-                    esc_url( $menu['url'] ),
-                    esc_attr( $menu['target'] ),
-                    'pro' === $menu['slug'] ? '_blank' : '',
-                    esc_html( $menu['icon'] ),
-                    esc_html( $menu['name'] )
-                );
-            }
-
-        }
-        public function show_notice(){
-            
-            global $proler__;
-
-            // Display notices
-            if( isset( $proler__['notice'] ) ){
-                foreach( $proler__['notice'] as $notice ){
-                    echo wp_kses_post( $notice );
-                }
-            }
-
-            if( ! isset( $_POST ) || ! isset( $_POST['proler_data'] ) ){
-                return;
-            }
-            
-            ?>
-            <div class="pr-notice"><span class="dashicons dashicons-yes"></span> Settings saved successfully.</div>
-            <?php
-
-        }
-
-
-
-        public function global_settings_section(){
-
-            global $proler__;
-
-            ?>
-            <div class="section general">
-                <div class="prolersg-role-section">
-                    <div class="role-table">
-                        <h2>Role Based Pricing</h2>
-                        <p><em>Click the role bars below to expand.</em></p>
-                        <div class="pr-settings">
-                            <?php $this->all_role_settings_wrap(); ?>
-                            <div class="pr-demo-item" style="display:none;">
-                                <?php $this->role_settings_wrap(); ?>
-                            </div>
-                        </div>
-                        <button type="button" class="button pri-new-item">Add new</button>
-                        <div class="proler-input">
-                            <input type="hidden" name="proler_data" value="">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php do_action( 'proler_admin_extra_section' ); ?>
-            <div class="">
-                <input type="hidden" value="" name="role_table_data">
-                <?php wp_nonce_field( 'proler_settings' ); ?>                    
-                <input type="submit" value="Save changes" class="button-primary woocommerce-save-button roletable-save">
-            </div>
-            <?php $this->show_notice(); ?>
-            <?php
-
-        }
-        public function new_role_section(){
-
-            global $proler__;
-
-            ?>
-            <div class="section new-user-role">
-                <div class="role-inner">
-                    <div class="create-role-wrap">
-                        <h2>Add new user role</h2>
-                        <?php echo isset( $proler__['user_role_msg'] ) ? wp_kses_post( $proler__['user_role_msg'] ) : ''; ?>
-                        <input type="text" name="proler_admin_new_role" placeholder="Example: 'B2B Customer'" >
-                        <?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
-                        <input type="submit" value="Create new role" class="button-primary woocommerce-save-button roletable-save">
-                        <p><strong>IMPORTANT: Role name starts with letters and <br>accepts letters, digits, spaces and '_' only.</strong></p>
-                    </div>
-                </div>
-                <div class="role-inner">
-                    <div class="user-role-list">
-                        <h2>Current role names</h2>
-                        <?php $this->user_role_list(); ?>
-                    </div>
-                </div>
-            </div>
-            <?php
-
-        }
-
-
-
-        public function user_role_list(){
-            
-            global $proler__;
-
-            echo '<ul>';
-
-            foreach( wp_roles()->roles as $role => $role_data ){
-                echo sprintf(
-                    '<li><span class="dashicons dashicons-yes"></span>%s</li>',
-                    esc_html( $role_data['name'] )
-                );
-            }
-            echo sprintf(
-                '<li><span class="dashicons dashicons-yes"></span>%s</li>',
-                esc_html( $proler__['visitor_role_label'] )
-            );
-
-            echo '</ul>';
-
-        }
-        public function input_sanitize( $val ){
-
-            $val = str_replace( ':*dblqt*:', '"', $val );
-            $val = str_replace( ':*snglqt*:', '\'', $val );
-            $val = sanitize_text_field( $val );
-            
-            return $val;
 
         }
         public function add_new_role(){
@@ -707,6 +182,612 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             $role = sanitize_key( $_GET['proler_delete_role'] );
             remove_role( $role );
         }
+
+
+
+        public function admin_menu(){
+
+            global $proler__;
+
+            // Main menu
+            add_menu_page( 
+                'WooCommerce Role',
+                'Role Pricing',
+                'manage_options',
+                'proler-settings',
+                array( $this, 'global_settings_page' ),
+                plugin_dir_url( PROLER ) . 'assets/images/admin-icon.svg',
+                56
+            );
+
+            // settings submenu - settings
+            add_submenu_page(
+                'proler-settings',
+                'WooCommerce Role - Settings',
+                'Role Pricing',
+                'manage_options',
+                'proler-settings'
+            );
+
+            // settings submenu - Add new role
+            add_submenu_page(
+                'proler-settings',
+                'Add new user role',
+                'Add New Role',
+                'manage_options',
+                'proler-newrole',
+                array( $this, 'new_role_page' )
+            );
+            
+            // conditional extra links
+            global $submenu;
+            $label = '';
+            if( $proler__['prostate'] == 'none' ){
+                $submenu['proler-settings'][] = array( '<span style="color: #ff8921;">Get PRO</span>', 'manage_options', esc_url( $proler__['prolink'] ) );
+            }
+
+        }
+        public function data_tab( $default_tabs ) {
+
+            $default_tabs['role_based_pricing'] = array(
+                'label'   =>  __( 'Role Based Pricing', 'proler' ),
+                'target'  =>  'proler_product_data_tab', // data tab panel id to focus.
+                'priority' => 60,
+                'class'   => array()
+            );
+        
+            return $default_tabs;
+        
+        }
+        public function data_tab_content(){
+
+            ?>
+            <div id="proler_product_data_tab" class="panel woocommerce_options_panel">
+                <div id="mpcdp_settings" class="mpcdp_container">
+                    <div class="mpcdp_settings_content">
+                        <div class="mpcdp_settings_section">
+                            <div class="mpcdp_settings_section_title">Product Role Based Settings</div>
+                            <?php $this->settings_type(); ?>
+                            <div class="role-settings-content">
+                                <?php $this->role_settings_content(); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php include( PROLER_PATH . 'templates/admin/popup.php' ); ?>
+            </div>
+            <?php
+
+        }
+
+
+
+        public function global_settings_page(){
+
+            $this->data = $this->get_settings();
+            $this->page = 'settings';
+
+            $this->settings_page();
+            
+        }
+        public function new_role_page(){
+
+            $this->page = 'newrole';
+            $this->settings_page();
+
+        }
+
+
+
+        public function settings_page(){
+
+            // check user capabilities
+            if ( ! current_user_can( 'manage_options' ) ) return;
+        
+            // check if the user have submitted the settings
+            // WordPress will add the "settings-updated" $_GET parameter to the url
+            if ( isset( $_GET['settings-updated'] ) ) {
+                // add settings saved message with the class of "updated"
+                add_settings_error( 'wporg_messages', 'wporg_message', __( 'Settings Saved', 'wporg' ), 'updated' );
+            }
+        
+            // show error/update messages
+            settings_errors( 'wporg_messages' );
+
+            ?>
+            <form action="" method="POST">
+                <?php $this->settings_content(); ?>
+            </form>
+            <?php
+
+        }
+        
+
+
+        public function settings_content(){
+
+            global $proler__;
+
+            ?>
+            <div id="mpcdp_settings" class="mpcdp_container">
+                <div id="mpcdp_settings_page_header">
+                    <div id="mpcdp_logo">Role Based Pricing for WooCommerce</div>
+                    <div id="mpcdp_customizer_wrapper"></div>
+                    <div id="mpcdp_toolbar_icons">
+                        <a class="mpcdp-tippy" target="_blank" href="<?php echo esc_url( $proler__['plugin']['docs'] ); ?>" data-tooltip="Documentation">
+                        <span class="tab_icon dashicons dashicons-media-document"></span>
+                        </a>
+                        <a class="mpcdp-tippy" target="_blank" href="<?php echo esc_url( $proler__['plugin']['request_quote'] ); ?>" data-tooltip="Support">
+                        <span class="tab_icon dashicons dashicons-email"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="mpcdp_row">
+                    <div class="col-md-3" id="left-side">
+                        <div class="mpcdp_settings_sidebar" data-sticky-container="" style="position: relative;">
+                            <div class="mpcdp_sidebar_tabs">
+                                <div class="inner-wrapper-sticky">
+                                    <?php $this->settings_menu(); ?>
+                                    <?php $this->settings_submit(); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" id="middle-content">
+                        <div class="mpcdp_settings_content">
+                            <div class="mpcdp_settings_section">
+                                <?php 
+                                    if( 'settings' === $this->page ){
+                                        echo '<div class="mpcdp_settings_section_title">Global Role Based Settings</div>';
+                                        $this->role_settings_content();
+                                    }else if( 'newrole' === $this->page ){
+                                        echo '<div class="mpcdp_settings_section_title">Create New User Role</div>';
+                                        $this->new_role_content();
+                                    }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="right-side">
+                        <div class="mpcdp_settings_promo">
+                            <div id="wfl-promo">
+                                <?php include( PROLER_PATH . 'templates/admin/sidebar.php' ); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php include( PROLER_PATH . 'templates/admin/popup.php' ); ?>
+                </div>
+            </div>
+            <?php
+
+        }
+        public function settings_menu(){
+            
+            global $proler__;
+
+            $pages = array(
+                array(
+                    'slug' => 'settings',
+                    'url' => get_admin_url( null, 'admin.php?page=proler-settings' ),
+                    'name' => 'Settings',
+                    'icon' => 'dashicons dashicons-admin-settings',
+                    'target' => 'general',
+                    'class' => ''
+                ),
+                array(
+                    'slug' => 'newrole',
+                    'url' => get_admin_url( null, 'admin.php?page=proler-newrole' ),
+                    'name' => 'Add New Role',
+                    'icon' => 'dashicons dashicons-admin-users',
+                    'target' => 'new-user-role',
+                    'class' => ''
+                ),
+                array(
+                    'slug' => 'pro',
+                    'url' => $proler__['plugin']['free_url'],
+                    'name' => 'Get PRO',
+                    'icon' => '',
+                    'target' => 'get-pro',
+                    'class' => 'proler-nav-orange'
+                )
+            );
+
+            foreach( $pages as $menu ){
+                
+                echo sprintf(
+                    '<a href="%s"><div class="mpcdp_settings_tab_control %s"><span class="%s"></span><span class="label">%s</span></div></a>',
+                    esc_url( $menu['url'] ),
+                    $menu['slug'] === $this->page ? esc_attr( 'active' ) : '',
+                    esc_html( $menu['icon'] ),
+                    esc_html( $menu['name'] )
+                );
+
+            }
+
+        }
+        public function settings_submit(){
+            
+            $long = '';
+            $short = '';
+            if( 'settings' === $this->page ){
+                $long = 'Save Settings';
+                $short = 'Save';
+            }else if( 'newrole' === $this->page ){
+                $long = 'Add New Role';
+                $short = 'Add';
+            }
+            
+            ?>
+            <div class="mpcdp_settings_submit">
+                <div class="submit">
+                    <button class="mpcdp_submit_button">
+                        <div class="save-text"><?php echo esc_html( $long ); ?></div>
+                        <div class="save-text save-text-mobile"><?php echo esc_html( $short ); ?></div>
+                    </button>
+                </div>
+            </div>
+            <?php
+
+        }
+
+
+        
+        public function role_settings_content(){
+
+            ?>
+            <div class="pr-settings">
+                <?php $this->saved_role_settings(); ?>
+                <div class="demo-item" style="display:none;">
+                    <?php $this->role_settings_head(); ?>
+                    <?php $this->role_settings_details(); ?>
+                </div>
+            </div>
+            <?php do_action( 'proler_admin_extra_section' ); ?>
+            <div class="mpcdp_settings_option visible" style="margin-top:20px;">
+                <div class="mpcdp_row">
+                    <input type="hidden" value="" name="proler_data">
+                    <a class="mpc-opt-sc-btn add-new" href="javaScript:void(0)">Add New</a>
+                </div>
+            </div>
+            <?php
+
+        }
+        public function new_role_content(){
+            
+            global $proler__;
+
+            ?>
+            <div class="mpcdp_settings_toggle mpcdp_container">
+                <div class="mpcdp_settings_option visible">
+                    <div class="mpcdp_row">
+                        <?php echo isset( $proler__['user_role_msg'] ) ? wp_kses_post( $proler__['user_role_msg'] ) : ''; ?>
+                        <input type="text" name="proler_admin_new_role" placeholder="Example: 'B2B Customer'" >
+                        <?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
+                    </div>
+					<div class="mpcdp_row">
+                        <div class="mpcdp_option_description">
+                            <strong>IMPORTANT:</strong> Role name starts with letters and accepts letters, digits, spaces and '_' only.
+                        </div>
+                    </div>
+				</div>
+            </div>
+            <div class="mpcdp_settings_toggle mpcdp_container">
+				<div class="mpcdp_settings_option visible">
+					<div class="mpcdp_row">
+						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+                            <h2>Current role names</h2>
+                            <?php $this->user_role_list(); ?>
+						</div>
+					</div>
+				</div>
+			</div>
+            <?php
+
+        }
+
+
+
+        public function saved_role_settings(){
+            
+            $data = $this->get_settings();
+
+            if( empty( $data ) || ! isset( $data['roles'] ) ){
+                return;
+            }
+
+            foreach( $data['roles'] as $role => $rd ){
+
+                ?>
+                <div class="mpcdp_settings_toggle pr-item">
+                    <?php $this->role_settings_head( $role, $rd ); ?>
+                    <?php $this->role_settings_details( $rd ); ?>
+                </div>
+                <?php
+
+            }
+
+        }
+        public function role_settings_head( $role = '', $rd = array() ){
+
+            $checked = isset( $rd['pr_enable'] ) && '1' === $rd['pr_enable'] ? 'on' : 'off';
+            if( empty( $rd ) ){
+                $checked = 'on';
+            }
+
+            ?>
+            <div class="mpcdp_settings_option visible">
+                <div class="mpcdp_row">
+                    <div class="mpcdp_settings_option_description col-md-6">
+                        <?php $this->get_roles( $role ); ?>
+                    </div>
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+                        <a class="mpc-opt-sc-btn edit" href="javaScript:void(0)">Edit</a>
+                        <a class="mpc-opt-sc-btn delete" href="javaScript:void(0)">Delete</a>
+                        <?php $this->switch_box( 'Enable', 'Disable', $checked ); ?>
+                        <input type="checkbox" name="pr_enable" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
+                    </div>
+                </div>
+            </div>
+            <?php
+
+        }
+        public function role_settings_details( $rd = array() ){
+
+            global $proler__;
+
+            $discount_type = isset( $rd['discount_type'] ) ? $rd['discount_type']  : '';
+            $pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
+
+            ?>
+            <div class="mpcdp_settings_option" style="display:none;">
+                <div class="mpcdp_settings_option_field_theme_customizer first_customizer_field" style="margin-bottom:20px;">
+                    <span class="theme_customizer_icon dashicons dashicons-list-view"></span>
+                    <div class="mpcdp_settings_option_description">
+                        <div class="mpcdp_option_label">Settings Details</div>
+                    </div>
+                </div>
+                <div class="mpcdp_row">
+                    <div class="mpcdp_settings_option_description col-md-9">
+                        <div class="mpcdp_option_label">Discount</div>
+                        <div class="mpcdp_option_description">
+                            Add a custom page URL where the customer should be redirected.
+                        </div>
+                    </div>
+                </div>
+                <div class="mpcdp_row">
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-9">
+                        <input type="text" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>" placeholder="Type discount amount">
+                    </div>
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-3">
+                        <select name="discount_type">
+                            <option value="percent" <?php echo 'percent' === $discount_type ? 'selected' : ''; ?>>%</option>
+                            <option value="price" <?php echo 'price' === $discount_type ? 'selected' : ''; ?>><?php echo get_woocommerce_currency_symbol(); ?></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mpcdp_row">
+                    <div class="mpcdp_settings_option_description col-md-9">
+                        <div class="mpcdp_option_label">Hide Price</div>
+                        <div class="mpcdp_option_description">
+                            Add a custom page URL where the customer should be redirected.
+                        </div>
+                    </div>
+                </div>
+                <div class="mpcdp_row">
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-9">
+                        <input type="text" name="hide_txt" value="<?php echo isset( $rd['hide_txt'] ) ? esc_html( $rd['hide_txt'] ) : ''; ?>" placeholder="Type placeholder message">
+                    </div>
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-3">
+                        <?php
+
+                        $checked = isset( $rd['hide_price'] ) && '1' === $rd['hide_price'] ? 'on' : 'off';
+                        $this->switch_box( 'Show', 'Hide', $checked );
+                        
+                        ?>
+                        <input type="checkbox" name="hide_price" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
+                    </div>
+                </div>
+                <div class="mpcdp_row">
+                    <div class="mpcdp_settings_option_description col-md-9">
+                        <div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new">PRO</div>
+                        <div class="mpcdp_option_label">Minimum Quantity</div>
+                        <div class="mpcdp_option_description">
+                            Add a custom page URL where the customer should be redirected.
+                        </div>
+                    </div>
+                </div>
+                <div class="mpcdp_row">
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-9">
+                        <input type="text" name="min_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" placeholder="Minimum quantity to buy" data-protxt="Minimum Quantity">
+                    </div>
+                </div>
+                <div class="mpcdp_row">
+                    <div class="mpcdp_settings_option_description col-md-9">
+                        <div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new">PRO</div>
+                        <div class="mpcdp_option_label">Maximum Quantity</div>
+                        <div class="mpcdp_option_description">
+                            Add a custom page URL where the customer should be redirected.
+                        </div>
+                    </div>
+                </div>
+                <div class="mpcdp_row">
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-9">
+                        <input type="text" name="max_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['max_qty'] ) ? esc_attr( $rd['max_qty'] ) : ''; ?>" placeholder="Maximum quantity to by" data-protxt="Minimum Quantity">
+                    </div>
+                </div>
+            </div>
+            <?php
+
+        }
+
+
+
+        public function settings_type(){
+
+            $data = $this->get_settings();
+
+            $value = 'default';
+            if( ! empty( $data ) && isset( $data['proler_stype'] ) ){
+                $value = $data['proler_stype'];
+            }
+
+            $types = array(
+                'default'      => 'Global',
+                'proler-based' => 'Custom',
+                'disable'      => 'Disable'
+            );
+
+            ?>
+            <div class="mpcdp_settings_toggle mpcdp_container" data-toggle-id="wmc_redirect">
+				<div class="mpcdp_settings_option visible" data-field-id="wmc_redirect">
+					<div class="mpcdp_row">
+						<div class="mpcdp_settings_option_description col-md-6">
+							<div class="mpcdp_option_label">Role Based Settings</div>
+                            <div class="mpcdp_option_description">Choose <strong>Custom</strong> for changing this product pricing option or others.</div>
+						</div>
+						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+                            <div class="switch-field">
+                                <?php
+
+                                foreach( $types as $v => $label ){
+                                    $checked = $v === $value ? 'checked' : '';
+                    
+                                    echo '<div class="swatch-item">';
+                    
+                                    echo sprintf(
+                                        '<input type="radio" id="proler_stype_%s" name="proler_stype" value="%s" %s><label for="proler_stype_%s">%s</label>',
+                                        esc_attr( $v ),
+                                        esc_attr( $v ),
+                                        esc_attr( $checked ),
+                                        esc_attr( $v ),
+                                        esc_html( $label )
+                                    );
+                    
+                                    echo '</div>';
+                                    
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+            <?php
+
+        }
+
+
+
+        public function get_settings(){
+
+            global $post;
+
+            if( isset( $post->ID ) ){
+                $data = get_post_meta( $post->ID, 'proler_data', true );
+
+            }else{
+                $data = get_option( 'proler_role_table' );
+            }
+            
+            if( empty( $data ) ){
+                return array();
+            }
+
+            return $data;
+
+        }
+        public function get_roles( $selected ){
+
+            global $proler__;
+            ?>
+            <select name="proler_roles" class="proler-roles">
+                <option value="">Choose a role</option>
+                <option value="global" <?php echo 'global' === $selected ? 'selected' : ''; ?>>Global</option>
+                <?php
+                foreach( wp_roles()->roles as $role => $role_data ){
+                    $name = $role_data['name'];
+
+                    // if given value and this one match, make it selected
+                    $s = '';
+                    if( $role == $selected ) $s = ' selected';
+
+                    echo sprintf( '<option value="%s" %s>%s</option>', esc_attr( $role ), esc_html( $s ), esc_html( $name ) );
+                }
+                ?>
+                <option value="visitor"<?php echo $selected == 'visitor' ? ' selected' : '';  ?>><?php echo esc_html( $proler__['visitor_role_label'] ); ?></option>
+            </select>
+            <?php
+
+        }
+        public function show_notice(){
+            
+            global $proler__;
+
+            // Display notices
+            if( isset( $proler__['notice'] ) ){
+                foreach( $proler__['notice'] as $notice ){
+                    echo wp_kses_post( $notice );
+                }
+            }
+
+            if( ! isset( $_POST ) || ! isset( $_POST['proler_data'] ) ){
+                return;
+            }
+            
+            ?>
+            <div class="pr-notice"><span class="dashicons dashicons-yes"></span> Settings saved successfully.</div>
+            <?php
+
+        }
+        public function user_role_list(){
+            
+            global $proler__;
+
+            echo '<ul>';
+
+            foreach( wp_roles()->roles as $role => $role_data ){
+                echo sprintf(
+                    '<li><span class="dashicons dashicons-yes"></span>%s</li>',
+                    esc_html( $role_data['name'] )
+                );
+            }
+            echo sprintf(
+                '<li><span class="dashicons dashicons-yes"></span>%s</li>',
+                esc_html( $proler__['visitor_role_label'] )
+            );
+
+            echo '</ul>';
+
+        }
+        public function input_sanitize( $val ){
+
+            $val = str_replace( ':*dblqt*:', '"', $val );
+            $val = str_replace( ':*snglqt*:', '\'', $val );
+            $val = sanitize_text_field( $val );
+            
+            return $val;
+
+        }
+        public function switch_box( $on, $off, $value ) {
+
+			$checked = ! empty( $value ) && ( 'on' === $value || true === $value ) ? 'on' : 'off';
+
+			?>
+			<div class="hurkanSwitch hurkanSwitch-switch-plugin-box">
+				<div class="hurkanSwitch-switch-box switch-animated-<?php echo esc_attr( $checked ); ?>">
+					<a class="hurkanSwitch-switch-item <?php echo 'on' === $checked ? 'active' : ''; ?> hurkanSwitch-switch-item-color-success  hurkanSwitch-switch-item-status-on">
+						<span class="lbl"><?php echo esc_html( $on ); ?></span>
+						<span class="hurkanSwitch-switch-cursor-selector"></span>
+					</a>
+					<a class="hurkanSwitch-switch-item <?php echo 'off' === $checked ? 'active' : ''; ?> hurkanSwitch-switch-item-color-  hurkanSwitch-switch-item-status-off">
+						<span class="lbl"><?php echo esc_html( $off ); ?></span>
+						<span class="hurkanSwitch-switch-cursor-selector"></span>
+					</a>
+				</div>
+			</div>
+			<?php
+
+		}
         
     }
 }
