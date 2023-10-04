@@ -521,10 +521,10 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                         <?php $this->get_roles( $role ); ?>
                     </div>
                     <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-                        <a class="mpc-opt-sc-btn edit" href="javaScript:void(0)">Edit</a>
-                        <a class="mpc-opt-sc-btn delete" href="javaScript:void(0)">Delete</a>
-                        <?php $this->switch_box( 'Enable', 'Disable', $checked ); ?>
+                        <?php $this->switch_box( 'Off', 'On', $checked ); ?>
                         <input type="checkbox" name="pr_enable" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
+                        <a class="mpc-opt-sc-btn delete" href="javaScript:void(0)">Delete</a>
+                        <a class="mpc-opt-sc-btn edit" href="javaScript:void(0)">+</a>
                     </div>
                 </div>
             </div>
@@ -539,13 +539,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             $pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
 
             ?>
-            <div class="mpcdp_settings_option" style="display:none;">
-                <div class="mpcdp_settings_option_field_theme_customizer first_customizer_field" style="margin-bottom:20px;">
-                    <span class="theme_customizer_icon dashicons dashicons-list-view"></span>
-                    <div class="mpcdp_settings_option_description">
-                        <div class="mpcdp_option_label">Settings Details</div>
-                    </div>
-                </div>
+            <div class="mpcdp_settings_option" style="display:block;">
                 <div class="mpcdp_row">
                     <div class="mpcdp_settings_option_description col-md-9">
                         <div class="mpcdp_option_label">Discount</div>

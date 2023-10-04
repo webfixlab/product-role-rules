@@ -824,11 +824,9 @@ button.button.pri-new-item {
 	position:relative
 }
 .mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option{
-	padding-left:40px;
-	padding-right:40px;
-	padding-top:40px;
-	padding-bottom:40px;
-	position:relative
+	padding: 20px;
+	position:relative;
+    border: 1px solid #ececec;
 }
 #mpcdp_settings .mpcdp_settings_toggle .mpcdp_separator:after{
 	content:"";
@@ -856,10 +854,7 @@ button.button.pri-new-item {
 	padding-bottom:15px
 }
 .mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option:first-child{
-	padding-top:40px
-}
-.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option:last-child{
-	padding-bottom:40px
+	padding-top:20px
 }
 .mpcdp_settings_section .mpcdp_settings_toggle:not(:last-of-type){
 	margin-bottom:25px
@@ -868,6 +863,9 @@ button.button.pri-new-item {
 	font-size:1.2em;
 	color:#182f36;
 	font-weight:600
+}
+.mpcdp_settings_option_field.mpcdp_settings_option_field_text {
+    text-align: right;
 }
 .mpcdp_option_description{
 	font-size:1em;
@@ -1933,13 +1931,16 @@ a.mpcasc-reset {
 	resize: none;
 }
 .mpc-opt-sc-btn {
-	padding: 10px 20px;
-	border-radius: 30px;
-	margin-left: 10px;
-	position: relative;
-	cursor: pointer;
-	display: inline-block;
-	text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    margin-left: 10px;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    color: #043959;
+    box-shadow: 0 0 0 1px #4f94d4, 0 0 2px 1px rgba(79,148,212,.8);
+    outline: 1px solid transparent;
 }
 .mpc-opt-sc-btn.copy,.mpc-opt-sc-btn.edit:hover{
 	background: #17cbd8;
