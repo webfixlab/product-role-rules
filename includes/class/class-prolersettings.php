@@ -412,11 +412,8 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             if( 'settings' === $this->page ){
                 $long = 'Save Settings';
                 $short = 'Save';
-            }else if( 'newrole' === $this->page ){
-                $long = 'Add New Role';
-                $short = 'Add';
             }
-            
+            if ('newrole' !== $this->page) {
             ?>
             <div class="mpcdp_settings_submit">
                 <div class="submit">
@@ -427,6 +424,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                 </div>
             </div>
             <?php
+            }
 
         }
 
@@ -469,12 +467,20 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                             <strong>IMPORTANT:</strong> Role name starts with letters and accepts letters, digits, spaces and '_' only.
                         </div>
                     </div>
+                    <div class="mpcdp_settings_submit" id="proler-role-create">
+                        <div class="submit">
+                            <button class="mpcdp_submit_button">
+                                <div class="save-text">Add New Role</div>
+                                <div class="save-text save-text-mobile">Add</div>
+                            </button>
+                        </div>
+                    </div>
 				</div>
             </div>
             <div class="mpcdp_settings_toggle mpcdp_container">
 				<div class="mpcdp_settings_option visible">
 					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+						<div class="proler-role-list">
                             <h2>Current role names</h2>
                             <?php $this->user_role_list(); ?>
 						</div>
@@ -515,7 +521,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             }
 
             ?>
-            <div class="mpcdp_settings_option visible">
+            <div class="mpcdp_settings_option visible proler-option-head">
                 <div class="mpcdp_row">
                     <div class="mpcdp_settings_option_description col-md-6">
                         <?php $this->get_roles( $role ); ?>
@@ -523,8 +529,8 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
                         <?php $this->switch_box( 'Off', 'On', $checked ); ?>
                         <input type="checkbox" name="pr_enable" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
-                        <a class="mpc-opt-sc-btn delete" href="javaScript:void(0)">Delete</a>
-                        <a class="mpc-opt-sc-btn edit" href="javaScript:void(0)">+</a>
+                        <span class="proler-arrow"><img src="<?php echo plugins_url( 'product-role-rules/assets/images/down.svg' ); ?>"></span>
+                        <a class="proler-delete" href="javaScript:void(0)"><img src="<?php echo plugins_url( 'product-role-rules/assets/images/close-red.svg' ); ?>"></a>
                     </div>
                 </div>
             </div>
@@ -539,20 +545,16 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
             $pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
 
             ?>
-            <div class="mpcdp_settings_option" style="display:block;">
+            <div class="mpcdp_settings_option proler-option-panel" style="display:block;">
                 <div class="mpcdp_row">
-                    <div class="mpcdp_settings_option_description col-md-9">
+                    <div class="mpcdp_settings_option_description col-md-6">
                         <div class="mpcdp_option_label">Discount</div>
                         <div class="mpcdp_option_description">
-                            Add a custom page URL where the customer should be redirected.
+                            Adjust the product's price by entering a percentage or flat rate reduction.
                         </div>
                     </div>
-                </div>
-                <div class="mpcdp_row">
-                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-9">
-                        <input type="text" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>" placeholder="Type discount amount">
-                    </div>
-                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-3">
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+                        <input type="text" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>">
                         <select name="discount_type">
                             <option value="percent" <?php echo 'percent' === $discount_type ? 'selected' : ''; ?>>%</option>
                             <option value="price" <?php echo 'price' === $discount_type ? 'selected' : ''; ?>><?php echo get_woocommerce_currency_symbol(); ?></option>
@@ -560,18 +562,14 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     </div>
                 </div>
                 <div class="mpcdp_row">
-                    <div class="mpcdp_settings_option_description col-md-9">
+                    <div class="mpcdp_settings_option_description col-md-6">
                         <div class="mpcdp_option_label">Hide Price</div>
                         <div class="mpcdp_option_description">
-                            Add a custom page URL where the customer should be redirected.
+                            Hide the price and display a custom placeholder text instead.
                         </div>
                     </div>
-                </div>
-                <div class="mpcdp_row">
-                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-9">
-                        <input type="text" name="hide_txt" value="<?php echo isset( $rd['hide_txt'] ) ? esc_html( $rd['hide_txt'] ) : ''; ?>" placeholder="Type placeholder message">
-                    </div>
-                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-3">
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+                        <input type="text" name="hide_txt" value="<?php echo isset( $rd['hide_txt'] ) ? esc_html( $rd['hide_txt'] ) : ''; ?>" placeholder="Placeholder text">
                         <?php
 
                         $checked = isset( $rd['hide_price'] ) && '1' === $rd['hide_price'] ? 'on' : 'off';
@@ -582,31 +580,27 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
                     </div>
                 </div>
                 <div class="mpcdp_row">
-                    <div class="mpcdp_settings_option_description col-md-9">
+                    <div class="mpcdp_settings_option_description col-md-6">
                         <div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new">PRO</div>
                         <div class="mpcdp_option_label">Minimum Quantity</div>
                         <div class="mpcdp_option_description">
-                            Add a custom page URL where the customer should be redirected.
+                            Set the minimum number of products a customer must purchase for a specific role.
                         </div>
                     </div>
-                </div>
-                <div class="mpcdp_row">
-                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-9">
-                        <input type="text" name="min_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" placeholder="Minimum quantity to buy" data-protxt="Minimum Quantity">
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+                        <input type="text" name="min_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" data-protxt="Minimum Quantity">
                     </div>
                 </div>
                 <div class="mpcdp_row">
-                    <div class="mpcdp_settings_option_description col-md-9">
+                    <div class="mpcdp_settings_option_description col-md-6">
                         <div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new">PRO</div>
                         <div class="mpcdp_option_label">Maximum Quantity</div>
                         <div class="mpcdp_option_description">
-                            Add a custom page URL where the customer should be redirected.
+                            Limit the maximum number of products a customer can purchase for a specific role.
                         </div>
                     </div>
-                </div>
-                <div class="mpcdp_row">
-                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-9">
-                        <input type="text" name="max_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['max_qty'] ) ? esc_attr( $rd['max_qty'] ) : ''; ?>" placeholder="Maximum quantity to by" data-protxt="Minimum Quantity">
+                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+                        <input type="text" name="max_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['max_qty'] ) ? esc_attr( $rd['max_qty'] ) : ''; ?>" data-protxt="Minimum Quantity">
                     </div>
                 </div>
             </div>
@@ -770,11 +764,11 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 			<div class="hurkanSwitch hurkanSwitch-switch-plugin-box">
 				<div class="hurkanSwitch-switch-box switch-animated-<?php echo esc_attr( $checked ); ?>">
 					<a class="hurkanSwitch-switch-item <?php echo 'on' === $checked ? 'active' : ''; ?> hurkanSwitch-switch-item-color-success  hurkanSwitch-switch-item-status-on">
-						<span class="lbl"><?php echo esc_html( $on ); ?></span>
+						<span class="lbl"><?php echo esc_html( $off ); ?></span>
 						<span class="hurkanSwitch-switch-cursor-selector"></span>
 					</a>
 					<a class="hurkanSwitch-switch-item <?php echo 'off' === $checked ? 'active' : ''; ?> hurkanSwitch-switch-item-color-  hurkanSwitch-switch-item-status-off">
-						<span class="lbl"><?php echo esc_html( $off ); ?></span>
+						<span class="lbl"><?php echo esc_html( $on ); ?></span>
 						<span class="hurkanSwitch-switch-cursor-selector"></span>
 					</a>
 				</div>

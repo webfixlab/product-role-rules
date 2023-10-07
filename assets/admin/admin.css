@@ -828,6 +828,49 @@ button.button.pri-new-item {
 	position:relative;
     border: 1px solid #ececec;
 }
+.mpcdp_settings_option.proler-option-panel {
+    background: #fff;
+    border-top: 0 !important;
+}
+#proler-role-create {
+    display: inline-block;
+}
+#proler-role-create .submit, #proler-role-create button {
+    margin: 0;
+}
+.proler-option-head {
+    cursor: pointer;
+}
+a.proler-delete {
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    right: 5px;
+}
+a.proler-delete img {
+    opacity: .8;
+    width: 8px;
+}
+.proler-role-list li {
+    display: inline-block;
+    margin-right: 10px;
+}
+.proler-role-list ul {
+    margin-bottom: 0;
+}
+.proler-role-list h2 {
+    margin-top: 0;
+}
+span.proler-arrow {
+    display: inline-block;
+}
+span.proler-arrow img {
+    width: 33px;
+    opacity: .35;
+    position: relative;
+    top: 10px;
+    right: -10px;
+}
 #mpcdp_settings .mpcdp_settings_toggle .mpcdp_separator:after{
 	content:"";
 	height:1px;
@@ -895,8 +938,10 @@ button.button.pri-new-item {
 	color:#32373c;
 	padding:10px 20px;
 	border-radius:50px;
-	width:100%;
 	margin:0
+}
+.mpcdp_settings_option.proler-option-panel .mpcdp_settings_option_field.mpcdp_settings_option_field_text {
+    text-align: left;
 }
 #mpcdp_settings input[type=text].inner-field{
 	border:0;
@@ -1484,7 +1529,7 @@ button.button.pri-new-item {
 	flex-direction:row
 }
 .mpcdp_container .mpcdp_row:not(:last-of-type){
-	margin-bottom:20px
+	margin-bottom:30px
 }
 .mpcdp_row .col-md-12{
 	width:100%
