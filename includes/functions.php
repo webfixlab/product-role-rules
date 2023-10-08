@@ -1,4 +1,11 @@
 <?php
+/**
+ * Role based pricing frontend functions.
+ * 
+ * @package    WordPress
+ * @subpackage Role Based Pricing for WooCommerce
+ * @since      1.0
+ */
 
 function proler_get_price( $price, $product, $only_price = false ){
 

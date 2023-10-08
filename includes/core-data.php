@@ -1,4 +1,11 @@
 <?php
+/**
+ * Role based pricing plugin data structure.
+ * 
+ * @package    WordPress
+ * @subpackage Role Based Pricing for WooCommerce
+ * @since      1.0
+ */
 
 // Plugin core data
 global $proler__;

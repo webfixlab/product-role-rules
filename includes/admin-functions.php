@@ -1,4 +1,11 @@
 <?php
+/**
+ * Role based pricing admin functions.
+ * 
+ * @package    WordPress
+ * @subpackage Role Based Pricing for WooCommerce
+ * @since      1.0
+ */
 
 /**
  * Calculate date difference and some other accessories
@@ -7,33 +14,44 @@
  * @param @skip_ | skip this value
  */
 function proler_date_diff( $key, $notice_interval, $skip_ = '' ){
+
     $value = get_option( $key );
+
     if( empty( $value ) || $value == '' ){
 
         // if skip value is meta value - return false
-        if( $skip_ != '' && $skip_ == $value ) return false;        
-        else{
-            $c = date_create( date( 'Y-m-d' ) );
-            $d = date_create( $value );
+        if( $skip_ != '' && $skip_ == $value ){
+            return false;        
+        }else{
+
+            $c   = date_create( date( 'Y-m-d' ) );
+            $d   = date_create( $value );
             $dif = date_diff( $c, $d );
-            $b = (int) $dif->format( '%d' );
+            $b   = (int) $dif->format( '%d' );
             
             // if days difference meets minimum given interval days - return tru
             if( $b >= $notice_interval ) return true;
+
         }
+
     }else add_option( $key, date( 'Y-m-d' ) );
+
     return false;
+
 }
 
 // display what you want to show in the notice
 function proler_client_feedback_notice(){
+
     global $proler__;
 
     // get current page
-    $page = sanitize_url( $_SERVER['REQUEST_URI'] );
+    $page  = sanitize_url( $_SERVER['REQUEST_URI'] );
 
     // dynamic extra parameter adding beore adding new url parameters
-    $page .= strpos( $page, '?' ) !== false ? '&' : '?'; ?>
+    $page .= strpos( $page, '?' ) !== false ? '&' : '?';
+
+    ?>
     <div class="notice notice-info is-dismissible">
         <h3><?php echo esc_html( $proler__['plugin']['name'] ); ?></h3>
         <p>
@@ -42,29 +60,35 @@ function proler_client_feedback_notice(){
         <p>
             <a href="<?php echo esc_url( $proler__['plugin']['review_link'] ); ?>" class="button-primary">Rate it</a> <a href="<?php echo esc_url( $page ); ?>proler_rating=done" class="button">Already Did</a> <a href="<?php echo esc_url( $page ); ?>proler_rating=cancel" class="button">Cancel</a>
         </p>
-    </div><?php
+    </div>
+    <?php
+
 }
 
 // Only for free version - inform about pro ( Immediate after free active Cancelable - trigger every 15 days)
 function proler_pro_info(){
+
     global $proler__;
 
     // get current page
-    $page = sanitize_url( $_SERVER['REQUEST_URI'] );
+    $page  = sanitize_url( $_SERVER['REQUEST_URI'] );
 
     // dynamic extra parameter adding beore adding new url parameters
     $page .= strpos( $page, '?' ) !== false ? '&' : '?';
+
     ?>
     <div class="notice notice-warning is-dismissible">
         <h3><?php echo esc_html( $proler__['plugin']['name'] ); ?> PRO</h3>
         <p><strong>Get maximum/minimum quantity support with PRO.</strong></p>
         <p><a href="<?php echo esc_url( $proler__['prolink'] ); ?>" class="button-primary">Get PRO</a> <a href="<?php echo esc_url( $page ); ?>proler_notify_pro=cancel" class="button">Cancel</a></p>
     </div>
-<?php
+    <?php
+
 }
 
 // if this is correctly within our plugin screen scope
 function proler_in_screen_scope(){
+
     global $proler__;
 
     $screen = get_current_screen();
@@ -72,26 +96,38 @@ function proler_in_screen_scope(){
     // check with our plugin screens
     if( in_array( $screen->id, $proler__['plugin']['screen'] ) ) return true;
     else return false;
+
 }
 
 // Notice - if woocommerce is deactivated - auto deactivate this plugin
 function proler_show_wc_new_inactive_notice(){
-    global $proler__; ?>
+
+    global $proler__;
+    
+    ?>
     <div class="error">
         <p><a href="<?php echo esc_url( $proler__['plugin']['free_url'] ); ?>" target="_blank"><?php echo esc_html( $proler__['plugin']['name'] ); ?></a> plugin has been deactivated due to deactivation of <a href="<?php echo esc_url( $proler__['plugin']['woo_url'] ); ?>" target="_blank">WooCommerce</a> plugin</p>
-    </div><?php
+    </div>
+    <?php
+
 }
 
 // Notice - this plugin needs woocommerce plugin first
 function proler_show_wc_inactive_notice(){
-    global $proler__; ?>
+
+    global $proler__;
+    
+    ?>
     <div class="error">
         <p>Please install and activate <a href="<?php echo esc_url( $proler__['plugin']['woo_url'] ); ?>" target="_blank">WooCommerce</a> plugin first</p>
-    </div><?php
+    </div>
+    <?php
+
 }
 
 // Client feedback - rating
 function proler_client_feedback(){
+
     global $proler__;
 
     if( isset( $_GET['proler_rating'] ) ){
@@ -120,11 +156,13 @@ function proler_client_feedback(){
             add_action( 'admin_notices', 'proler_pro_info' );
         }
     }
+
 }
 
 // wp_kses_post
 // Save all admin notices for displaying later
 function proler_handle_admin_notice(){
+
     global $proler__;
 
     // check scope, without it return
@@ -132,7 +170,9 @@ function proler_handle_admin_notice(){
 
     // Buffer only the notices
     ob_start();
+
     do_action( 'admin_notices' );
+
     $content = ob_get_contents();
     ob_get_clean();
     
@@ -141,10 +181,12 @@ function proler_handle_admin_notice(){
 
     // Remove all admin notices as we don't need to display in it's place
     remove_all_actions( 'admin_notices' );
+
 }
 
 // Admin menu icon and notice title CSS styles
 function proler_add_admin_menu_icon_style() {
+
     ?>
     <style>
         #toplevel_page_proler-settings img {
@@ -157,10 +199,12 @@ function proler_add_admin_menu_icon_style() {
         }
     </style>
     <?php
+
 }
 
 // Check conditions before actiavation of the plugin
 function proler_pre_activation(){
+
     $plugin = 'product-role-rules/product-role-rules.php';
 
     // check if WC is active
@@ -180,7 +224,9 @@ function proler_pre_activation(){
     }
 
     proler_client_feedback();
+
     return true;
+
 }
 
 /**
@@ -188,6 +234,7 @@ function proler_pre_activation(){
  * @return true|false
  */
 function proler_check_admin_pro(){
+
     global $proler__;
     
     // don't have pro
@@ -198,18 +245,23 @@ function proler_check_admin_pro(){
 
     // change states
     do_action( 'proler_admin_change_pro_state' );
+
 }
 
 // Add Settings to WooCommerce > Settings > Products > WC Multiple Cart
 function proler_admin_add_plugin_action_links( $links ){
-    global $proler__;
-	$action_links = array();
 
+    global $proler__;
+
+	$action_links             = array();
 	$action_links['settings'] = sprintf( '<a href="%s">Settings</a>', esc_url( admin_url( 'admin.php?page=proler-settings' ) ) );
 
-    if( $proler__['prostate'] != 'activated' ) $action_links['premium'] = sprintf( '<a href="%s" style="color: #FF8C00;font-weight: bold;text-transform: uppercase;">Get PRO</a>', esc_url( $proler__['prolink'] ) );
+    if( $proler__['prostate'] != 'activated' ){
+        $action_links['premium'] = sprintf( '<a href="%s" style="color: #FF8C00;font-weight: bold;text-transform: uppercase;">Get PRO</a>', esc_url( $proler__['prolink'] ) );
+    }
     
 	return array_merge( $action_links, $links );
+
 }
 
 function proler_admin_add_plugin_desc_meta( $links, $file ){
@@ -218,16 +270,19 @@ function proler_admin_add_plugin_desc_meta( $links, $file ){
     if ( plugin_basename( PROLER ) !== $file ) return $links;
 
     global $proler__;
+
 	$row_meta = array();
 
-	$row_meta['docs'] = sprintf( '<a href="%s">Docs</a>', esc_url( $proler__['plugin']['docs'] ) );
+	$row_meta['docs']    = sprintf( '<a href="%s">Docs</a>', esc_url( $proler__['plugin']['docs'] ) );
 	$row_meta['apidocs'] = sprintf( '<a href="%s">Support</a>', esc_url( $proler__['plugin']['request_quote'] ) );
     
 	return array_merge( $links, $row_meta );
+
 }
 
 // Register and enqueue a custom stylesheet in the WordPress admin.
 function proler_admin_enqueue_scripts() {
+
     global $proler__;
 
     // check scope, without it return
@@ -246,11 +301,14 @@ function proler_admin_enqueue_scripts() {
         'ajaxurl'       => admin_url( 'admin-ajax.php' ),
         'has_pro'       => $proler__['has_pro'],
         'nonce'         => wp_create_nonce('ajax-nonce'),
-        'settings_page' => admin_url( 'admin.php?page=proler-settings' )
+        'settings_page' => admin_url( 'admin.php?page=proler-settings' ),
+        'right_arrow'   => plugin_dir_url( PROLER ) . 'assets/images/right.svg',
+        'down_arrow'    => plugin_dir_url( PROLER ) . 'assets/images/down.svg',
     );
 
     // apply hook for editing localized variables in admin script
     $var = apply_filters( 'proler_admin_update_local_var', $var );
     
     wp_localize_script( 'proler_admin_script', 'proler', $var );
+
 }

@@ -160,14 +160,19 @@
         $( '.pr-settings' ).on( 'click', '.hurkanSwitch-switch-item',  function(e){
             toggle_button( $( this ) );
         });
-        $( '.pr-settings' ).on( 'click', '.mpc-opt-sc-btn.edit', function(){
-            $(this).closest( '.pr-item' ).find( '.mpcdp_settings_option' ).each(function(){
-                if( ! $(this).hasClass( 'visible' ) ){
-                    $(this).toggle( 'slow' );
-                }
-            });
+        $( '.pr-settings' ).on( 'click', '.proler-arrow img', function(){
+            var item = $(this).closest( '.pr-item' );
+            
+            if( item.find( '.proler-option-content' ).is( ':visible' ) ){
+                $(this).attr( 'src', proler.right_arrow );
+            }else{
+                $(this).attr( 'src', proler.down_arrow );
+            }
+
+            item.find( '.proler-option-content' ).toggle( 'slow' );
+
         });
-        $( '.pr-settings' ).on( 'click', '.mpc-opt-sc-btn.delete', function(){
+        $( '.pr-settings' ).on( 'click', '.proler-delete img', function(){
             $(this).closest( '.pr-item' ).hide( 'slow', function(){
                 $(this).closest( '.pr-item' ).remove();
             });

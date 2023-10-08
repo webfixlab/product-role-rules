@@ -1,4 +1,12 @@
 <?php
+/**
+ * Role based pricing plugin loader functions.
+ * 
+ * @package    WordPress
+ * @subpackage Role Based Pricing for WooCommerce
+ * @since      1.0
+ */
+
 global $proler__;
 
 // Include admin settings functions
@@ -31,8 +39,8 @@ function proler_activation_process_handler(){
     add_filter( 'plugin_row_meta', 'proler_admin_add_plugin_desc_meta', 10, 2 );
 
     // needs to be off the hook in the next version
-    include( PROLER_PATH . 'includes/class/class-prolerplugin.php' );
-    include( PROLER_PATH . 'includes/class/class-prolersettings.php' );
+    include( PROLER_PATH . 'includes/class/class-proler-plugin.php' );
+    include( PROLER_PATH . 'includes/class/admin/class-proler-admin-settings.php' );
 
     include( PROLER_PATH . 'includes/hooks.php' );
     include( PROLER_PATH . 'includes/functions.php' );

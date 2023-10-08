@@ -828,7 +828,7 @@ button.button.pri-new-item {
 	position:relative;
     border: 1px solid #ececec;
 }
-.mpcdp_settings_option.proler-option-panel {
+.mpcdp_settings_option.proler-option-content {
     background: #fff;
     border-top: 0 !important;
 }
@@ -844,12 +844,16 @@ button.button.pri-new-item {
 a.proler-delete {
     display: inline-block;
     position: absolute;
-    top: 0px;
-    right: 5px;
+    top: -10px;
+    right: -10px;
 }
 a.proler-delete img {
     opacity: .8;
     width: 8px;
+    border: 1px solid #ececec;
+    padding: 5px;
+    border-radius: 10px;
+    background: #f8f8f8;
 }
 .proler-role-list li {
     display: inline-block;
@@ -940,7 +944,7 @@ span.proler-arrow img {
 	border-radius:50px;
 	margin:0
 }
-.mpcdp_settings_option.proler-option-panel .mpcdp_settings_option_field.mpcdp_settings_option_field_text {
+.mpcdp_settings_option.proler-option-content .mpcdp_settings_option_field.mpcdp_settings_option_field_text {
     text-align: left;
 }
 #mpcdp_settings input[type=text].inner-field{

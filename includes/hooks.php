@@ -1,4 +1,11 @@
 <?php
+/**
+ * Role based pricing hooks.
+ * 
+ * @package    WordPress
+ * @subpackage Role Based Pricing for WooCommerce
+ * @since      1.0
+ */
 
 /**
  * WC price change hook.
@@ -78,5 +85,3 @@ function proler_set_cart_price( $cart ) {
 
 }
 add_action( 'woocommerce_before_calculate_totals', 'proler_set_cart_price', 10, 1 );
-
-
