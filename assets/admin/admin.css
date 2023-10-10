@@ -857,7 +857,11 @@ a.proler-delete img {
 }
 .proler-role-list li {
     display: inline-block;
-    margin-right: 10px;
+    margin-right: 15px;
+    background: #e3e3e3;
+    padding: 10px 20px;
+    margin-bottom: 15px;
+    border-radius: 20px;
 }
 .proler-role-list ul {
     margin-bottom: 0;

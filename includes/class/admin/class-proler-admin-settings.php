@@ -151,7 +151,7 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
             $customer_exists = false;
 
             if( $is_valid ){
-                foreach( wp_roles()->roles as $role => $role_data ){
+                foreach( $this->get_roles() as $role => $name ){
 
                     // first check for customer
                     if( $role == 'customer' ) $customer_exists = true;
@@ -467,12 +467,14 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
             <div class="mpcdp_settings_toggle mpcdp_container">
                 <div class="mpcdp_settings_option visible">
                     <div class="mpcdp_row">
-                        <input type="text" name="proler_admin_new_role" placeholder="Example: 'B2B Customer'" >
-                        <?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
+                        <div class="mpcdp_settings_option_description col-md-6">
+                            <input type="text" name="proler_admin_new_role" placeholder="Example: 'B2B Customer'" >
+                            <?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
+                        </div>
                     </div>
 					<div class="mpcdp_row">
                         <div class="mpcdp_option_description">
-                            <strong>IMPORTANT:</strong> Role name starts with letters and accepts letters, digits, spaces and '_' only.
+                            IMPORTANT: Role name starts with <strong>letters</strong> and accepts <strong>letters, digits, spaces and '_'</strong> only.
                         </div>
                     </div>
                     <div class="mpcdp_settings_submit" id="proler-role-create">
@@ -532,7 +534,10 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
             <div class="mpcdp_settings_option visible proler-option-head">
                 <div class="mpcdp_row">
                     <div class="mpcdp_settings_option_description col-md-6">
-                        <?php $this->get_roles( $role ); ?>
+                        <?php $this->roles_select( $role ); ?>
+                        <div class="mpcdp_option_description prdis-msg" style="display:<?php echo 'off' === $checked ? 'block' : 'none'; ?>;">
+                            Please ntoe: You have <strong>DISABLED</strong> settings for this role.
+                        </div>
                     </div>
                     <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
                         <?php $this->switch_box( 'Off', 'On', $checked ); ?>
@@ -692,7 +697,7 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
             return $data;
 
         }
-        public function get_roles( $selected ){
+        public function roles_select( $selected ){
 
             global $proler__;
             ?>
@@ -700,8 +705,7 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
                 <option value="">Choose a role</option>
                 <option value="global" <?php echo 'global' === $selected ? 'selected' : ''; ?>>Global</option>
                 <?php
-                foreach( wp_roles()->roles as $role => $role_data ){
-                    $name = $role_data['name'];
+                foreach( $this->get_roles() as $role => $name ){
 
                     // if given value and this one match, make it selected
                     $s = '';
@@ -757,10 +761,10 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
 
             echo '<ul>';
 
-            foreach( wp_roles()->roles as $role => $role_data ){
+            foreach( $this->get_roles() as $role => $name ){
                 echo sprintf(
                     '<li><span class="dashicons dashicons-yes"></span>%s</li>',
-                    esc_html( $role_data['name'] )
+                    esc_html( $name )
                 );
             }
             echo sprintf(
@@ -769,6 +773,19 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
             );
 
             echo '</ul>';
+
+        }
+        public function get_roles(){
+
+            $roles = array();
+
+            foreach( wp_roles()->roles as $role => $rd ){
+                $roles[ $role ] = $rd['name'];
+            }
+
+            // ksort( $roles );
+
+            return $roles;
 
         }
         public function input_sanitize( $val ){

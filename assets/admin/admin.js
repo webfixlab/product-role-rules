@@ -141,10 +141,18 @@
         }
 
         
+        function show_diable_msg( btn ){
+            var input = btn.closest( '.mpcdp_settings_option_field' ).find( 'input[name="pr_enable"]' );
 
+            if( typeof input == 'undefined' || input.length == 0 ){
+                return;
+            }
+
+            btn.closest( '.mpcdp_row' ).find( '.prdis-msg' ).toggle( 'slow' );
+        }
         function toggle_button( btn ){
             var wrap = btn.closest( '.hurkanSwitch-switch-box' );
-    
+
             wrap.find( '.hurkanSwitch-switch-item' ).each(
                 function(){
                     if ( $( this ).hasClass( 'active' ) ) {
@@ -152,10 +160,14 @@
                     } else {
                         $( this ).addClass( 'active' );
                     }
+                    
                 }
             );
     
             btn.closest( '.mpcdp_settings_option_field' ).find( 'input[type="checkbox"]' ).trigger( 'click' );
+
+            show_diable_msg( btn );
+            
         }
         $( '.pr-settings' ).on( 'click', '.hurkanSwitch-switch-item',  function(e){
             toggle_button( $( this ) );
