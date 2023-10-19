@@ -2,7 +2,7 @@
 Contributors: smshahriar, aikya, webfixlab
 Tags: role based pricing, dynamic pricing, wholesale pricing, prices by user role, hide price, woocommerce
 Requires at least: 4.9
-Tested up to: 6.3.1
+Tested up to: 6.3.2
 Stable tag: 3.0
 Requires PHP: 7.0
 License: GPLv2 or later
@@ -26,7 +26,7 @@ Role Based Pricing is a truly lightweight and simple yet powerful plugin without
 
 **SEE THE DEMO**
 
-https://www.youtube.com/watch?v=ojYO-oVmci8
+https://www.youtube.com/watch?v=xytsfBndYoA
 
 **PRO FEATURE**
 
