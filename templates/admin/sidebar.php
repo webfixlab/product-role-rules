@@ -26,7 +26,19 @@ elseif( $proler__['prostate'] == 'activated' ){
         <div><a href="<?php echo esc_url( $proler__['plugin']['free_url'] ); ?>" target="_blank"><?php echo esc_html( $button ); ?></a></div>
         <?php endif; ?>
     </div>
-    <div class="sidebar_bottom"></div>
+    <div class="sidebar_bottom">
+        <ul>
+            <li>
+                <strong>Maximum Quantity:</strong> Set an upper limit on the number of items a customer can purchase for a specific product.
+            </li>
+            <li>
+                <strong>Minimum Quantity:</strong> Establish a minimum number of items that a customer must purchase for a specific product.
+            </li>
+            <li>
+                <strong>Rocket speed support:</strong> Most of our customer's problem solved within 24 hours of their first contact.
+            </li>
+            </ul>
+    </div>
     <div class="support">
         <h3>Dedicated Support Team</h3>
         <p>Our support is what makes us No.1. We are available round the clock for any support.</p>

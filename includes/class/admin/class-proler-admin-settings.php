@@ -535,15 +535,15 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
                 <div class="mpcdp_row">
                     <div class="mpcdp_settings_option_description col-md-6">
                         <?php $this->roles_select( $role ); ?>
-                        <div class="mpcdp_option_description prdis-msg" style="display:<?php echo 'off' === $checked ? 'block' : 'none'; ?>;">
-                            Please ntoe: You have <strong>DISABLED</strong> settings for this role.
-                        </div>
                     </div>
                     <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
                         <?php $this->switch_box( 'Off', 'On', $checked ); ?>
                         <input type="checkbox" name="pr_enable" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
-                        <span class="proler-arrow"><img src="<?php echo plugins_url( 'product-role-rules/assets/images/right.svg' ); ?>"></span>
+                        <span class="proler-arrow"><img src="<?php echo plugins_url( 'product-role-rules/assets/images/down.svg' ); ?>"></span>
                         <a class="proler-delete" href="javaScript:void(0)"><img src="<?php echo plugins_url( 'product-role-rules/assets/images/close-red.svg' ); ?>"></a>
+                        <div class="mpcdp_option_description prdis-msg" style="display:<?php echo 'off' === $checked ? 'block' : 'none'; ?>;">
+                            The following options are currently deactivated.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -558,7 +558,7 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
             $pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
 
             ?>
-            <div class="mpcdp_settings_option proler-option-content" style="display:none;">
+            <div class="mpcdp_settings_option proler-option-content">
                 <div class="mpcdp_row">
                     <div class="mpcdp_settings_option_description col-md-6">
                         <div class="mpcdp_option_label">Discount</div>
@@ -643,8 +643,8 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
 				<div class="mpcdp_settings_option visible" data-field-id="wmc_redirect">
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_description col-md-6">
-							<div class="mpcdp_option_label">Role Based Settings</div>
-                            <div class="mpcdp_option_description">Choose <strong>Custom</strong> for changing this product pricing option or others.</div>
+							<div class="mpcdp_option_label">Role Based Pricing</div>
+                            <div class="mpcdp_option_description">Choose <strong>Custom</strong> to overwrite the global pricing settings.</div>
 						</div>
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
                             <div class="switch-field">
@@ -703,7 +703,7 @@ if ( ! class_exists( 'ProlerAdminSettings' ) ) {
             ?>
             <select name="proler_roles" class="proler-roles">
                 <option value="">Choose a role</option>
-                <option value="global" <?php echo 'global' === $selected ? 'selected' : ''; ?>>Global</option>
+                <option value="global" <?php echo 'global' === $selected ? 'selected' : ''; ?>>All roles</option>
                 <?php
                 foreach( $this->get_roles() as $role => $name ){
 
