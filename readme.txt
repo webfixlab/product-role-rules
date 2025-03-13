@@ -1,9 +1,9 @@
 === Role Based Pricing for WooCommerce - Smart Solutions for Dynamic Pricing ===
-Contributors: smshahriar, aikya, webfixlab
+Contributors: aikya, smshahriar, webfixlab
 Tags: role based pricing, dynamic pricing, wholesale pricing, prices by user role, hide price, woocommerce
 Requires at least: 4.9
-Tested up to: 6.3.2
-Stable tag: 3.0
+Tested up to: 6.6.1
+Stable tag: 4.0.1
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -18,17 +18,18 @@ Role Based Pricing is a truly lightweight and simple yet powerful plugin without
 
 **FEATURES**
 
+* New! WooCommerce High-Performance Order Storage (HPOS) enabled
+* All product types supported
 * Dynamic pricing for different user roles and non-registered visitors
+* Disable role based pricing temporarily
 * Hide price and add placeholder text
-* Apply discount based on role
-* Set individual Simple product price based on role
 * Add new roles
 
 **SEE THE DEMO**
 
 https://www.youtube.com/watch?v=xytsfBndYoA
 
-**PRO FEATURE**
+**PRO**
 
 * Maximum and minimum quantity support - **[Get PRO](https://webfixlab.com/plugins/role-based-pricing-woocommerce/)**
 
