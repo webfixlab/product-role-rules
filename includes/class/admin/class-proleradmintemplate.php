@@ -164,6 +164,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
                                     echo esc_html__( 'Global Role Based Settings', 'product-role-rules' );
                                 } elseif ( 'newrole' === $this->page ) {
                                     echo esc_html__( 'Create New User Role', 'product-role-rules' );
+                                } elseif ( 'general-settings' === $this->page ) {
+                                    echo esc_html__( 'General Settings', 'product-role-rules' );
                                 }
                             ?>
                         </div>
@@ -172,6 +174,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
                                 $this->role_settings_content();
                             } elseif ( 'newrole' === $this->page ) {
                                 $this->new_role_content();
+                            } elseif ( 'general-settings' === $this->page ) {
+                                $this->general_settings_content();
                             }
                         ?>
                         <?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
@@ -186,8 +190,10 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 * Add new role page content
 		 */
 		public function new_role_content() {
-
 			?>
+			<div class="mpcdp_settings_section_description">
+				<?php echo esc_html__( 'Note: role name starts with letters and accepts letters, digits, spaces and \'_\' only.', 'product-role-rules' ); ?>
+			</div>
 			<div class="mpcdp_settings_toggle mpcdp_container new-role-wrap">
 				<div class="mpcdp_settings_option visible">
 					<div class="mpcdp_row">
@@ -206,11 +212,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 							</div>
 						</div>
 					</div>
-					<div class="mpcdp_row">
-						<div class="mpcdp_option_description">
-							<?php echo esc_html__( 'IMPORTANT: Role name starts with letters and accepts letters, digits, spaces and \'_\' only.', 'product-role-rules' ); ?>
-						</div>
-					</div>
 				</div>
 			</div>
 			<div class="mpcdp_settings_toggle mpcdp_container">
@@ -219,7 +220,86 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				</div>
 			</div>
 			<?php
+		}
 
+		/**
+		 * General settings page content
+		 */
+		private function general_settings_content(){
+			global $proler__;
+			$pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
+
+			$less_stock   = get_option( 'proler_stock_less_than_min', 'allow' );
+			$notice_place = get_option( 'proler_min_max_notice_place', 'only_cart' );
+
+			?>
+			<div class="mpcdp_settings_toggle mpcdp_container pr-settings general-settings">
+				<div class="mpcdp_settings_option visible">
+					<div class="mpcdp_settings_section">
+						<div class="mpcdp_row">
+							<div class="mpcdp_settings_option_description col-md-6">
+								<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
+									<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+								<?php endif; ?>
+								<div class="mpcdp_option_label"><?php echo esc_html__( 'If stock is less than minimum value?', 'product-role-rules' ); ?></div>
+								<div class="mpcdp_option_description">
+									<?php echo esc_html__( 'How do you want to handle it?', 'product-role-rules' ); ?>
+								</div>
+							</div>
+							<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+								<select name="proler_stock_less_than_min" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Options', 'product-role-rules' ); ?>">
+									<?php
+										$ads = array(
+											'allow' => __( 'Sale available stock', 'product-role-rules' ),
+											'strict' => __( 'Do not allow', 'product-role-rules' ),
+										);
+	
+										foreach( $ads as $val => $label ){
+											printf(
+												'<option value="%s" %s>%s</option>',
+												esc_attr( $val ),
+												$val === $less_stock ? esc_attr( 'selected' ) : '',
+												esc_html( $label )
+											);
+										}
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="mpcdp_row">
+							<div class="mpcdp_settings_option_description col-md-6">
+								<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
+									<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+								<?php endif; ?>
+								<div class="mpcdp_option_label"><?php echo esc_html__( 'Show minimum-maximum limit error notice on', 'product-role-rules' ); ?></div>
+								<div class="mpcdp_option_description">
+									<?php echo esc_html__( 'By default this notice only shows on Cart Page.', 'product-role-rules' ); ?>
+								</div>
+							</div>
+							<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+								<select name="proler_min_max_notice_place" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Options', 'product-role-rules' ); ?>">
+									<?php
+										$ads = array(
+											'only_cart' => __( 'Show only on cart page', 'product-role-rules' ),
+											'product_cart' => __( 'Show on product pages and cart page', 'product-role-rules' ),
+										);
+	
+										foreach( $ads as $val => $label ){
+											printf(
+												'<option value="%s" %s>%s</option>',
+												esc_attr( $val ),
+												$val === $notice_place ? esc_attr( 'selected' ) : '',
+												esc_html( $label )
+											);
+										}
+									?>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<?php
 		}
 
 
@@ -234,8 +314,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				array(
 					'slug'   => 'settings',
 					'url'    => get_admin_url( null, 'admin.php?page=proler-settings' ),
-					'name'   => __( 'Settings', 'product-role-rules' ),
-					'icon'   => 'dashicons dashicons-admin-settings',
+					'name'   => __( 'Role Based Settings', 'product-role-rules' ),
+					'icon'   => 'dashicons dashicons-groups',
 					'target' => 'general',
 					'class'  => '',
 				),
@@ -243,8 +323,16 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					'slug'   => 'newrole',
 					'url'    => get_admin_url( null, 'admin.php?page=proler-newrole' ),
 					'name'   => __( 'Add New Role', 'product-role-rules' ),
-					'icon'   => 'dashicons dashicons-admin-users',
+					'icon'   => 'dashicons dashicons-insert',
 					'target' => 'new-user-role',
+					'class'  => '',
+				),
+				array(
+					'slug'   => 'general-settings',
+					'url'    => get_admin_url( null, 'admin.php?page=proler-general-settings' ),
+					'name'   => __( 'General Settings', 'product-role-rules' ),
+					'icon'   => 'dashicons dashicons-admin-settings',
+					'target' => 'general-settings',
 					'class'  => '',
 				),
 			);
@@ -281,7 +369,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 
 			$long  = '';
 			$short = '';
-			if ( 'settings' === $this->page ) {
+			if ( 'settings' === $this->page || 'general-settings' === $this->page ) {
 				$long  = __( 'Save Settings', 'product-role-rules' );
 				$short = __( 'Save', 'product-role-rules' );
 			}
@@ -472,6 +560,9 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				</div>
 				<div class="mpcdp_settings_section">
 					<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Min / Max Quantity Section', 'product-role-rules' ); ?></div>
+					<div class="mpcdp_settings_section_description">
+						<?php echo esc_html__( 'Note: this only works on cart page.', 'product-role-rules' ); ?>
+					</div>
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_description col-md-6">
 							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
@@ -948,7 +1039,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			<div class="mpcdp_row proler-custom-roles">
 				<div class="mpcdp_settings_option_description col-md-12">
 					<div class="proler-role-list">
-						<h2><?php echo esc_html__( 'Custom Roles', 'product-role-rules' ); ?></h2>
+						<h2><?php echo esc_html__( 'All Custom Roles', 'product-role-rules' ); ?></h2>
 						<ul>
 							<?php foreach ( $roles as $role => $name ) : ?>
 								<?php
@@ -970,7 +1061,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			<div class="mpcdp_row">
 				<div class="mpcdp_settings_option_description col-md-12">
 					<div class="proler-role-list">
-						<h2><?php echo esc_html__( 'Default Roles', 'product-role-rules' ); ?></h2>
+						<h2><?php echo esc_html__( 'All Default Roles', 'product-role-rules' ); ?></h2>
 						<ul>
 							<?php foreach ( $roles as $role => $name ) : ?>
 								<?php

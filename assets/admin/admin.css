@@ -774,6 +774,12 @@ div#proler_product_data_tab #mpcdp_settings{
 div#proler_product_data_tab .mpcdp_settings_section_title{
 	margin-top: 40px;
 }
+.mpcdp_settings_section_description{
+	margin: -20px 0 25px 0;
+    color: #a71414;
+    font-weight: 400;
+    font-size: 15px;
+}
 .mpcdp_settings_section .mpcdp_settings_toggle{
 	background:#f8f8f8;
 	border-radius:5px;
@@ -1979,10 +1985,10 @@ textarea.proler-widefat {
 .woocommerce_options_panel textarea.proler-widefat{
 	height: auto;
 }
-.proler-option-content select, .proler-option-content input {
+.pr-settings select, .pr-settings input {
     width: 95%;
 }
-.proler-option-content input[type="datetime-local"]{
+.pr-settings input[type="datetime-local"]{
 	padding: 10px 20px;
     border-radius: 25px;
 }

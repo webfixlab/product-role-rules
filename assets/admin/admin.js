@@ -230,11 +230,11 @@
 						var min = $(this).find( 'input[name="min_value"]' ).val();
 						var max = $(this).find( 'input[name="max_value"]' ).val();
 
-						min = min ? parseFloat( min ) : 0;
-						max = max ? parseFloat( max ) : 0;
-						// console.log( min, max );
+						min = min ? parseFloat( min ) : '';
+						max = max ? parseFloat( max ) : '';
+						console.log( min, max );
 
-						if( min && min > max ){
+						if( min && max && min > max ){
 							allOK = false;
 
 							// console.log( 'min > max' );

@@ -114,7 +114,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param object $cart WooCommerce cart object.
 		 */
 		public function cart_total( $cart ) {
-
 			// This is necessary for WC 3.0+.
 			if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
 				return;
@@ -142,9 +141,9 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 */
 		public function get_cart_item_price( $cart_item ) {
 			// skip grouped product, altogether.
-			if( 'grouped' === $cart_item['data']->is_type( 'variable' ) ) {
-				return '';
-			}
+			// if( 'grouped' === $cart_item['data']->is_type( 'variable' ) ) {
+			// 	return '';
+			// }
 
 			$id = $cart_item['product_id'];
 			if( isset( $cart_item['variation_id'] ) && ! empty( $cart_item['variation_id'] ) ){
@@ -168,6 +167,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			if ( ! is_array( $prices ) ) {
 				return '';
 			}
+			// $this->log($prices);
 			
 			return empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
 		}

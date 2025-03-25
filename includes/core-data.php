@@ -18,6 +18,7 @@ $proler__ = array(
 	'screen'     => array(
 		'_page_proler-settings', // main setting page.
 		'_page_proler-newrole',
+		'_page_proler-general-settings',
 		'product',
 	),
 	'url'        => array(

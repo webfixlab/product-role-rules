@@ -50,6 +50,8 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 				$this->save_settings();
 			} elseif ( 'proler-newrole' === $page ) {
 				$this->add_new_role();
+			} elseif ( 'proler-general-settings' === $page ) {
+				$this->save_settings();
 			}
 		}
 
@@ -66,6 +68,16 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 
 			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
 				return;
+			}
+
+			// general settings data.
+			if( isset( $_POST['proler_stock_less_than_min'] ) ){
+				$less_stock = sanitize_text_field( wp_unslash( $_POST['proler_stock_less_than_min'] ) );
+				update_option( 'proler_stock_less_than_min', $less_stock );
+			}
+			if( isset( $_POST['proler_min_max_notice_place'] ) ){
+				$less_stock = sanitize_text_field( wp_unslash( $_POST['proler_min_max_notice_place'] ) );
+				update_option( 'proler_min_max_notice_place', $less_stock );
 			}
 
 			// check if this is role related scope or not, if not leave this place.
@@ -203,6 +215,15 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 				update_post_meta( $post_id, 'proler_data', $data );
 			} else {
 				update_option( 'proler_role_table', $data );
+			}
+		}
+		private function log( $data ) {
+			if ( true === WP_DEBUG ) {
+				if ( is_array( $data ) || is_object( $data ) ) {
+					error_log( print_r( $data, true ) );
+				} else {
+					error_log( $data );
+				}
 			}
 		}
 
@@ -371,6 +392,16 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 				array( $this, 'new_role_page' )
 			);
 
+			// settings submenu - Add new role.
+			add_submenu_page(
+				'proler-settings',
+				__( 'General Settings', 'product-role-rules' ),
+				__( 'Settings', 'product-role-rules' ),
+				'manage_options',
+				'proler-general-settings',
+				array( $this, 'general_settings_page' )
+			);
+
 			// Conditional extra links.
 			if ( 'activated' !== $proler__['prostate'] ) {
 				add_submenu_page(
@@ -435,6 +466,18 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 			}
 
 			$this->settings_page( 'newrole' );
+		}
+
+		/**
+		 * Render general settings page
+		 */
+		public function general_settings_page() {
+			// check user capabilities.
+			if ( ! current_user_can( 'manage_options' ) ) {
+				return;
+			}
+
+			$this->settings_page( 'general-settings' );
 		}
 
 		/**
