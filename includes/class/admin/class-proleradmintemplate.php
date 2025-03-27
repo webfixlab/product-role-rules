@@ -560,9 +560,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				</div>
 				<div class="mpcdp_settings_section">
 					<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Min / Max Quantity Section', 'product-role-rules' ); ?></div>
-					<div class="mpcdp_settings_section_description">
-						<?php echo esc_html__( 'Note: this only works on cart page.', 'product-role-rules' ); ?>
-					</div>
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_description col-md-6">
 							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
@@ -784,6 +781,12 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						</div>
 					</div>
 					<?php endif; ?>
+					<?php
+						$helper_cls = new ProlerHelp();
+
+						$date_from = $rd['schedule']['start'] ?? '';
+						$date_to   = $rd['schedule']['end'] ?? '';
+					?>
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_description col-md-12">
 							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
@@ -792,25 +795,14 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 							<div class="mpcdp_option_label"><?php echo esc_html__( 'Schedule', 'product-role-rules' ); ?></div>
 							<div class="mpcdp_option_description">
 								<?php
-									echo esc_html__( 'Set the time frame this rule will be active.', 'product-role-rules' );
+									echo sprintf(
+										// translators: %1$s is the current time.
+										__( 'Set the time schedule when this rule will be active. Example: now it\'s %1$s', 'product-role-rules' ),
+										$helper_cls->convert_to_wp_timezone( '', false )
+									);
 
-									$wp_timezone = new DateTimeZone( wp_timezone_string() );
-									
-									$date_from = $rd['schedule']['start'] ?? '';
-									$date_to   = $rd['schedule']['end'] ?? '';
-									
-									$now  = new DateTime( 'now', $wp_timezone );
-									$from = new DateTime( $date_from, new DateTimeZone( 'UTC' ) );
-									$to   = new DateTime( $date_to, new DateTimeZone( 'UTC' ) );
-									
-									$from->setTimezone( $wp_timezone );
-									$to->setTimezone( $wp_timezone );
-
-									$nts = $now->getTimestamp(); // now, right now timestamp.
-									$fts = $from->getTimestamp(); // from timestamp.
-									$tts = $to->getTimestamp(); // to timestamp.
-									if( $nts >= $fts && $nts <= $tts ){}else{
-										echo wp_kses_post( '<br><span>Please note: The time schedule is <strong style="color: #f84f09;">over</strong>.</span>' );
+									if( ! $helper_cls->check_schedule( $date_from, $date_to ) ){
+										echo wp_kses_post( '<br><span>Please note: The time schedule is <strong style="color: #f84f09;">INACTIVE</strong>.</span>' );
 									}
 								?>
 							</div>
@@ -821,7 +813,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 							<?php
 								printf(
 									'<input type="datetime-local" name="schedule_start" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									isset( $rd['schedule']['start'] ) ? esc_html( $this->convert_to_wp_timezone( $date_from ) ) : '',
+									esc_html( $helper_cls->convert_to_wp_timezone( $date_from ) ),
 									esc_html__( 'Starting Date and Time', 'product-role-rules' ),
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule Start', 'product-role-rules' )
@@ -832,7 +824,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 							<?php
 								printf(
 									'<input type="datetime-local" name="schedule_end" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									isset( $rd['schedule']['end'] ) ? esc_html( $this->convert_to_wp_timezone( $date_to ) ) : '',
+									esc_html( $helper_cls->convert_to_wp_timezone( $date_to ) ),
 									esc_html__( 'Ending Date and Time', 'product-role-rules' ),
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule End', 'product-role-rules' )

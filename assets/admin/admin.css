@@ -1747,7 +1747,7 @@ a.mpcasc-reset {
 	padding: 5px 25px 5px 15px;
 	border-radius: 30px;
 	border: 1px solid #dfdfdf;
-	line-height: 35px;
+	line-height: 36px;
 }
 .mpcdp_license_status_bar{
 	display:-webkit-box;
@@ -2063,12 +2063,22 @@ textarea.proler-widefat {
 	}
 	.proler-option-content input[type="datetime-local"], .pr-settings select{
 		border-radius: 5px;
-		padding: 0 15px;
+		padding: 0 25px 0 10px;
 		font-size: 100%;
 	}
 	.proler-option-content textarea{
 		padding: 10px;
 		font-size: 100%;
+	}
+	#mpcdp_settings .disrange-item select, #mpcdp_settings .disrange-item input[type="text"]{
+		border-radius: 0;
+		border-right: none;
+	}
+	#mpcdp_settings .disrange-item input[type="text"]:last-of-type {
+		border-right: 1px solid #dfdfdf;
+	}
+	#mpcdp_settings .disrange-item select:focus, #mpcdp_settings .disrange-item input[type="text"]:focus{
+		border-right: 1px solid;
 	}
 }
 @media screen and (max-width: 1200px){

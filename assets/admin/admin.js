@@ -269,7 +269,7 @@
 			item.find( '.proler-option-content' ).toggle( 'slow' );
 		});
 
-		$( '.pr-settings' ).on( 'click', '.proler-delete img', function () {
+		$( '.pr-settings' ).on( 'click', '.proler-delete', function () {
 			$( this ).closest( '.pr-item' ).hide( 'slow', function () {
 				$( this ).closest( '.pr-item' ).remove();
 			});

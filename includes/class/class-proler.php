@@ -52,7 +52,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		public function init() {
 			add_filter( 'woocommerce_get_price_html', array( $this, 'get_price_html' ), 11, 2 );
 
-			add_filter( 'woocommerce_after_shop_loop_item_title', array( $this, 'discount_text_loop' ), 15 );
+			add_action( 'woocommerce_after_shop_loop_item_title', array( $this, 'discount_text_loop' ), 11 );
 			add_action( 'woocommerce_single_product_summary', array( $this, 'discount_text_single' ), 10 );
 
 			add_filter( 'woocommerce_cart_item_price', array( $this, 'cart_item_price' ), 10, 3 );
@@ -167,7 +167,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			if ( ! is_array( $prices ) ) {
 				return '';
 			}
-			// $this->log($prices);
 			
 			return empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
 		}
@@ -485,8 +484,9 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				return false;
 			}
 
-			$if_apply = apply_filters( 'proler_if_apply_settings', true, $data );
-			// echo '<br>if apply ' . $if_apply; wp_die();
+			// $this->log('should apply settings(before)? yes');
+			$if_apply = apply_filters( 'proler_if_apply_settings', $data );
+			$this->log('should apply settings(after)? ' . $if_apply);
 			return $if_apply;
 		}
 
@@ -612,6 +612,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 
 			$data = $this->get_product_settings( $product );
 			if ( ! $this->if_apply_settings( $data ) ) {
+				$this->log('nothing to apply');
 				return;
 			}
 
@@ -630,10 +631,10 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			}else if ( 'variable' === $data['type'] || 'grouped' === $data['type'] ) {
 				$amount_max = 0;
 				foreach( $product->get_children() as $child ){
-					$product = wc_get_product( $child );
+					$product__ = wc_get_product( $child );
 					
-					$rp = $product->get_regular_price();
-					$sp = $product->get_sale_price();
+					$rp = $product__->get_regular_price();
+					$sp = $product__->get_sale_price();
 
 					if( ! empty( $sp ) && $rp > $sp ){
 						$diff = $rp - $sp;
@@ -745,6 +746,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 	}
 }
 
-global $PRoleR;
-$PRoleR = new PRoleR();
-$PRoleR->init();
+if ( ! isset( $GLOBALS['PRoleR'] ) ) {
+    $GLOBALS['PRoleR'] = new PRoleR();
+    $GLOBALS['PRoleR']->init();
+}
