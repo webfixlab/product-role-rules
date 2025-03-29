@@ -285,7 +285,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 
 				$proler__['user_role_msg'] = array(
 					'cls' => 'saved',
-					'msg' => '<p>' . $msg . '</p>'
+					'msg' => $msg
 				);
 
 				return;
@@ -301,7 +301,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 
 			$proler__['user_role_msg'] = array(
 				'cls' => 'warning',
-				'msg' => '<p class="error">' . $msg . '</p>'
+				'msg' => $msg
 			);
 		}
 
@@ -344,12 +344,12 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 			$msg = sprintf(
 				// translators: Placeholder %1$s is role name that is deleted.
 				__( '%1$s role deleted successfully.', 'product-role-rules' ),
-				$role_name
+				'<strong>' . $role_name . '</strong>'
 			);
 
 			$proler__['user_role_msg'] = array(
 				'cls' => 'saved',
-				'msg' => '<p class="success">' . $msg . '</p>'
+				'msg' => $msg
 			);
 		}
 

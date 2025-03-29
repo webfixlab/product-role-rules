@@ -484,10 +484,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				return false;
 			}
 
-			// $this->log('should apply settings(before)? yes');
-			$if_apply = apply_filters( 'proler_if_apply_settings', $data );
-			$this->log('should apply settings(after)? ' . $if_apply);
-			return $if_apply;
+			return apply_filters( 'proler_if_apply_settings', $data );
 		}
 
 
@@ -612,7 +609,12 @@ if ( ! class_exists( 'PRoleR' ) ) {
 
 			$data = $this->get_product_settings( $product );
 			if ( ! $this->if_apply_settings( $data ) ) {
-				$this->log('nothing to apply');
+				return;
+			}
+
+			$is_hidden = isset( $data['settings']['hide_price'] ) ? $data['settings']['hide_price'] : '';
+			$is_hidden = ! empty( $is_hidden ) && '1' === $is_hidden ? true : false;
+			if ( $is_hidden ) {
 				return;
 			}
 

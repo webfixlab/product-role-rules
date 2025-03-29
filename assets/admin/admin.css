@@ -775,7 +775,7 @@ div#proler_product_data_tab .mpcdp_settings_section_title{
 	margin-top: 40px;
 }
 .mpcdp_settings_section_description{
-	margin: -20px 0 25px 0;
+	margin: 0 0 25px 0;
     color: #a71414;
     font-weight: 400;
     font-size: 15px;
@@ -877,6 +877,9 @@ span.proler-arrow img {
 	font-size:1em;
 	color:#acb0b6;
 	padding:5px 30px 0 0
+}
+.mpcdp_option_description:hover{
+	color:#000;
 }
 .mpcdp_option_description a{
 	color:#acb0b6;
@@ -2030,6 +2033,21 @@ textarea.proler-widefat {
 .woocommerce_options_panel .pr-settings select{
 	float: none;
 }
+#mpcdp_settings .proler-saved-settings {
+	margin-bottom: 25px;
+    padding: 10px;
+    display: block;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    font-weight: 600;
+}
+#mpcdp_settings .proler-saved-settings strong{
+	font-weight: bold;
+}
+#mpcdp_settings .proler-saved-settings.saved {
+	border-left: 5px solid #00a32a;
+}
 /* New Look :end */
 @media screen and (max-width: 1600px){
 	#mpcdp_settings{
@@ -2279,5 +2297,8 @@ textarea.proler-widefat {
 	.proler-custom-roles span.dashicons.dashicons-trash{
 		margin-left: 0;
 		float: right;
+	}
+	#mpcdp_settings .proler-saved-settings{
+		font-size: 14px;
 	}
 }

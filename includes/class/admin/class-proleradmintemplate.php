@@ -152,12 +152,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
             <div class="col-md-6" id="middle-content">
                 <div class="mpcdp_settings_content">
                     <div class="mpcdp_settings_section">
-                        <?php
-                            $this->show_notice();
-                            if ( isset( $proler__['user_role_msg'] ) ) {
-                                $this->display_notice_msg( $proler__['user_role_msg'] );
-                            }
-                        ?>
+                        <?php $this->show_notice(); ?>
                         <div class="mpcdp_settings_section_title">
                             <?php
                                 if ( 'settings' === $this->page ) {
@@ -170,6 +165,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
                             ?>
                         </div>
                         <?php
+							$this->settings_saved_notice();
+
                             if ( 'settings' === $this->page ) {
                                 $this->role_settings_content();
                             } elseif ( 'newrole' === $this->page ) {
@@ -229,7 +226,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			global $proler__;
 			$pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
 
-			$less_stock   = get_option( 'proler_stock_less_than_min', 'allow' );
+			$less_stock   = get_option( 'proler_stock_less_than_min', 'strict' );
 			$notice_place = get_option( 'proler_min_max_notice_place', 'only_cart' );
 
 			?>
@@ -241,7 +238,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 								<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
 									<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
 								<?php endif; ?>
-								<div class="mpcdp_option_label"><?php echo esc_html__( 'If stock is less than minimum value?', 'product-role-rules' ); ?></div>
+								<div class="mpcdp_option_label"><?php echo esc_html__( 'If available stock is less than minimum value?', 'product-role-rules' ); ?></div>
 								<div class="mpcdp_option_description">
 									<?php echo esc_html__( 'How do you want to handle it?', 'product-role-rules' ); ?>
 								</div>
@@ -250,8 +247,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 								<select name="proler_stock_less_than_min" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Options', 'product-role-rules' ); ?>">
 									<?php
 										$ads = array(
-											'allow' => __( 'Sale available stock', 'product-role-rules' ),
 											'strict' => __( 'Do not allow', 'product-role-rules' ),
+											'allow' => __( 'Sale available stock', 'product-role-rules' ),
 										);
 	
 										foreach( $ads as $val => $label ){
@@ -271,7 +268,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 								<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
 									<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
 								<?php endif; ?>
-								<div class="mpcdp_option_label"><?php echo esc_html__( 'Show minimum-maximum limit error notice on', 'product-role-rules' ); ?></div>
+								<div class="mpcdp_option_label"><?php echo esc_html__( 'Show minimum-maximum quantity error notice on', 'product-role-rules' ); ?></div>
 								<div class="mpcdp_option_description">
 									<?php echo esc_html__( 'By default this notice only shows on Cart Page.', 'product-role-rules' ); ?>
 								</div>
@@ -811,9 +808,10 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
 							<?php
+								$value_from = !empty( $date_from ) ? $helper_cls->convert_to_wp_timezone( $date_from ) : '';
 								printf(
 									'<input type="datetime-local" name="schedule_start" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									esc_html( $helper_cls->convert_to_wp_timezone( $date_from ) ),
+									esc_html( $value_from ),
 									esc_html__( 'Starting Date and Time', 'product-role-rules' ),
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule Start', 'product-role-rules' )
@@ -822,9 +820,10 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						</div>
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
 							<?php
+								$value_from = !empty( $date_from ) ? $helper_cls->convert_to_wp_timezone( $date_from ) : '';
 								printf(
 									'<input type="datetime-local" name="schedule_end" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									esc_html( $helper_cls->convert_to_wp_timezone( $date_to ) ),
+									esc_html( $value_from ),
 									esc_html__( 'Ending Date and Time', 'product-role-rules' ),
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule End', 'product-role-rules' )
@@ -836,26 +835,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				</div>
 			</div>
 			<?php
-		}
-
-		/**
-		 * Convert to WP Timezone
-		 *
-		 * @param string $datetime saved datetime string.
-		 */
-		public function convert_to_wp_timezone( $datetime ) {
-			if( empty( $datetime ) ) {
-				return gmdate( 'Y-m-d\TH:i', time() );
-			}
-			// Create a DateTime object from the saved UTC datetime string
-			$datetime = new DateTime( $datetime, new DateTimeZone( 'UTC' ) );
-		
-			// Convert the datetime to the WordPress timezone
-			$wp_timezone = new DateTimeZone( wp_timezone_string() );
-			$datetime->setTimezone( $wp_timezone );
-		
-			// Return the formatted datetime string suitable for the input field
-			return $datetime->format( 'Y-m-d\TH:i' );
 		}
 
         /**
@@ -958,48 +937,60 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			global $proler__;
 
 			// Display notices.
-			if ( isset( $proler__['notice'] ) ) {
-				foreach ( $proler__['notice'] as $notice ) {
-					echo wp_kses_post( $notice );
-				}
+			if ( !isset( $proler__['notice'] ) || empty( $proler__['notice'] ) ) {
+				return;
+			}
+
+			foreach ( $proler__['notice'] as $notice ) {
+				echo wp_kses_post( $notice );
+			}
+		}
+
+		/**
+		 * Display settings saved notice
+		 */
+		public function settings_saved_notice(){
+			global $proler__;
+
+			// this update nontice is for "Add new role" page only.
+			if( isset( $proler__['user_role_msg'] ) && !empty( $proler__['user_role_msg'] ) ){
+				$this->update_notice( $proler__['user_role_msg']['msg'], $proler__['user_role_msg']['cls'] );
+				return;
 			}
 
 			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
 				return;
 			}
 
-			if ( ! isset( $_POST ) || ! isset( $_POST['proler_data'] ) ) {
+			if ( ! isset( $_POST ) && ! isset( $_POST['proler_data'] ) ) {
 				return;
 			}
 
-			$this->display_notice_msg( array(
-                'cls' => 'saved',
-                'msg' => __( 'Settings saved successfully.', 'product-role-rules' ), 'saved' )
-            );
+			$this->update_notice( 'Your settings have been saved.', 'saved' );
 		}
 
-        /**
-		 * Display settings page form submission status notice
-		 *
-		 * @param array $data message data.
+		/**
+		 * Summary of update_notice
+		 * @param mixed $msg
+		 * @param mixed $icon
+		 * @return void
 		 */
-		public function display_notice_msg( $data ) {
-
+		public function update_notice( $msg, $icon ){
 			?>
-			<div class="pr-notice mpcdp_settings_section">
-				<div class="mpcdp_settings_toggle mpcdp_container" data-toggle-id="footer_theme_customizer">
-					<div class="mpcdp_settings_option visible" data-field-id="footer_theme_customizer">
-						<div class="mpcdp_settings_option_field_theme_customizer first_customizer_field <?php echo 'saved' !== $data['cls'] ? 'error' : ''; ?>">
-							<span class="theme_customizer_icon dashicons dashicons-<?php echo esc_attr( $data['cls'] ); ?>"></span>
-							<div class="mpcdp_settings_option_description">
-								<div class="mpcdp_option_label"><?php echo wp_kses_post( $data['msg'] ); ?></div>
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class="proler-saved-settings <?php echo esc_attr( $icon ); ?>">
+				<span class="dashicons dashicons-<?php echo esc_attr( $icon ); ?>"></span>
+				<?php echo wp_kses_post( $msg ); ?>
 			</div>
 			<?php
-
+		}
+		private function log( $data ) {
+			if ( true === WP_DEBUG ) {
+				if ( is_array( $data ) || is_object( $data ) ) {
+					error_log( print_r( $data, true ) );
+				} else {
+					error_log( $data );
+				}
+			}
 		}
 
         /**

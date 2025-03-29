@@ -70,7 +70,6 @@ if ( ! class_exists( 'ProlerLoader' ) ) {
 
 			// needs to be off the hook in the next version.
 			include PROLER_PATH . 'includes/core-data.php';
-			include PROLER_PATH . 'includes/class/class-prolerhelper.php';
 
 			include PROLER_PATH . 'includes/class/class-proler.php';
 			include PROLER_PATH . 'includes/class/admin/class-proleradmintemplate.php';
