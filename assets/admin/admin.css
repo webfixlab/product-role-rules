@@ -1526,15 +1526,6 @@ a.mpcasc-reset {
 	display: inline-block;
 	margin-top: 25px;
 }
-@media all and (max-width: 782){
-	.mpcdp_row{
-		-webkit-box-orient:vertical;
-		-webkit-box-direction:normal;
-		-webkit-flex-direction:column;
-		-ms-flex-direction:column;
-		flex-direction:column
-	}
-}
 #mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.active.hurkanSwitch-switch-item-status-off{
 	padding-right:15px;
 	padding-left:32px;
@@ -1878,7 +1869,7 @@ a.mpcasc-reset {
 .mpc-opt-sc-btn {
 	padding: 10px 20px;
 	border-radius: 30px;
-	margin-left: 10px;
+	margin-left: 0;
 	position: relative;
 	cursor: pointer;
 	display: inline-block;
@@ -2006,7 +1997,7 @@ textarea.proler-widefat {
 	display: none;
 }
 .add-new-disrange{
-	margin-top: 20px;
+	margin-top: 30px;
 }
 .disabled .mpcdp_option_label {
     color: #ddd;
@@ -2021,7 +2012,8 @@ textarea.proler-widefat {
     margin: 20px 0 0 0;
 }
 .mpcdp_submit_button .save-text.save-text-mobile{
-	display:none
+	display:none;
+	line-height: 24px;
 }
 
 #proler_product_data_tab #mpcdp_settings .field-container, #proler_product_data_tab #mpcdp_settings input[type=text]:not(.inner-field), #proler_product_data_tab #mpcdp_settings input[type=password], #proler_product_data_tab #mpcdp_settings .mpcdp_insta_account, #proler_product_data_tab #mpcdp_settings .mpcdp_fb_account, #proler_product_data_tab .proler-option-content input[type="datetime-local"]{
@@ -2047,6 +2039,9 @@ textarea.proler-widefat {
 }
 #mpcdp_settings .proler-saved-settings.saved {
 	border-left: 5px solid #00a32a;
+}
+.mpcdp_settings_section > .mpcdp_row {
+	padding-left: 50px;
 }
 /* New Look :end */
 @media screen and (max-width: 1600px){
@@ -2145,7 +2140,19 @@ textarea.proler-widefat {
 		display: none;
 	}
 }
+@media all and (max-width: 782){
+	.mpcdp_row{
+		-webkit-box-orient:vertical;
+		-webkit-box-direction:normal;
+		-webkit-flex-direction:column;
+		-ms-flex-direction:column;
+		flex-direction:column
+	}
+}
 @media screen and (max-width: 767px) {
+	.mpcdp_settings_section > .mpcdp_row {
+		padding-left: unset;
+	}
 	.role-settings-head .mpcdp_row{
 		display: block;
 	}

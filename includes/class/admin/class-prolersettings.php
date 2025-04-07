@@ -65,8 +65,8 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
 		public function save_settings( $post_id = 0, $post = array(), $update = false ) {
-
 			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
+				$this->log('nonce faild while saving');
 				return;
 			}
 
@@ -82,10 +82,12 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 
 			// check if this is role related scope or not, if not leave this place.
 			if ( ! isset( $_POST['proler_data'] ) ) {
+				$this->log('no post data, saving');
 				return;
 			}
 
 			if ( isset( $post->post_type ) && 'product' !== $post->post_type ) {
+				$this->log('not post type');
 				return;
 			}
 
@@ -104,13 +106,13 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 					update_option( 'proler_role_table', $data );
 				}
 
+				$this->log('no role data found');
 				return;
 			}
 
 			$rdt = array();
 
 			foreach ( $data['roles'] as $role => $rd ) {
-
 				$role         = $this->input_sanitize( $role );
 				$rdt[ $role ] = array();
 
@@ -158,17 +160,20 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 					$wp_timezone = new DateTimeZone( wp_timezone_string() );
 
 					$rdt[ $role ]['schedule'] = array();
-					if ( isset( $rd['schedule']['start'] ) ) {
+					if ( isset( $rd['schedule']['start'] ) && !empty($rd['schedule']['start']) ) {
+						$this->log('start set');
 						// Convert date of WP timezone to UTC and when using it again convert that to WP.
 						$datetime = new DateTime( $this->input_sanitize( $rd['schedule']['start'] ), $wp_timezone );
 						$datetime->setTimezone( new DateTimeZone( 'UTC' ) );
 						$rdt[ $role ]['schedule']['start'] = $datetime->format( 'Y-m-d H:i:s' );
 					}
-					if ( isset( $rd['schedule']['end'] ) ) {
+					if ( isset( $rd['schedule']['end'] ) && !empty($rd['schedule']['end']) ) {
+						$this->log('end set');
 						$datetime = new DateTime( $this->input_sanitize( $rd['schedule']['end'] ), $wp_timezone );
 						$datetime->setTimezone( new DateTimeZone( 'UTC' ) );
 						$rdt[ $role ]['schedule']['end'] = $datetime->format( 'Y-m-d H:i:s' );
 					}
+					$this->log($rdt[$role]['schedule']);
 				}
 
 				if ( isset( $rd['product_type'] ) ) {
@@ -210,6 +215,7 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 			}
 
 			$data['roles'] = $rdt;
+			$this->log($data);
 
 			if ( ! empty( $post_id ) ) {
 				update_post_meta( $post_id, 'proler_data', $data );

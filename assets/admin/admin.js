@@ -140,15 +140,16 @@
 			}
 			data['product_type'] = product_type;
 			
-			if ( row.find( 'input[name="schedule_start"]' ).val().length > 0 ) {
+			const start = row.find('input[name="schedule_start"]').val();
+			const end   = row.find('input[name="schedule_end"]').val();
+			if(start.length > 0 || end.length > 0){
 				data['schedule'] = {};
-
-				var start = validate_input( row.find( 'input[name="schedule_start"]' ).val() );
-				data['schedule']['start'] = start;
 			}
-			if ( row.find( 'input[name="schedule_end"]' ).val().length > 0 ) {
-				var end = validate_input( row.find( 'input[name="schedule_end"]' ).val() );
-				data['schedule']['end'] = end;
+			if(start.length > 0){
+				data['schedule']['start'] = validate_input(start);
+			}
+			if(end.length > 0){
+				data['schedule']['end'] = validate_input(end);
 			}
 			
 			data['hide_regular_price'] = false;

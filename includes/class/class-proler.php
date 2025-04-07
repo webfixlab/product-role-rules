@@ -404,7 +404,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				$date_to   = $settings[$id]['settings']['schedule']['end'] ?? '';
 
 				$from = new DateTime( $date_from, new DateTimeZone( 'UTC' ) );
-				$to = new DateTime( $date_to, new DateTimeZone( 'UTC' ) );
+				$to   = new DateTime( $date_to, new DateTimeZone( 'UTC' ) );
 				
 				$from->setTimezone( $wp_timezone );
 				$to->setTimezone( $wp_timezone );
@@ -460,27 +460,27 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 */
 		public function if_apply_settings( $data ) {
 			if ( false === $data || ( ! isset( $data['settings'] ) || false === $data['settings'] ) ) {
-				// echo '<br>no settings found'; wp_die();
+				$this->log('no data or settings found, no setting');
 				return false;
 			}
 			
 			$enable = isset( $data['settings']['pr_enable'] ) && ! empty( $data['settings']['pr_enable'] ) ? (bool) $data['settings']['pr_enable'] : true;
 			if ( false === $enable ) {
-				// echo '<br>product settings not enabled'; wp_die();
+				$this->log('product settings not enabled, no settings');
 				return false;
 			}
 			
 			// check type.
 			if ( isset( $data['settings']['product_type'] ) && ! empty( $data['settings']['product_type'] ) ) {
 				if ( $data['type'] !== $data['settings']['product_type'] ) {
-					// echo '<br>product type not matched'; wp_die();
+					$this->log('product type does not match, no settings');
 					return false;
 				}
 			}
 			
 			// check category and that could either be it's parent or in children.
 			if ( 'variation' !== $data['type'] && ! $this->if_in_cat( $data ) ) {
-				// echo '<br>product not in category'; wp_die();
+				$this->log('not in cat, no settings');
 				return false;
 			}
 
