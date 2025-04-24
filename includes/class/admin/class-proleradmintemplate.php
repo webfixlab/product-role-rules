@@ -779,11 +779,9 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					</div>
 					<?php endif; ?>
 					<?php
-						$helper_cls = new ProlerHelp();
-
 						$date_from = $rd['schedule']['start'] ?? '';
 						$date_to   = $rd['schedule']['end'] ?? '';
-						$this->log('start ' . $date_from . ', end ' . $date_to);
+						// $this->log('start ' . $date_from . ', end ' . $date_to);
 					?>
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_description col-md-12">
@@ -796,10 +794,10 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 									echo sprintf(
 										// translators: %1$s is the current time.
 										__( 'Set the time frame when this rule will be active. Note: current time is %1$s', 'product-role-rules' ),
-										$helper_cls->convert_to_wp_timezone( '', false )
+										$this->convert_to_wp_timezone( '', false )
 									);
 
-									if( ! $helper_cls->check_schedule( $date_from, $date_to ) ){
+									if( ! $this->check_schedule( $date_from, $date_to ) ){
 										echo wp_kses_post( '<br><span>Please note: The time schedule is <strong style="color: #f84f09;">INACTIVE</strong>.</span>' );
 									}
 								?>
@@ -809,7 +807,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
 							<?php
-								$value_from = !empty( $date_from ) ? $helper_cls->convert_to_wp_timezone( $date_from ) : '';
+								$value_from = !empty( $date_from ) ? $this->convert_to_wp_timezone( $date_from ) : '';
 								printf(
 									'<input type="datetime-local" name="schedule_start" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
 									esc_html( $value_from ),
@@ -821,7 +819,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						</div>
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
 							<?php
-								$value_to = !empty( $date_to ) ? $helper_cls->convert_to_wp_timezone( $date_to ) : '';
+								$value_to = !empty( $date_to ) ? $this->convert_to_wp_timezone( $date_to ) : '';
 								printf(
 									'<input type="datetime-local" name="schedule_end" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
 									esc_html( $value_to ),
@@ -829,7 +827,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule End', 'product-role-rules' )
 								);
-								$this->log('processed from ' . $value_from . ', end ' . $value_to);
+								// $this->log('processed from ' . $value_from . ', end ' . $value_to);
 							?>
 						</div>
 
@@ -838,6 +836,58 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			</div>
 			<?php
 		}
+
+		/**
+         * Convert given time, if any, to WP Timezone format
+         *
+         * @param string $value     Given date time string.
+         * @param bool   $for_input If it's for displaying in an input field.
+         */
+        public function convert_to_wp_timezone( $value = '', $for_input = true ){
+            $value       = !isset( $value ) || empty( $value ) ? 'now' : $value;
+            $wp_timezone = new DateTimeZone( wp_timezone_string() );
+
+            if( 'now' !== $value ){
+                $datetime = new DateTime( $value, new DateTimeZone( 'UTC' ) ); 
+                $datetime->setTimezone( $wp_timezone );
+            }else{
+                $datetime = new DateTime( $value, $wp_timezone );
+            }
+
+            return $for_input ? $datetime->format( 'Y-m-d\TH:i' ) : $datetime->format( 'Y-m-d h:i a' );
+        }
+
+		/**
+         * Checks wheather the given schedulue is over or not
+         *
+         * @param string $date_from Schedule start datetime.
+         * @param string $date_to   Schedule ending datetime.
+         */
+        public function check_schedule( $date_from, $date_to ){
+            $wp_timezone = new DateTimeZone( wp_timezone_string() );
+
+            // convert saved UTC datetime to WP Timezone.
+            $now    = new DateTime( 'now', $wp_timezone );
+            $ts_now = $now->getTimestamp();
+
+            $in_schedule = true;
+            if( isset( $date_from ) && !empty( $date_from ) ){
+                $datetime_from = new DateTime( $date_from, new DateTimeZone( 'UTC' ) ); 
+                $datetime_from->setTimezone( $wp_timezone );
+                
+                $ts_from     = $datetime_from->getTimestamp();
+                $in_schedule = $ts_now < $ts_from ? false : $in_schedule;
+            }
+            if( isset( $date_to ) && !empty( $date_to ) ){
+                $datetime_to = new DateTime( $date_to, new DateTimeZone( 'UTC' ) ); 
+                $datetime_to->setTimezone( $wp_timezone );
+
+                $ts_to       = $datetime_to->getTimestamp();
+                $in_schedule = $ts_now > $ts_to ? false : $in_schedule;
+            }
+
+            return $in_schedule;
+        }
 
         /**
 		 * Display switch box

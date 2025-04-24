@@ -59,8 +59,9 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			add_filter( 'woocommerce_cart_item_subtotal', array( $this, 'cart_item_subtotal' ), 10, 3 );
 			add_action( 'woocommerce_before_calculate_totals', array( $this, 'cart_total' ), 10, 1 );
 
-			add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'archive_cart_button' ), 10, 2 );
-			add_filter( 'woocommerce_product_is_on_sale', array( $this, 'is_on_sale' ), 10, 2 );
+			add_filter( 'woocommerce_product_is_on_sale', array( $this, 'is_on_sale' ), 20, 2 );
+
+			add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'archive_page_cart_btn' ), 10, 2 );
 		}
 
 
@@ -214,15 +215,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 
 			return $price_html;
 		}
-		private function log( $data ) {
-			if ( true === WP_DEBUG ) {
-				if ( is_array( $data ) || is_object( $data ) ) {
-					error_log( print_r( $data, true ) );
-				} else {
-					error_log( $data );
-				}
-			}
-		}
 
 
 
@@ -232,7 +224,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param string $button  add to cart button text.
 		 * @param object $product product object.
 		 */
-		public function archive_cart_button( $button, $product ) {
+		public function archive_page_cart_btn( $button, $product ) {
 			$data = $this->get_settings( $product );
 
 			if ( empty( $data ) || ! isset( $data['settings'] ) ) {
@@ -288,12 +280,10 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param object $product product object.
 		 */
 		public function get_settings( $product ) {
-			global $post;
-
-			if( is_object( $post ) && $product->get_id() !== $post->ID ) {
-				$product  = wc_get_product( $post->ID );
-				$settings = $this->get_product_settings( $product );
-			}
+			// global $post;
+			// if( is_object( $post ) && $product->get_id() !== $post->ID ) {
+			// 	$product = wc_get_product( $post->ID );
+			// }
 
 			return $this->get_product_settings( $product );
 		}
@@ -308,12 +298,11 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				return array();
 			}
 
-			$id = $product->get_id();
+			$id   = $product->get_id();
 			$role = $this->user_roles()[0];
 
 			// New approach using transients | caching.
 			$settings = get_transient( 'proler_settings' );
-
 			if ( false === $settings ) {
 				$settings = array();
 			}
@@ -328,7 +317,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			}
 
 			if ( isset( $settings[ $id ][ $role ] ) ) {
-				// echo '<br>Hello hello<pre>'; print_r( $settings[ $id ][ $role ] ); echo '</pre>'; wp_die();
 				return $settings[ $id ][ $role ];
 			}
 
@@ -425,7 +413,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 
 			// set chache for 10 seconds. why? this should be at least an hour.
 			set_transient( 'proler_settings', $cached_settings, 3 );
-			// echo '<pre>'; print_r( $settings[$id] ); echo '</pre>'; wp_die();
 
 			return $settings[ $id ];
 		}
@@ -436,7 +423,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param array $data settings data array.
 		 */
 		public function extract_settings( $data ) {
-			// echo '<pre>'; print_r( $data ); echo '</pre>';
 			$roles           = $this->user_roles();
 			$global_settings = $data['global'] ?? false;
 
@@ -460,27 +446,23 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 */
 		public function if_apply_settings( $data ) {
 			if ( false === $data || ( ! isset( $data['settings'] ) || false === $data['settings'] ) ) {
-				$this->log('no data or settings found, no setting');
 				return false;
 			}
 			
 			$enable = isset( $data['settings']['pr_enable'] ) && ! empty( $data['settings']['pr_enable'] ) ? (bool) $data['settings']['pr_enable'] : true;
 			if ( false === $enable ) {
-				$this->log('product settings not enabled, no settings');
 				return false;
 			}
 			
 			// check type.
 			if ( isset( $data['settings']['product_type'] ) && ! empty( $data['settings']['product_type'] ) ) {
 				if ( $data['type'] !== $data['settings']['product_type'] ) {
-					$this->log('product type does not match, no settings');
 					return false;
 				}
 			}
 			
 			// check category and that could either be it's parent or in children.
 			if ( 'variation' !== $data['type'] && ! $this->if_in_cat( $data ) ) {
-				$this->log('not in cat, no settings');
 				return false;
 			}
 
@@ -569,6 +551,9 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			}
 
 			remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
+			remove_action( 'woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30 );
+			remove_action( 'woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30 );
+			remove_action( 'woocommerce_external_add_to_cart', 'woocommerce_external_add_to_cart', 30 );
 
 			return isset( $data['settings']['hide_txt'] ) ? $data['settings']['hide_txt'] : __( 'Price hidden', 'product-role-rules' );
 		}
@@ -675,8 +660,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * Check if current product falls in settings category.
 		 */
 		public function if_in_cat( $data ){
-			// echo '><pre>'; print_r( $data ); echo '</pre>';
-			// wp_die();
 			if ( ! isset( $data['settings']['category'] ) || empty( $data['settings']['category'] ) ) {
 				return true;
 			}
@@ -688,13 +671,11 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			$id = (int) $data['id'];
 			$product = wc_get_product( $id );
 			if( empty( $product ) ){
-				echo '<br> no product found'; wp_die();
 				return true;
 			}
 
 			$product_cats = $product->get_category_ids();
 			if( empty( $product_cats ) ){
-				echo '<br> no product cats found'; wp_die();
 				return true;
 			}
 
@@ -725,8 +706,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			// 	}
 			// }
 			
-			// // echo '<br>cats ' . $cat . ' / ' . $in;
-			// // echo '<pre>'; print_r( $settings_cats ); echo '</pre>';
 			// return $in;
 		}
 
@@ -744,6 +723,18 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			// get roles of currently logged in user.
 			$user  = get_userdata( $userid );
 			return $user->roles;
+		}
+
+
+
+		private function log( $data ) {
+			if ( true === WP_DEBUG ) {
+				if ( is_array( $data ) || is_object( $data ) ) {
+					error_log( print_r( $data, true ) );
+				} else {
+					error_log( $data );
+				}
+			}
 		}
 	}
 }
