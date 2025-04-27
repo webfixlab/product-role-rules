@@ -62,6 +62,13 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			add_filter( 'woocommerce_product_is_on_sale', array( $this, 'is_on_sale' ), 20, 2 );
 
 			add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'archive_page_cart_btn' ), 10, 2 );
+
+
+
+			add_action( 'woocommerce_before_mini_cart', array( $this, 'before_minicart' ) );
+
+			add_action( 'wp_ajax_proler_minicart', array( $this, 'proler_minicart' ) );
+			add_action( 'wp_ajax_nopriv_proler_minicart', array( $this, 'proler_minicart' ) );
 		}
 
 
@@ -70,7 +77,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * Modifies the cart item price HTML.
 		 *
 		 * @param string $price_html    HTML of the cart item price.
-		 * @param array  $cart_item     Cart item data.
+		 * @param mixed  $cart_item     Cart item data.
 		 * @param string $cart_item_key Cart item key.
 		 *
 		 * @return string Modified price HTML.
@@ -91,7 +98,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * Modifies the cart total price HTML.
 		 *
 		 * @param string $price_html    HTML of the cart item price.
-		 * @param array  $cart_item     Cart item data.
+		 * @param mixed  $cart_item     Cart item data.
 		 * @param string $cart_item_key Cart item key.
 		 *
 		 * @return string Modified price HTML.
@@ -99,7 +106,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
 		public function cart_item_subtotal( $price_html, $cart_item, $cart_item_key ) {
-			$qty   = isset( $cart_item['quantity'] ) && ! empty( $cart_item['quantity'] ) ? $cart_item['quantity'] : 1;
+			// $qty   = isset( $cart_item['quantity'] ) && ! empty( $cart_item['quantity'] ) ? $cart_item['quantity'] : 1;
 			$price = $this->get_cart_item_price( $cart_item );
 
 			if ( empty( $price ) || ! is_numeric( $price ) ) {
@@ -112,7 +119,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		/**
 		 * Modify cart items total price.
 		 *
-		 * @param object $cart WooCommerce cart object.
+		 * @param mixed $cart WooCommerce cart item.
 		 */
 		public function cart_total( $cart ) {
 			// This is necessary for WC 3.0+.
@@ -125,20 +132,80 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				return;
 			}
 
-			// Loop through cart items.
-			foreach ( $cart->get_cart() as $cart_item ) {
-				$price = $this->get_cart_item_price( $cart_item );
+			// $removed_items = false;
+			foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
+				// $this->handle_cart_item( $cart_item, $cart_item_key );
+				$data = $this->get_cart_item_settings( $cart_item );
+				if( !$data ) continue;
 
+				$placeholder = $this->price_placeholder( $data );
+				if ( false !== $placeholder && !empty( $cart_item_key ) ){
+					WC()->cart->remove_cart_item( $cart_item_key );
+					continue;
+				}
+				
+				$prices = $this->get_prices( $data );
+				if ( ! is_array( $prices ) ) continue;
+				
+				$price = empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
+				if ( ! empty( $price ) ) {
+					$cart_item['data']->set_price( $price );
+				}
+			}
+
+			// if( $removed_items ){
+			// 	wc_add_notice(
+			// 		__( 'Some items were removed from your cart due to pricing restrictions.', 'product-role-rules' ), 'notice'
+			// 	);
+			// }
+		}
+
+		public function before_minicart(){
+			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+				// $this->handle_cart_item( $cart_item, $cart_item_key );
+				$data = $this->get_cart_item_settings( $cart_item );
+				if( !$data ) continue;
+
+				$placeholder = $this->price_placeholder( $data );
+				if ( false !== $placeholder && !empty( $cart_item_key ) ){
+					WC()->cart->remove_cart_item( $cart_item_key );
+					continue;
+				}
+				
+				$prices = $this->get_prices( $data );
+				if ( ! is_array( $prices ) ) continue;
+				
+				$price = empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
 				if ( ! empty( $price ) ) {
 					$cart_item['data']->set_price( $price );
 				}
 			}
 		}
 
+		public function proler_minicart(){
+			ob_start();
+
+			woocommerce_mini_cart();
+
+			$mini_cart = ob_get_clean();
+
+			$data = array(
+				'fragments' => apply_filters(
+					'woocommerce_add_to_cart_fragments',
+					array(
+						'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+					)
+				),
+				'cart_hash' => WC()->cart->get_cart_hash(),
+			);
+
+			wp_send_json( $data );
+		}
+
 		/**
 		 * Get single cart item price
 		 *
-		 * @param array $cart_item WooCommerce cart item data array.
+		 * @param object $cart_item WC Cart item object.
 		 */
 		public function get_cart_item_price( $cart_item ) {
 			// skip grouped product, altogether.
@@ -146,23 +213,11 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			// 	return '';
 			// }
 
-			$id = $cart_item['product_id'];
-			if( isset( $cart_item['variation_id'] ) && ! empty( $cart_item['variation_id'] ) ){
-				$product = wc_get_product( $cart_item['variation_id'] );
-				$data = $this->get_product_settings( $product );
-			}else{
-				$product = wc_get_product( $id );
-				$data = $this->get_product_settings( $product );
-			}
+			$data = $this->get_cart_item_settings( $cart_item );
+			if( !$data ) return '';
 
-			if ( ! $this->if_apply_settings( $data ) ) {
-				return '';
-			}
-			
 			$placeholder = $this->price_placeholder( $data );
-			if ( false !== $placeholder ) {
-				return $placeholder;
-			}
+			if ( false !== $placeholder ) $placeholder;
 			
 			$prices = $this->get_prices( $data );
 			if ( ! is_array( $prices ) ) {
@@ -170,6 +225,27 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			}
 			
 			return empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
+		}
+
+		/**
+		 * Get cart item settings
+		 *
+		 * @param object $cart_item WC Cart item object.
+		 */
+		public function get_cart_item_settings( $cart_item ){
+			$id = $cart_item['product_id'];
+
+			if( isset( $cart_item['variation_id'] ) && ! empty( $cart_item['variation_id'] ) ){
+				$product = wc_get_product( $cart_item['variation_id'] );
+				$data    = $this->get_product_settings( $product );
+			}else{
+				$product = wc_get_product( $id );
+				$data    = $this->get_product_settings( $product );
+			}
+
+			if ( ! $this->if_apply_settings( $data ) ) false;
+
+			return $data;
 		}
 
 
@@ -517,11 +593,13 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param array  $data    settings data.
 		 */
 		public function price_range( $price, $product, $data ) {
-			$discount = (float) $data['settings']['discount'];
+			if( empty( $data ) || !isset( $data['settings'] ) || !isset( $data['settings']['discount'] ) ) return $price;
+			
+			$discount = $data['settings']['discount'];
+			if( empty( $discount ) || 0 === $discount ) return $price;
+
+			$discount = (float) $discount;
 			$discount = max(0, ( 100 - $discount ) );
-			if( empty( $discount ) || 0 === $discount ){
-				return $price;
-			}
 
 			$if_percent = empty( $data['settings']['discount_type'] ) || 'percent' === $data['settings']['discount_type'] ? true : false;
 
@@ -545,17 +623,21 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		public function price_placeholder( $data ) {
 			$is_hidden = isset( $data['settings']['hide_price'] ) ? $data['settings']['hide_price'] : '';
 			$is_hidden = ! empty( $is_hidden ) && '1' === $is_hidden ? true : false;
+			if ( ! $is_hidden ) return false;
 
-			if ( ! $is_hidden ) {
-				return false;
-			}
+			$this->remove_add_to_cart();
 
+			return isset( $data['settings']['hide_txt'] ) ? $data['settings']['hide_txt'] : __( 'Price hidden', 'product-role-rules' );
+		}
+
+		/**
+		 * Remove add to cart button from product page
+		 */
+		public function remove_add_to_cart(){
 			remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
 			remove_action( 'woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30 );
 			remove_action( 'woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30 );
 			remove_action( 'woocommerce_external_add_to_cart', 'woocommerce_external_add_to_cart', 30 );
-
-			return isset( $data['settings']['hide_txt'] ) ? $data['settings']['hide_txt'] : __( 'Price hidden', 'product-role-rules' );
 		}
 
 

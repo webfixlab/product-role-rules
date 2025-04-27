@@ -426,6 +426,15 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 		 * @param array $default_tabs current product settings tabs.
 		 */
 		public function data_tab( $default_tabs ) {
+			global $post;
+			global $proler__;
+
+			$product = wc_get_product( $post->ID );
+			$proler__['product'] = array(
+				'type' => $product->get_type()
+			);
+
+			if( 'grouped' === $proler__['product']['type'] ) return $default_tabs;
 
 			$default_tabs['role_based_pricing'] = array(
 				'label'    => __( 'Role Based Pricing', 'product-role-rules' ),
@@ -442,6 +451,8 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 		 */
 		public function data_tab_content() {
 			global $proler__;
+
+			if( 'grouped' === $proler__['product']['type'] ) return;
 
 			// set a flag in which page the settings is rendering | option page or product level.
 			$proler__['which_page'] = 'product';

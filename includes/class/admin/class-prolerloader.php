@@ -218,6 +218,7 @@ if ( ! class_exists( 'ProlerLoader' ) ) {
 
 			// localized data.
 			$data = array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'product' => $post->ID
 			);
 
