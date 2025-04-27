@@ -6,7 +6,7 @@ Perfect for wholesale stores, restaurants, accessories shops, and businesses wan
 No unnecessary bloat — built for speed and flexibility!
 
 
-##Features
+## Features
 
 - Supports simple, variable and grouped products
 - Two new roles - "All roles" and "Unregistered user"
