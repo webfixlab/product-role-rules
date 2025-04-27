@@ -13,3 +13,6 @@ No unnecessary bloat — built for speed and flexibility!
 - Show custom message instead price
 - Add percentage and fixed price discount
 - Add new user role
+
+
+Note: External/Affiliate products are skipped when applying role based settings.

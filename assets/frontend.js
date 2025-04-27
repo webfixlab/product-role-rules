@@ -13,7 +13,7 @@
 
             $(document).ready(() => {
                 this.init();
-                console.log('proler', proler);
+                // console.log('proler', proler);
             });
         }
         init(){

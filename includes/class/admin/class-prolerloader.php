@@ -78,6 +78,8 @@ if ( ! class_exists( 'ProlerLoader' ) ) {
 			$this->check_pro();
 			$this->ask_feedback();
 
+			remove_all_actions( 'admin_notices' );
+
 			add_filter( 'plugin_action_links_' . plugin_basename( PROLER ), array( $this, 'plugin_action_links' ) );
 			add_filter( 'plugin_row_meta', array( $this, 'plugin_desc_meta' ), 10, 2 );
 
@@ -230,7 +232,6 @@ if ( ! class_exists( 'ProlerLoader' ) ) {
 		 * Admin head functionlity
 		 */
 		public function admin_head() {
-			$this->handle_notice();
 			$this->menu_css();
 		}
 
@@ -326,30 +327,6 @@ if ( ! class_exists( 'ProlerLoader' ) ) {
 			$days_passed = (int) $difference->format( '%d' );
 
 			return $days_passed < $proler__['notice_gap'] ? false : true;
-		}
-
-		/**
-		 * Move all admin notices from the action hooks to global variable
-		 */
-		public function handle_notice() {
-			global $proler__;
-
-			// check scope, without it return.
-			if ( ! $this->is_in_scope() ) {
-				return;
-			}
-
-			// Buffer only the notices.
-			ob_start();
-			do_action( 'admin_notices' );
-			$content = ob_get_contents();
-			ob_get_clean();
-
-			// Keep the notices in global $proler__.
-			array_push( $proler__['notice'], $content );
-
-			// Remove all admin notices as we don't need to display in it's place.
-			remove_all_actions( 'admin_notices' );
 		}
 
 		/**

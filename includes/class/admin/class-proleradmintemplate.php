@@ -152,7 +152,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
             <div class="col-md-6" id="middle-content">
                 <div class="mpcdp_settings_content">
                     <div class="mpcdp_settings_section">
-                        <?php $this->show_notice(); ?>
                         <div class="mpcdp_settings_section_title">
                             <?php
                                 if ( 'settings' === $this->page ) {
@@ -981,22 +980,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		}
 
 
-
-        /**
-		 * Show settings page notices
-		 */
-		public function show_notice() {
-			global $proler__;
-
-			// Display notices.
-			if ( !isset( $proler__['notice'] ) || empty( $proler__['notice'] ) ) {
-				return;
-			}
-
-			foreach ( $proler__['notice'] as $notice ) {
-				echo wp_kses_post( $notice );
-			}
-		}
 
 		/**
 		 * Display settings saved notice

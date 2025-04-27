@@ -255,6 +255,8 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param object $product product object.
 		 */
 		public function get_price_html( $price, $product ) {
+			if( 'external' === $product->get_type() ) return $price;
+			
 			$data = $this->get_product_settings( $product );
 
 			if ( ! $this->if_apply_settings( $data ) ) {
@@ -323,6 +325,8 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param object  $product product object.
 		 */
 		public function is_on_sale( $on_sale, $product ) {
+			if( 'external' === $product->get_type() ) return $on_sale;
+			
 			$data = $this->get_settings( $product );
 
 			if ( empty( $data ) || ! isset( $data['settings'] ) ) {
