@@ -243,9 +243,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				$data    = $this->get_product_settings( $product );
 			}
 
-			if ( ! $this->if_apply_settings( $data ) ) false;
-
-			return $data;
+			return !$this->if_apply_settings( $data ) ? false : $data;
 		}
 
 
