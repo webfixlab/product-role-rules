@@ -21,7 +21,7 @@
 
             setTimeout(function(){
                 self.loadMinicart();
-            }, 1000);
+            }, 1500);
         }
 
 
@@ -35,6 +35,7 @@
                     },
                     async: 'false',
                     success: function( data ) {
+                        console.log('proler:minicart-loaded');
                         if ( data && data.fragments ) {
                             $.each( data.fragments, function( key, value ) {
                                 $( key ).replaceWith( value );

@@ -64,7 +64,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'archive_page_cart_btn' ), 10, 2 );
 
 
-
 			add_action( 'woocommerce_before_mini_cart', array( $this, 'before_minicart' ) );
 
 			add_action( 'wp_ajax_proler_minicart', array( $this, 'proler_minicart' ) );
@@ -162,7 +161,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 
 		public function before_minicart(){
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-				// $this->handle_cart_item( $cart_item, $cart_item_key );
 				$data = $this->get_cart_item_settings( $cart_item );
 				if( !$data ) continue;
 
@@ -184,6 +182,9 @@ if ( ! class_exists( 'PRoleR' ) ) {
 
 		public function proler_minicart(){
 			ob_start();
+
+			// Force WooCommerce to recalculate cart.
+			WC()->cart->calculate_totals();
 
 			woocommerce_mini_cart();
 
