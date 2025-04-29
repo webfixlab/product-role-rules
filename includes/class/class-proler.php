@@ -278,19 +278,10 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				return $price;
 			}
 			
-			$price_html   = '';
-			if ( empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ) {
-				$price_html = wc_price( $prices['rp'] );
-			} else {
-				$price_html   = wc_format_sale_price( $prices['rp'], $prices['sp'] );
-			}
+			$price_html = empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? wc_price( $prices['rp'] ) : wc_format_sale_price( $prices['rp'], $prices['sp'] );
 
 			$new_html = apply_filters( 'proler_get_price_html', $price_html, $prices, $data, $product );
-			if( ! empty( $new_html ) ){
-				$price_html = $new_html;
-			}
-
-			return $price_html;
+			return empty( $new_html ) ? $price_html : $new_html;
 		}
 
 
@@ -556,36 +547,43 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param array $data settings data.
 		 */
 		public function get_prices( $data ) {
-			$enable       = ! isset( $data['settings']['pr_enable'] ) || empty( $data['settings']['pr_enable'] ) ? false : true;
-			$has_discount = isset( $data['settings']['discount'] ) && ! empty( $data['settings']['discount'] ) ? true : false;
+			$enable = ! isset( $data['settings']['pr_enable'] ) || empty( $data['settings']['pr_enable'] ) ? false : true;
 
-			// when price filtering is not applicable.
 			if ( empty( $data ) || false === $enable ) {
 				return false;
 			}
 
-			$prices = array(
-				'rp' => '',
-				'sp' => ''
+			$has_range = 'variable' === $data['type'] || 'grouped' === $data['type'];
+			$prices    = array(
+				'rp' => $has_range ? $data['max_price'] : $data['regular_price'],
+				'sp' => $has_range ? $data['min_price'] : $data['sale_price']
 			);
-			
-			if( 'variable' === $data['type'] || 'grouped' === $data['type'] ){
-				$prices = array(
-					'rp' => $data['max_price'],
-					'sp' => $data['min_price']
-				);
-			}else{
-				$prices = array(
-					'rp' => $data['regular_price'],
-					'sp' => $data['sale_price']
-				);
-			}
 
-			if ( $has_discount ) {
-				$prices['sp'] = $this->discount( $data, $prices );
-			}
+			return $this->apply_discount( $data, $prices );
+		}
 
-			return apply_filters( 'proler_get_prices', $prices, $data );
+		/**
+		 * Handle product discount
+		 *
+		 * @param array $data   Settings data.
+		 * @param array $prices Regular and sale prices of the product.
+		 */
+		public function apply_discount( $data, $prices ) {
+			if( !isset( $data['settings']['discount'] ) || empty( $data['settings']['discount'] ) ) return $prices;
+
+			$discount = array(
+				'amount' => (float) $data['settings']['discount'],
+				'type'   => $data['settings']['discount_type']
+			);
+			$discount = apply_filters( 'proler_get_discount', $discount, $prices, $data );
+
+			$price = isset( $prices['sp'] ) && ! empty( $prices['sp'] ) ? $prices['sp'] : $prices['rp'];
+			$price = !empty( $price ) ? (float) $price : $price;
+
+			$sale_price = empty( $discount['type'] ) || 'percent' === $discount['type'] ? ( $price * ( 100 - $discount['amount'] ) ) / 100 : $price - $discount['amount'];
+			$prices['sp'] = max( 0, $sale_price );
+
+			return $prices;
 		}
 
 		/**
@@ -644,26 +642,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		}
 
 
-
-		/**
-		 * Handle product discount
-		 *
-		 * @param array $data   settings data.
-		 * @param array $prices regular and sale prices of the product.
-		 */
-		public function discount( $data, $prices ) {
-			$price    = isset( $prices['sp'] ) && ! empty( $prices['sp'] ) ? (float) $prices['sp'] : (float) $prices['rp'];
-			$discount = (float) $data['settings']['discount'];
-			$type     = $data['settings']['discount_type'];
-
-			if( empty( $discount ) ){
-				return $price;
-			}
-
-			$discounted = empty( $type ) || 'percent' === $type ? ( $price * ( 100 - $discount ) ) / 100 : $price - $discount;
-			return max( 0, $discounted );
-		}
-
+		
 		/**
 		 * Discount text for single product page
 		 */
