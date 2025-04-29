@@ -278,10 +278,12 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				return $price;
 			}
 			
+			return $this->render_price_html( $prices, $data );
+		}
+		public function render_price_html( $prices, $data ){
 			$price_html = empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? wc_price( $prices['rp'] ) : wc_format_sale_price( $prices['rp'], $prices['sp'] );
 
-			$new_html = apply_filters( 'proler_get_price_html', $price_html, $prices, $data, $product );
-			return empty( $new_html ) ? $price_html : $new_html;
+			return apply_filters( 'proler_get_price_html', $price_html, $prices, $data );
 		}
 
 
