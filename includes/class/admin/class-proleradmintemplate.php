@@ -223,79 +223,63 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 */
 		private function general_settings_content(){
 			global $proler__;
-			$pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
-
-			$less_stock   = get_option( 'proler_stock_less_than_min', 'strict' );
-			$notice_place = get_option( 'proler_min_max_notice_place', 'only_cart' );
-
 			?>
 			<div class="mpcdp_settings_toggle mpcdp_container pr-settings general-settings">
 				<div class="mpcdp_settings_option visible">
 					<div class="mpcdp_settings_section">
-						<div class="mpcdp_row">
-							<div class="mpcdp_settings_option_description col-md-6">
-								<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
-									<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
-								<?php endif; ?>
-								<div class="mpcdp_option_label"><?php echo esc_html__( 'If stock is below the minimum quantity?', 'product-role-rules' ); ?></div>
-								<div class="mpcdp_option_description">
-									<?php echo esc_html__( 'Choose if you want to allow users to purchase available stock or not when product stock is less than minimum limit.', 'product-role-rules' ); ?>
-								</div>
-							</div>
-							<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-								<select name="proler_stock_less_than_min" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Options', 'product-role-rules' ); ?>">
-									<?php
-										$ads = array(
-											'strict' => __( 'Don\'t allow purchase', 'product-role-rules' ),
-											'allow' => __( 'Allow purchase of available stock only', 'product-role-rules' ),
-										);
-	
-										foreach( $ads as $val => $label ){
-											printf(
-												'<option value="%s" %s>%s</option>',
-												esc_attr( $val ),
-												$val === $less_stock ? esc_attr( 'selected' ) : '',
-												esc_html( $label )
-											);
-										}
-									?>
-								</select>
-							</div>
-						</div>
-						<div class="mpcdp_row">
-							<div class="mpcdp_settings_option_description col-md-6">
-								<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
-									<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
-								<?php endif; ?>
-								<div class="mpcdp_option_label"><?php echo esc_html__( 'Where to show quantity limit warnings?', 'product-role-rules' ); ?></div>
-								<div class="mpcdp_option_description">
-									<?php echo esc_html__( 'Choose where you want to show a message when users try to buy less than the minimum or more than maximum limit.', 'product-role-rules' ); ?>
-								</div>
-							</div>
-							<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-								<select name="proler_min_max_notice_place" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Options', 'product-role-rules' ); ?>">
-									<?php
-										$ads = array(
-											'only_cart' => __( 'Show only on cart page', 'product-role-rules' ),
-											'product_cart' => __( 'Show on product page and cart', 'product-role-rules' ),
-										);
-	
-										foreach( $ads as $val => $label ){
-											printf(
-												'<option value="%s" %s>%s</option>',
-												esc_attr( $val ),
-												$val === $notice_place ? esc_attr( 'selected' ) : '',
-												esc_html( $label )
-											);
-										}
-									?>
-								</select>
-							</div>
-						</div>
+						<?php
+							foreach( $proler__['general_settings'] as $field ){
+								$this->general_settings_section( $field );
+							}
+						?>
 					</div>
 				</div>
 			</div>
 			<?php
+		}
+		public function general_settings_section( $data ){
+			global $proler__;
+			?>
+			<?php if( isset( $data['section_title'] ) && !empty( $data['section_title'] ) ) : ?>
+				<div class="mpcdp_settings_section_title" style="margin-top: 20px;"><?php echo esc_html( $data['section_title'] ); ?></div>
+			<?php endif; ?>
+			<div class="mpcdp_row">
+				<div class="mpcdp_settings_option_description col-md-6">
+					<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
+						<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+					<?php endif; ?>
+					<div class="mpcdp_option_label">
+						<?php echo esc_html( $data['field_name'] ); ?>
+					</div>
+					<div class="mpcdp_option_description">
+						<?php echo esc_html( $data['desc'] ); ?>
+					</div>
+				</div>
+				<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+					<?php $this->general_settings_field( $data ); ?>
+				</div>
+			</div>
+			<?php
+		}
+		public function general_settings_field( $data ){
+			global $proler__;
+
+			$pro_class   = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
+			$saved_value = get_option( $data['key'], $data['default'] );
+
+			if( isset( $data['options'] ) && !empty( $data['options'] ) ){
+				?>
+				<select name="<?php echo esc_attr( $data['key'] ); ?>" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html( $data['pro_txt'] ); ?>">
+					<?php foreach( $data['options'] as $value => $label ) : ?>
+						<option
+							value="<?php echo esc_attr( $value ); ?>"
+							<?php echo $value === $saved_value ? 'selected' : ''; ?>>
+							<?php echo esc_html( $label ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+				<?php
+			}
 		}
 
 

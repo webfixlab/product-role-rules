@@ -65,19 +65,20 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
 		public function save_settings( $post_id = 0, $post = array(), $update = false ) {
+			global $proler__;
+
 			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
 				// $this->log('nonce faild while saving');
 				return;
 			}
 
-			// general settings data.
-			if( isset( $_POST['proler_stock_less_than_min'] ) ){
-				$less_stock = sanitize_text_field( wp_unslash( $_POST['proler_stock_less_than_min'] ) );
-				update_option( 'proler_stock_less_than_min', $less_stock );
-			}
-			if( isset( $_POST['proler_min_max_notice_place'] ) ){
-				$less_stock = sanitize_text_field( wp_unslash( $_POST['proler_min_max_notice_place'] ) );
-				update_option( 'proler_min_max_notice_place', $less_stock );
+			// General settings data.
+			foreach( $proler__['general_settings'] as $field ){
+				$key = $field['key'];
+				if( isset( $_POST[ $key ] ) ){
+					$value = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+					update_option( $key, $value );
+				}
 			}
 
 			// check if this is role related scope or not, if not leave this place.
