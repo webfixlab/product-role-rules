@@ -469,13 +469,12 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				$from->setTimezone( $wp_timezone );
 				$to->setTimezone( $wp_timezone );
 
-				$date_from = $from->format( 'Y-m-d H:i:s' );
-				$date_to   = $to->format( 'Y-m-d H:i:s' );
-
 				if( ! empty( $date_from ) ){
+					$date_from = $from->format( 'Y-m-d H:i:s' );
 					$settings[$id]['settings']['schedule']['start'] = $date_from;
 				}
 				if( ! empty( $date_to ) ){
+					$date_to   = $to->format( 'Y-m-d H:i:s' );
 					$settings[$id]['settings']['schedule']['end'] = $date_to;
 				}
 			}
