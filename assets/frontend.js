@@ -9,11 +9,9 @@
 ;(function($, window, document) {
     class roleBasedPricing{
         constructor(){
-            // this.$quantity = 1;
-
             $(document).ready(() => {
-                this.init();
                 // console.log('proler', proler);
+                this.init();
             });
         }
         init(){
@@ -23,32 +21,28 @@
                 self.loadMinicart();
             }, 1500);
         }
-
-
+        
         loadMinicart(){
-            $.ajax(
-                {
-                    method: "POST",
-                    url: proler.ajaxurl,
-                    data: {
-                        'action': 'proler_minicart',
-                    },
-                    async: 'false',
-                    success: function( data ) {
-                        console.log('proler:minicart-loaded');
-                        if ( data && data.fragments ) {
-                            $.each( data.fragments, function( key, value ) {
-                                $( key ).replaceWith( value );
-                            });
-            
-                            $( document.body ).trigger( 'wc_fragments_refreshed' );
-                        }
-                    },
-                    error: function() {
-                        $( document.body ).trigger( 'wc_fragments_ajax_error' );
+            $.ajax({
+                method: "POST",
+                url: proler.ajaxurl,
+                data: {
+                    'action': 'proler_minicart',
+                },
+                async: 'false',
+                success: function( data ) {
+                    // console.log('proler:minicart-loaded');
+                    if ( data && data.fragments ) {
+                        $.each( data.fragments, function( key, value ) {
+                            $( key ).replaceWith( value );
+                        });
+                        $( document.body ).trigger( 'wc_fragments_refreshed' );
                     }
+                },
+                error: function() {
+                    $( document.body ).trigger( 'wc_fragments_ajax_error' );
                 }
-            );
+            });
         }
     }
 
