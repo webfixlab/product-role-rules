@@ -276,13 +276,13 @@
 			});
 		});
 
-		$( '.mpc-opt-sc-btn.add-new' ).on( 'click', function () {
+		$('.add-new' ).on( 'click', function () {
 			$( '.pr-settings' ).append( '<div class="mpcdp_settings_toggle pr-item">' + $( '.demo-item' ).html() + '</div>' );
 		});
 
 		// init - frontend on load.
 		if ( typeof $( '.pr-settings' ).find( '.pr-item' ) == 'undefined' || $( '.pr-settings' ).find( '.pr-item' ).length == 0 ) {
-			$( '.mpc-opt-sc-btn.add-new' ).trigger( 'click' );
+			$( '.add-new' ).trigger( 'click' );
 		}
 
 		$( 'body' ).on( 'click', '.add-new-disrange', function(){

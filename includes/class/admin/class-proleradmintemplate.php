@@ -53,13 +53,12 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 * Add product settings data tab content
 		 */
 		public function data_tab_content() {
-
 			?>
 			<div id="proler_product_data_tab" class="panel woocommerce_options_panel">
 				<div id="mpcdp_settings" class="mpcdp_container">
 					<div class="mpcdp_settings_content">
 						<div class="mpcdp_settings_section">
-							<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></div>
+							<div class="mpcdp_settings_section_title"><span class="proler-gradient"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></span></div>
                             <div class="role-settings-head mpcdp_settings_toggle mpcdp_container" data-toggle-id="wmc_redirect">
                                 <div class="mpcdp_settings_option visible" data-field-id="wmc_redirect">
                                     <div class="mpcdp_row">
@@ -152,16 +151,18 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
             <div class="col-md-6" id="middle-content">
                 <div class="mpcdp_settings_content">
                     <div class="mpcdp_settings_section">
-                        <div class="mpcdp_settings_section_title">
-                            <?php
-                                if ( 'settings' === $this->page ) {
-                                    echo esc_html__( 'Global Role Based Settings', 'product-role-rules' );
-                                } elseif ( 'newrole' === $this->page ) {
-                                    echo esc_html__( 'Add a Custom User Role', 'product-role-rules' );
-                                } elseif ( 'general-settings' === $this->page ) {
-                                    echo esc_html__( 'General Settings', 'product-role-rules' );
-                                }
-                            ?>
+                        <div class="mpcdp_settings_section_title proler-page-title">
+							<span class="proler-gradient">
+								<?php
+									if ( 'settings' === $this->page ) {
+										echo esc_html__( 'Global Role Based Settings', 'product-role-rules' );
+									} elseif ( 'newrole' === $this->page ) {
+										echo esc_html__( 'Add a Custom User Role', 'product-role-rules' );
+									} elseif ( 'general-settings' === $this->page ) {
+										echo esc_html__( 'General Settings', 'product-role-rules' );
+									}
+								?>
+							</span>
                         </div>
                         <?php
 							$this->settings_saved_notice();
@@ -241,7 +242,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			global $proler__;
 			?>
 			<?php if( isset( $data['section_title'] ) && !empty( $data['section_title'] ) ) : ?>
-				<div class="mpcdp_settings_section_title" style="margin-top: 20px;"><?php echo esc_html( $data['section_title'] ); ?></div>
+				<div class="mpcdp_settings_section_title"><?php echo esc_html( $data['section_title'] ); ?></div>
 			<?php endif; ?>
 			<div class="mpcdp_row">
 				<div class="mpcdp_settings_option_description col-md-6">
@@ -315,28 +316,35 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					'target' => 'general-settings',
 					'class'  => '',
 				),
-			);
-
-			if ( 'activated' !== $proler__['prostate'] ) {
-				$pages[] = array(
+				array(
 					'slug'   => 'pro',
 					'url'    => $proler__['url']['free'],
 					'name'   => __( 'Get PRO', 'product-role-rules' ),
 					'icon'   => '',
 					'target' => 'get-pro',
 					'class'  => 'proler-nav-orange',
-				);
-			}
+				),
+			);
 
 			foreach ( $pages as $menu ) {
-				printf(
-					'<a href="%s"><div class="mpcdp_settings_tab_control %s"><span class="%s"></span><span class="label">%s</span></div></a>',
-					esc_url( $menu['url'] ),
-					$menu['slug'] === $this->page ? esc_attr( 'active' ) : '',
-					esc_html( $menu['icon'] ),
-					esc_html( $menu['name'] )
-				);
+				$this->display_menu_item( $menu );
 			}
+		}
+		public function display_menu_item( $menu ){
+			global $proler__;
+
+			if( 'pro' === $menu['slug'] && 'activated' === $proler__['prostate'] ) return;
+			$is_active = $menu['slug'] === $this->page ? 'active' : '';
+			?>
+			<a href="<?php echo esc_url( $menu['url'] ); ?>">
+				<div class="mpcdp_settings_tab_control <?php echo esc_attr( $menu['class'] ) . ' ' . esc_attr( $is_active ); ?>">
+					<?php if( !empty( $menu['icon'] ) ) : ?>
+						<span class="<?php echo esc_html( $menu['icon'] ); ?>"></span>
+					<?php endif; ?>
+					<span class="label"><?php echo esc_html( $menu['name'] ); ?></span>
+				</div>
+			</a>
+			<?php
 		}
 
 		/**
@@ -419,7 +427,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			<div class="mpcdp_settings_option visible" style="margin-top:20px;">
 				<div class="mpcdp_row">
 					<input type="hidden" value="" name="proler_data">
-					<a class="mpc-opt-sc-btn add-new" href="javaScript:void(0)"><?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
+					<a class="add-new" href="javaScript:void(0)"><?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
 				</div>
 			</div>
 			<?php
@@ -511,8 +519,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 
 			?>
 			<div class="mpcdp_settings_option proler-option-content" style="display:none;">
+				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Price Options', 'product-role-rules' ); ?></div>
 				<div class="mpcdp_settings_section">
-					<div class="mpcdp_settings_section_title" style="margin-top: 20px;"><?php echo esc_html__( 'Price Options', 'product-role-rules' ); ?></div>
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_description col-md-6">
 							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Price', 'product-role-rules' ); ?></div>
@@ -538,8 +546,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						</div>
 					</div>
 				</div>
+				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Purchase Limits', 'product-role-rules' ); ?></div>
 				<div class="mpcdp_settings_section">
-					<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Purchase Limits', 'product-role-rules' ); ?></div>
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_description col-md-6">
 							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
@@ -569,8 +577,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						</div>
 					</div>
 				</div>
+				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Discount Settings', 'product-role-rules' ); ?></div>
 				<div class="mpcdp_settings_section">
-					<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Discount Settings', 'product-role-rules' ); ?></div>
 					<div class="mpcdp_row proler-discount">
 						<div class="mpcdp_settings_option_description col-md-6">
 							<div class="mpcdp_option_label"><?php echo esc_html__( 'Flat Discount', 'product-role-rules' ); ?></div>
@@ -628,7 +636,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 							<input type="checkbox" name="hide_regular_price" class="<?php echo esc_attr( $pro_class ); ?>" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;" data-protxt="<?php echo esc_html__( 'Hide Regular Price', 'product-role-rules' ); ?>">
 						</div>
 					</div>
-					<div class="mpcdp_row">
+					<div class="mpcdp_row proler-full-section">
 						<div class="mpcdp_settings_option_description col-md-12">
 							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
 								<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
@@ -655,7 +663,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 							</div>
 							<div class="mpcdp_row">
 								<div class="mpcdp_settings_option_description col-md-12">
-									<div class="mpc-opt-sc-btn add-new-disrange"><?php echo esc_html__( 'Add Tier', 'product-role-rules' ); ?></div>
+									<div class="add-new-disrange"><?php echo esc_html__( 'Add Tier', 'product-role-rules' ); ?></div>
 								</div>
 							</div>
 						</div>
@@ -693,8 +701,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						</div>
 					</div>
 				</div>
+				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Apply Rule If...', 'product-role-rules' ); ?></div>
 				<div class="mpcdp_settings_section">
-					<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Apply Rule If...', 'product-role-rules' ); ?></div>
 					<?php if ( 'option_page' === $proler__['which_page'] ) : ?>
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_description col-md-6">
@@ -766,7 +774,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						$date_to   = $rd['schedule']['end'] ?? '';
 						// $this->log('start ' . $date_from . ', end ' . $date_to);
 					?>
-					<div class="mpcdp_row">
+					<div class="mpcdp_row proler-full-section">
 						<div class="mpcdp_settings_option_description col-md-12">
 							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
 								<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
@@ -1125,9 +1133,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 */
 		public function popup(){
 			global $proler__;
-
 			?>
-			<div id="mpcpop" class="mpc-popup wfl-popup">
+			<div id="prolerpop" class="proler-popup">
 				<div class="image-wrap">
 					<span class="dashicons dashicons-dismiss mpcpop-close close"></span>
 					<div class="mpc-focus focus">
@@ -1166,7 +1173,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			?>
 			<div class="proler-sidebar">
 				<div class="sidebar_top">
-					<h1><?php echo esc_html( $sidebar_title ); ?></h1>
+					<h3><?php echo esc_html( $sidebar_title ); ?></h3>
 					<div class="tagline_side"><?php echo wp_kses_post( $side_tagline ); ?></div>
 					<?php if ( isset( $proler__['prostate'] ) && 'activated' !== $proler__['prostate'] ) : ?>
 						<div class="proler-side-pro"><a href="<?php echo esc_url( $proler__['url']['free'] ); ?>" target="_blank"><?php echo esc_html( $side_button ); ?></a></div>
