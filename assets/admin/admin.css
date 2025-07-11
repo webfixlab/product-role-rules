@@ -522,7 +522,6 @@ a.mpcasc-reset {
 
 .mpcdp_settings_option .mpcdp_row {
 	align-items: center;
-/*    justify-content: center;*/
 }
 .mpcdp_settings_option.proler-option-head .mpcdp_row {
 	align-items: baseline;
@@ -533,6 +532,7 @@ a.mpcasc-reset {
 .pr-settings select {
 	border: 1px solid #dfdfdf;
 	line-height: 36px;
+	min-width: 70px;
 }
 .disrange-item input[type="text"] {
     padding: 4px 10px;
@@ -638,17 +638,55 @@ textarea.proler-widefat {
 .woocommerce_options_panel textarea.proler-widefat{
 	height: auto;
 }
-.pr-settings input[type="datetime-local"]{
-    border-radius: 25px;
+.proler-collapse-wrap{
+	display: block;
+	text-align: right;
+	margin-bottom: 30px;
+}
+.proler-collapse-wrap .proler-collapse-all{
+	cursor: pointer;
+	padding: 10px 30px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+a.add-new {
+	border: 1px solid #8a8a8a;
+    border-radius: 4px;
+    padding: 10px 30px;
+	cursor: pointer;
+}
+a.add-new:hover {
+	background-color: #8a8a8a;
+	color: #fff;
+}
+.proler-collapse-wrap .proler-collapse-all:hover{
+	background-color: #ccc;
 }
 .pr-settings input[type="datetime-local"], .pr-settings input[type="text"] {
     border: 1px solid #dfdfdf;
+	padding: 4px 10px;
+}
+.pr-settings input[type="datetime-local"], .pr-settings input[type="text"], .pr-settings select{
+	width: 80%;
+}
+select[name="discount_type"] {
+	max-width: 70px;
+}
+.disrange-item input[type="text"], .disrange-item select[name="discount_type"] {
+    width: 25%;
+	max-width: none;
 }
 .discount-range-demo{
 	display: none;
 }
 .add-new-disrange{
-	margin-top: 20px;
+	text-align: right;
+    padding: 10px 30px;
+    float: right;
+    margin: 20px 20px 0 0;
+    border: 1px solid #afafaf;
+    border-radius: 4px;
+    cursor: pointer;
 }
 .disabled .mpcdp_option_label {
     color: #ddd;

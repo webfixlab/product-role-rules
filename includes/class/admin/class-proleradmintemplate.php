@@ -58,7 +58,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				<div id="mpcdp_settings" class="mpcdp_container">
 					<div class="mpcdp_settings_content">
 						<div class="mpcdp_settings_section">
-							<div class="mpcdp_settings_section_title"><span class="proler-gradient"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></span></div>
+							<div class="mpcdp_settings_section_title proler-page-title"><span class="proler-gradient"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></span></div>
                             <div class="role-settings-head mpcdp_settings_toggle mpcdp_container" data-toggle-id="wmc_redirect">
                                 <div class="mpcdp_settings_option visible" data-field-id="wmc_redirect">
                                     <div class="mpcdp_row">
@@ -164,6 +164,9 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 								?>
 							</span>
                         </div>
+						<div class="proler-collapse-wrap">
+							<span class="proler-collapse-all">Collapse all</span>
+						</div>
                         <?php
 							$this->settings_saved_notice();
 
@@ -916,7 +919,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			global $proler__;
 
 			$pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
-			$symbol    = get_woocommerce_currency_symbol();
 
 			$type     = isset( $data['discount_type'] ) ? $data['discount_type'] : 'amount_percent';
 			$min      = isset( $data['min'] ) ? $data['min'] : '';
@@ -926,18 +928,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			?>
 			<div class="mpcdp_row disrange-item">
 				<select name="discount_type">
-					<option value="amount_percent" <?php echo 'amount_percent' === $type ? esc_attr( 'selected' ) : ''; ?>>
-						( % ) <?php echo esc_html__( 'Discount on Total', 'product-role-rules' ); ?>
-					</option>
-					<option value="amount_fixed" <?php echo 'amount_fixed' === $type ? esc_attr( 'selected' ) : ''; ?>>
-						( <?php echo esc_html( $symbol ); ?> ) <?php echo esc_html__( 'Discount on Total', 'product-role-rules' ); ?>
-					</option>
-					<option value="quantity_percent" <?php echo 'quantity_percent' === $type ? esc_attr( 'selected' ) : ''; ?>>
-						( % ) <?php echo esc_html__( 'Discount on Quantity', 'product-role-rules' ); ?>
-					</option>
-					<option value="quantity_fixed" <?php echo 'quantity_fixed' === $type ? esc_attr( 'selected' ) : ''; ?>>
-						( <?php echo esc_html( $symbol ); ?> ) <?php echo esc_html__( 'Discount on Quantity', 'product-role-rules' ); ?>
-					</option>
+					<?php $this->discount_tier_type( $type ); ?>
 				</select>
 				<input type="text" name="min_value" class="<?php echo esc_attr( $pro_class ); ?>" placeholder="<?php echo esc_html__( 'Min', 'product-role-rules' ); ?>" value="<?php echo esc_attr( $min ); ?>" data-protxt="<?php echo esc_html__( 'Min Value', 'product-role-rules' ); ?>">
 				<input type="text" name="max_value" class="<?php echo esc_attr( $pro_class ); ?>" placeholder="<?php echo esc_html__( 'Max', 'product-role-rules' ); ?>" value="<?php echo esc_attr( $max ); ?>" data-protxt="<?php echo esc_html__( 'Max Value', 'product-role-rules' ); ?>">
@@ -945,6 +936,22 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				<span class="dashicons dashicons-trash delete-disrange"></span>
 			</div>
 			<?php
+		}
+		public function discount_tier_type( $type ){
+			$symbol = get_woocommerce_currency_symbol();
+			$options = array(
+				'amount_percent' => __( 'Discount on Total', 'product-role-rules' ),
+				'amount_fixed' => __( 'Discount on Total', 'product-role-rules' ),
+				'quantity_percent' => __( 'Discount on Quantity', 'product-role-rules' ),
+				'quantity_fixed' => __( 'Discount on Quantity', 'product-role-rules' )
+			);
+			foreach( $options as $key => $label ){
+				$prefix = false !== strpos( $key, 'fixed' ) ? $symbol : '%';
+				$prefix = sprintf( '(%s) %s', esc_html( $prefix ), esc_html( $label ) );
+				?>
+				<option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $type ? 'selected' : ''; ?>><?php echo esc_html( $prefix ); ?></option>
+				<?php
+			}
 		}
 
         /**

@@ -2,6 +2,26 @@
  * uses admin localized variable | proler
  */
 
+;(function($, window, document) {
+    class prolerAdminClass{
+        constructor(){
+            $(document).ready(() => {
+				this.initGlobalEvents();
+            });
+        }
+		initGlobalEvents(){
+			$(document.body).on('click', '.proler-collapse-all', function(){
+				$(this).closest('.mpcdp_settings_section').find('.pr-settings .pr-item').each(function(){
+					if(!$(this).find('.proler-option-content').is(':hidden')) $(this).find('span.proler-arrow img').trigger('click');
+				});
+			});
+		}
+    }
+
+    new prolerAdminClass();
+})(jQuery, window, document);
+
+
 (function ($) {
 	$( document ).ready( function () {
 		var key = false;
