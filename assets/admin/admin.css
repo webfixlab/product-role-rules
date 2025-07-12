@@ -124,16 +124,17 @@ div#proler_product_data_tab #mpcdp_settings{
     color: #fff;
 }
 .mpcdp_settings_section_title {
+	font-size: 17px;
+	font-weight: 600;
+	margin: 50px 0 15px 0;
 	border-bottom: 1px solid #d8d8d8;
 }
 .mpcdp_settings_section_title.proler-page-title {
-    font-size: 20px;
+	font-size: 20px;
     margin: 20px 0 30px 0;
 }
-.pr-settings .mpcdp_settings_section_title {
-    font-size: 17px;
-    font-weight: 600;
-    margin: 50px 0 15px 0;
+.proler-option-content .mpcdp_settings_section_title:first-child {
+	margin-top: 0;
 }
 span.proler-arrow {
 	cursor: pointer;
@@ -217,6 +218,7 @@ textarea.proler-widefat {
 }
 .woocommerce_options_panel textarea.proler-widefat{
 	height: auto;
+	margin-top: 10px;
 }
 .proler-collapse-wrap{
 	display: block;
@@ -376,9 +378,9 @@ span.dashicons.dashicons-trash:hover {
 	transition: 0.3s;
     display: none;
     position: fixed;
-    top: 37px;
+    top: 32px;
     right: 0;
-    left: 165px;
+    left: 160px;
     width: 100%;
     height: 100%;
     background: #00000063;
@@ -529,14 +531,20 @@ span.dashicons.dashicons-trash:hover {
 	#mpcdp_settings{
 		margin: 20px 20px 0 0;
 	}
+	.mpcdp_settings_content {
+		padding: 0 20px 20px;
+	}
 	.proler-option-content input[type="datetime-local"], .pr-settings select{
+		border: 1px solid #dfdfdf;
 		border-radius: 5px;
 		padding: 0 25px 0 10px;
 		font-size: 100%;
 	}
+	.pr-settings input[type="datetime-local"]{
+		height: 35px;
+	}
 	.proler-option-content textarea{
 		padding: 10px;
-		font-size: 100%;
 	}
 	#mpcdp_settings .disrange-item select, #mpcdp_settings .disrange-item input[type="text"]{
 		border-radius: 0;
@@ -548,8 +556,8 @@ span.dashicons.dashicons-trash:hover {
 	#mpcdp_settings .disrange-item input[type="text"]:last-of-type {
 		border-right: 1px solid #dfdfdf;
 	}
-	#mpcdp_settings .disrange-item select:focus, #mpcdp_settings .disrange-item input[type="text"]:focus{
-		border-right: 1px solid;
+	.add-new-disrange, a.add-new{
+		padding: 7px 15px;
 	}
 }
 @media screen and (max-width: 1200px){
@@ -562,72 +570,91 @@ span.dashicons.dashicons-trash:hover {
 	#middle-content{
 		width: 84%;
 	}
-	.role-settings-head .mpcdp_row .col-md-6{
-		width: 100%;
-		margin-bottom: 20px;
-	}
-	.woocommerce_options_panel select{
-		float: none;
-	}
-	.mpcdp_row.disrange-item .delete-disrange {
-		margin-left: 0;
-		line-height: 20px;
-	}
-	.new-role-wrap .mpcdp_settings_submit button.mpcdp_submit_button{
-		width: auto;
-		height: auto;
-	}
-	.discount-range-demo{
-		display: none;
-	}
 	div#proler_product_data_tab #mpcdp_settings{
 		margin: 0;
 	}
 }
-@media screen and (max-width: 1024px){
-	#middle-content{
-		width: 80%;
+@media screen and (max-width: 767px) {
+	#mpcdp_settings {
+		margin: 0;
+		margin-top: 10px;
 	}
-	#right-side{
+	.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option, .mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option:first-child{
+		padding: 10px;
+	}
+	.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option.proler-option-head, .mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option.proler-option-head:first-child{
+		padding: 5px 0 10px 10px;
+	}
+	.proler-option-content .mpcdp_row.disrange-item {
+		margin-bottom: 10px;
+	}
+	.proler-option-head .mpcdp_row{
+		align-items: end;
+	}
+	span.proler-arrow img{
+		right: 0;
+	}
+	.proler-option-head select {
+		padding: 5px;
+		min-height: 35px;
+		line-height: normal;
+	}
+	.pr-settings input[type="text"], .pr-settings select, .new-role-wrap input[type="text"], input[type="datetime-local"] {
+		width: 100%;
+		min-height: 30px;
+		line-height: normal;
+	}
+	.mpcdp_submit_button .save-text, .proler-nav-wrap .nav-item span.label{
 		display: none;
 	}
-}
-@media all and (max-width: 782){
-	.mpcdp_row{
-		flex-direction:column
-	}
-}
-@media screen and (max-width: 767px) {
-	.mpcdp_settings_section > .mpcdp_row {
-		padding-left: unset;
-	}
-	.role-settings-head .mpcdp_row{
+	.mpcdp_submit_button .save-text.save-text-mobile, .proler-nav-wrap .nav-item.proler-nav-orange span.label{
 		display: block;
 	}
-	.mpcdp_row .col-md-3{
-		max-width:70px
+	.proler-nav-wrap .nav-item.proler-nav-orange span.label{
+		font-size: 14px;
 	}
-	.mpcdp_submit_button .save-text{
-		display:none
+	.mpcdp_settings_section_title {
+		font-size: 16px;
 	}
-	.mpcdp_submit_button .save-text.save-text-mobile{
-		display:block
+	.proler-collapse-wrap .proler-collapse-all, .add-new-disrange, a.add-new{
+		padding: 5px 10px;
 	}
-	.proler-nav-wrap .nav-item span.label{
-		display:none
+	.add-new-disrange, a.add-new{
+		margin: 0;
 	}
-	.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option{
-		padding:40px 20px
+	.proler-role-list li{
+		margin-right: 5px;
+        padding: 5px 10px;
+        margin-bottom: 9px;
 	}
-	
-	.mpcdp_option_label{
-		margin-bottom:15px
+	#mpcdp_settings .proler-saved-settings{
+		font-size: 14px;
 	}
-	.mpcdp_option_description{
-		padding:0 0 10px
+	.general-settings .mpcdp_row, .new-role-wrap .mpcdp_row{
+		flex-flow: wrap;
 	}
-	.mpcdp_settings_submit .submit{
-		margin:5px !important
+	.general-settings .mpcdp_row .col-md-6, .new-role-wrap .mpcdp_row .col-md-6{
+		width: 100%;
+	}
+	.general-settings .mpcdp_option_description{
+		padding-bottom: 10px;
+	}
+	.general-settings .mpcdp_settings_section_title {
+		margin: 0 0 15px 0;
+	}
+	.mpcdp_settings_submit button.mpcdp_submit_button{
+		padding: 5px 10px;
+	}
+	.proler-discount select[name="discount_type"]{
+		max-width: 50px;
+	}
+	.proler-option-content textarea {
+        padding: 5px;
+        font-size: 14px;
+    }
+	.proler-popup{
+		top: 0;
+		left: 0;
 	}
 	.image-wrap {
 		top: 50%;
@@ -645,45 +672,22 @@ span.dashicons.dashicons-trash:hover {
 		border-radius: 30px;
 		margin: 15px auto 25px auto;
 	}
-	#mpcdp_settings {
-		margin: 0;
-		margin-top: 10px;
-		max-width: 97% !important;
+	#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item{
+		font-size: 11px;
+		width: 28px;
+		height: 30px;
+		line-height: 30px;
 	}
-	.mpcdp_settings_section_title {
-		font-size: 16px;
+	#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.active.hurkanSwitch-switch-item-status-on {
+		padding-right: 32px;
+		padding-left: 10px;
 	}
-	.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option {
-		padding: 20px 20px;
+	#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item>.hurkanSwitch-switch-cursor-selector {
+		top: 5px;
+		height: 20px;
+		width: 20px;
 	}
-	/* August 05, 2024 */
-	#right-side{
-		display: none;
-	}
-	#middle-content {
-		width: 85%;
-	}
-	#middle-content .notice a.button {
-		min-height: auto;
-		line-height: 28px;
-		padding: 0 5px;
-	}
-	#middle-content select, .pr-settings select {
-		line-height: 28px;
-		font-size: 14px;
-		width: 100%;
-	}
-	.proler-role-list li{
-		display: block;
-		margin-right: 0;
-		padding: 10px;
-		margin-bottom: 10px;
-	}
-	.proler-custom-roles span.dashicons.dashicons-trash{
-		margin-left: 0;
-		float: right;
-	}
-	#mpcdp_settings .proler-saved-settings{
-		font-size: 14px;
+	#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.hurkanSwitch-switch-item-status-on>.hurkanSwitch-switch-cursor-selector{
+		right: 5px;
 	}
 }
