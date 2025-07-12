@@ -10,6 +10,7 @@
             });
         }
 		initGlobalEvents(){
+			const self = this;
 			$(document.body).on('click', '.proler-collapse-all', function(){
 				$(this).closest('.mpcdp_settings_section').find('.pr-settings .pr-item').each(function(){
 					if(!$(this).find('.proler-option-content').is(':hidden')) $(this).find('span.proler-arrow img').trigger('click');
@@ -26,15 +27,7 @@
 	$( document ).ready( function () {
 		var key = false;
 		
-		$( window ).on( 'scroll', function () {
-			if ( $( window ).scrollTop() > 60 ) {
-				$( '.proler-admin-wrap' ).addClass( 'proler-stick-heading' );
-			} else {
-				if ( $( '.proler-admin-wrap' ).hasClass( 'proler-stick-heading' ) ) {
-					$( '.proler-admin-wrap' ).removeClass( 'proler-stick-heading' );
-				}
-			}
-		});
+		
 
 		$( 'body' ).on( 'click', '.wfl-nopro', function (e) {
 			e.preventDefault();

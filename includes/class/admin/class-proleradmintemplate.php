@@ -94,9 +94,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 */
 		public function settings_page( $page_slug ) {
             global $proler__;
-
             $this->page = $page_slug;
-
 			?>
 			<form action="" method="POST">
                 <div id="mpcdp_settings" class="mpcdp_container">
@@ -112,11 +110,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
                     <div class="mpcdp_row">
                         <?php $this->settings_content(); ?>
 						<div id="right-side">
-							<div class="mpcdp_settings_promo">
-								<div id="wfl-promo">
-									<?php $this->sidebar(); ?>
-								</div>
-							</div>
+							<?php $this->sidebar(); ?>
 						</div>
 						<?php $this->popup(); ?>
                     </div>
@@ -138,15 +132,11 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			$proler__['which_page'] = 'option_page';
 
 			?>
-            <div class="col-md-3" id="left-side">
-                <div class="mpcdp_settings_sidebar" data-sticky-container="" style="position: relative;">
-                    <div class="mpcdp_sidebar_tabs">
-                        <div class="inner-wrapper-sticky">
-                            <?php $this->settings_menu(); ?>
-                            <?php $this->settings_submit(); ?>
-                        </div>
-                    </div>
-                </div>
+            <div id="left-side" class="col-md-3">
+				<div class="proler-nav-wrap">
+					<?php $this->settings_menu(); ?>
+					<?php $this->settings_submit(); ?>
+				</div>
             </div>
             <div class="col-md-6" id="middle-content">
                 <div class="mpcdp_settings_content">
@@ -342,7 +332,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			$is_active = $menu['slug'] === $this->page ? 'active' : '';
 			?>
 			<a href="<?php echo esc_url( $menu['url'] ); ?>">
-				<div class="mpcdp_settings_tab_control <?php echo esc_attr( $menu['class'] ) . ' ' . esc_attr( $is_active ); ?>">
+				<div class="nav-item <?php echo esc_attr( $menu['class'] ) . ' ' . esc_attr( $is_active ); ?>">
 					<?php if( !empty( $menu['icon'] ) ) : ?>
 						<span class="<?php echo esc_html( $menu['icon'] ); ?>"></span>
 					<?php endif; ?>
@@ -666,11 +656,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 							<div class="mpcdp_row discount-range-demo">
 								<?php $this->discount_range_row(); ?>
 							</div>
-							<div class="mpcdp_row">
-								<div class="mpcdp_settings_option_description col-md-12">
-									<div class="add-new-disrange"><?php echo esc_html__( 'Add Tier', 'product-role-rules' ); ?></div>
-								</div>
-							</div>
+							<div class="add-new-disrange"><?php echo esc_html__( 'Add Tier', 'product-role-rules' ); ?></div>
 						</div>
 					</div>
 					<div class="mpcdp_row">
@@ -1184,33 +1170,31 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			}
 
 			?>
-			<div class="proler-sidebar">
-				<div class="sidebar_top">
-					<h3><?php echo esc_html( $sidebar_title ); ?></h3>
-					<div class="tagline_side"><?php echo wp_kses_post( $side_tagline ); ?></div>
-					<?php if ( isset( $proler__['prostate'] ) && 'activated' !== $proler__['prostate'] ) : ?>
-						<div class="proler-side-pro"><a href="<?php echo esc_url( $proler__['url']['free'] ); ?>" target="_blank"><?php echo esc_html( $side_button ); ?></a></div>
-					<?php endif; ?>
-				</div>
-				<div class="sidebar_bottom">
-					<ul>
-						<li>
-							<span class="dashicons dashicons-yes-alt"></span>
-							<?php echo esc_html__( 'Maximum Quantity: Set an upper limit on the number of items a customer can purchase for a specific product.', 'product-role-rules' ); ?>
-						</li>
-						<li>
+			<div class="sidebar_top">
+				<h3><?php echo esc_html( $sidebar_title ); ?></h3>
+				<div class="tagline_side"><?php echo wp_kses_post( $side_tagline ); ?></div>
+				<?php if ( isset( $proler__['prostate'] ) && 'activated' !== $proler__['prostate'] ) : ?>
+					<a href="<?php echo esc_url( $proler__['url']['free'] ); ?>" target="_blank"><?php echo esc_html( $side_button ); ?></a>
+				<?php endif; ?>
+			</div>
+			<div class="sidebar_bottom">
+				<ul>
+					<li>
 						<span class="dashicons dashicons-yes-alt"></span>
-							<?php echo esc_html__( 'Minimum Quantity: Establish a minimum number of items that a customer must purchase for a specific product.', 'product-role-rules' ); ?>
-						</li>
-						<li>
-						<span class="dashicons dashicons-yes-alt"></span>
-							<?php echo esc_html__( 'Rocket speed support: Most of our customer\'s problem solved within 24 hours of their first contact.', 'product-role-rules' ); ?>
-						</li>
-					</ul>
-				</div>
-				<div class="support">
-					<p><a href="<?php echo esc_url( $proler__['url']['support'] ); ?>" target="_blank"><?php echo esc_html__( 'Contact us', 'product-role-rules' ); ?></a></p>
-				</div>
+						<?php echo esc_html__( 'Maximum Quantity: Set an upper limit on the number of items a customer can purchase for a specific product.', 'product-role-rules' ); ?>
+					</li>
+					<li>
+					<span class="dashicons dashicons-yes-alt"></span>
+						<?php echo esc_html__( 'Minimum Quantity: Establish a minimum number of items that a customer must purchase for a specific product.', 'product-role-rules' ); ?>
+					</li>
+					<li>
+					<span class="dashicons dashicons-yes-alt"></span>
+						<?php echo esc_html__( 'Rocket speed support: Most of our customer\'s problem solved within 24 hours of their first contact.', 'product-role-rules' ); ?>
+					</li>
+				</ul>
+			</div>
+			<div class="support">
+				<p><a href="<?php echo esc_url( $proler__['url']['support'] ); ?>" target="_blank"><?php echo esc_html__( 'Contact us', 'product-role-rules' ); ?></a></p>
 			</div>
 			<?php
 
