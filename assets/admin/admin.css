@@ -11,6 +11,7 @@ span.proler-delete:hover {
 }
 span.dashicons.dashicons-trash {
 	color: #c1c1c1;
+	padding-left: 5px;
 }
 span.dashicons.dashicons-trash:hover {
 	color: #b32d2e;
@@ -113,6 +114,12 @@ a.nav-tab {
 	animation-name: zoom;
 	animation-duration: 0.6s;
 }
+#prolerpop .mpcpop-close.close {
+	position: fixed;
+    right: 4px;
+    top: 0;
+    font-size: 24px;
+}
 #prolerpop .mpcpop-close:hover {
 	cursor: pointer;
 	color: #000;
@@ -132,10 +139,6 @@ a.nav-tab {
 .mpc-focus {
 	font-size: 22px;
 	margin-top: 12px;
-}
-.mpc-focus span {
-	color: #8f0000;
-    font-weight: 500;
 }
 .mpc-focus a {
 	background: #004895;
@@ -373,8 +376,7 @@ span.proler-arrow img {
 	margin-bottom:25px
 }
 .mpcdp_option_label{
-	font-size: 14px;
-	font-weight: 600;
+	font-size: 15px;
 }
 .mpcdp_settings_option_field.mpcdp_settings_option_field_text {
 	text-align: right;
@@ -662,11 +664,11 @@ a.add-new:hover {
 .proler-collapse-wrap .proler-collapse-all:hover{
 	background-color: #ccc;
 }
-.pr-settings input[type="datetime-local"], .pr-settings input[type="text"] {
+.pr-settings input[type="text"], .new-role-wrap input[type="text"] {
     border: 1px solid #dfdfdf;
 	padding: 4px 10px;
 }
-.pr-settings input[type="datetime-local"], .pr-settings input[type="text"], .pr-settings select{
+.pr-settings input[type="text"], .pr-settings select, .new-role-wrap input[type="text"]{
 	width: 80%;
 }
 select[name="discount_type"] {
@@ -683,7 +685,7 @@ select[name="discount_type"] {
 	text-align: right;
     padding: 10px 30px;
     float: right;
-    margin: 20px 20px 0 0;
+    margin: 20px 25px 0 0;
     border: 1px solid #afafaf;
     border-radius: 4px;
     cursor: pointer;
@@ -693,9 +695,6 @@ select[name="discount_type"] {
 }
 .proler-role-list ul li a {
     text-decoration: none;
-}
-.new-role-wrap input[type="text"] {
-    width: 95%;
 }
 .mpcdp_settings_section .notice {
     margin: 20px 0 0 0;

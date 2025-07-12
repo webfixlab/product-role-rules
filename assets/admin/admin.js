@@ -38,24 +38,22 @@
 
 		$( 'body' ).on( 'click', '.wfl-nopro', function (e) {
 			e.preventDefault();
-
 			var txt = $( this ).attr( 'data-protxt' );
-			$( '.wfl-popup .focus span' ).text( txt );
-			$( '.wfl-popup' ).show();
+			$( '.proler-popup .focus span' ).text( txt );
+			$( '.proler-popup' ).show();
 		});
 
 		$( 'body' ).on( 'input', '.wfl-nopro', function (e) {
 			e.preventDefault();
-
 			var txt = $( this ).attr( 'data-protxt' );
-			$( '.wfl-popup .focus span' ).text( txt );
-			$( '.wfl-popup' ).show();
+			$( '.proler-popup .focus span' ).text( txt );
+			$( '.proler-popup' ).show();
 			
 			$( this ).val( '' );
 		});
 
-		$( 'body' ).on( 'click', '.wfl-popup .close', function () {
-			$( '.wfl-popup' ).hide();
+		$( 'body' ).on( 'click', '.proler-popup .close', function () {
+			$( '.proler-popup' ).hide();
 		});
 
 		$( 'body' ).on( 'click', 'input[name="proler_stype"]', function () {

@@ -248,6 +248,15 @@ if ( ! class_exists( 'ProlerLoader' ) ) {
 
 			do_action( 'proler_admin_change_pro_state' );
 		}
+		private function log( $data ) {
+			if ( true === WP_DEBUG ) {
+				if ( is_array( $data ) || is_object( $data ) ) {
+					error_log( print_r( $data, true ) );
+				} else {
+					error_log( $data );
+				}
+			}
+		}
 
 		/**
 		 * Ask client feedback about the plugin rating

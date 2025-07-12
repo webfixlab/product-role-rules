@@ -164,9 +164,11 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 								?>
 							</span>
                         </div>
-						<div class="proler-collapse-wrap">
-							<span class="proler-collapse-all">Collapse all</span>
-						</div>
+						<?php if( 'settings' === $this->page ) : ?>
+							<div class="proler-collapse-wrap">
+								<span class="proler-collapse-all">Collapse all</span>
+							</div>
+						<?php endif; ?>
                         <?php
 							$this->settings_saved_notice();
 
@@ -515,9 +517,9 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 */
 		public function role_settings_details( $rd = array() ) {
 			global $proler__;
-
+			$this->log( 'has pro? ' . $proler__['has_pro'] );
 			$discount_type = isset( $rd['discount_type'] ) ? $rd['discount_type'] : '';
-			$pro_class     = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
+			$pro_class     = isset( $proler__['has_pro'] ) && !$proler__['has_pro'] ? 'wfl-nopro' : '';
 			$ad_display    = isset( $rd['additional_discount_display'] ) ? $rd['additional_discount_display'] : 'table_min';
 
 			?>
@@ -800,18 +802,22 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					</div>
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<?php
-								$value_from = !empty( $date_from ) ? $this->convert_to_wp_timezone( $date_from ) : '';
-								printf(
-									'<input type="datetime-local" name="schedule_start" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									esc_html( $value_from ),
-									esc_html__( 'Starting Date and Time', 'product-role-rules' ),
-									esc_attr( $pro_class ),
-									esc_html__( 'Schedule Start', 'product-role-rules' )
-								);
-							?>
+							<?php $date_from = !empty( $date_from ) ? $this->convert_to_wp_timezone( $date_from, true ) : ''; ?>
+							<input
+								type="datetime-local"
+								name="schedule_start"
+								class="<?php echo esc_attr( $pro_class ); ?>"
+								data-protxt="<?php echo esc_html__( 'Schedule Start', 'product-role-rules' ); ?>"
+								<?php echo !empty( $date_from ) ? "value=\"{$date_from}\"" : ''; ?>>
 						</div>
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+							<!-- <input
+								type="datetime-local"
+								name="schedule_start"
+								placeholder="%s"
+								class="%s"
+								data-protxt="%s"
+								value="%s"> -->
 							<?php
 								$value_to = !empty( $date_to ) ? $this->convert_to_wp_timezone( $date_to ) : '';
 								printf(
@@ -1145,7 +1151,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				<div class="image-wrap">
 					<span class="dashicons dashicons-dismiss mpcpop-close close"></span>
 					<div class="mpc-focus focus">
-						<?php echo esc_html__( 'Please upgrade to PRO to use', 'product-role-rules' ); ?> <span></span>.
+						<?php echo esc_html__( 'Please upgrade to PRO to use', 'product-role-rules' ); ?> <span class="proler-gradient"></span>.
 						<a href="<?php echo esc_url( $proler__['url']['free'] ); ?>" target="_blank"><?php echo esc_html__( 'Get PRO', 'product-role-rules' ); ?></a>
 					</div>
 					<div class="mpcex-features">
