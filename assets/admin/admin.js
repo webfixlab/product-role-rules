@@ -7,6 +7,21 @@
         constructor(){
             $(document).ready(() => {
 				this.initGlobalEvents();
+				this.initSectionEvents();
+				this.initCommonEvents();
+				this.initProductTabEvents();
+
+				// auto add a new role section on load if there's no settings saved for it.
+				const hasSection = $('.pr-settings .pr-item');
+				if(hasSection.length === 0) $('.add-new').trigger('click');
+
+				// auto expand first role section content.
+				const contents = $(document.body).find('.pr-item .proler-option-content');
+				if($(contents[0]).is(':hidden')) $(contents[0]).closest('.pr-item').find('.proler-arrow img').trigger('click');
+
+				// add a new discount tier if there are none.
+				const ranges = $('.discount-ranges-main').find('.discount-range-wrap .mpcdp_row');
+				if(ranges.length === 0) $(ranges[0]).find('.add-new-disrange').trigger('click');
             });
         }
 		initGlobalEvents(){
@@ -16,356 +31,155 @@
 					if(!$(this).find('.proler-option-content').is(':hidden')) $(this).find('span.proler-arrow img').trigger('click');
 				});
 			});
+			$(document.body).on('click input', '.wfl-nopro', function(e){
+				e.preventDefault();
+				self.renderPopup($(this));
+			});
+			$(document.body).on('click', '.proler-popup .close', () => {
+				$(document.body).find('.proler-popup').hide();
+			});
+
+			$(document.body).on('click', '.proler-delete-role', function(e){
+				if(!confirm(proler.delete_role_msg)) e.preventDefault();
+			});
+
+			$(document.body).on('click', 'input[type="submit"],button.mpcdp_submit_button', function(e){
+				e.preventDefault();
+				const data = self.getSettings();
+				console.log(data);
+				if(Object.keys(data).length !== 0) e.preventDefault();
+				$('input[name="proler_data"]').val(JSON.stringify(data));
+			});
+		}
+		initSectionEvents(){
+			const self = this;
+			$(document.body).on('click', '.add-new', function(){
+				$('.pr-settings').append(`<div class="mpcdp_settings_toggle pr-item">${$('.demo-item').html()}</div>`);
+			});
+			$(document.body).on('click', '.proler-delete', function(){
+				const section = $(this).closest('.pr-item');
+				section.hide('slow', function(){
+					section.remove();
+				});
+			});
+			$(document.body).on('click', '.proler-arrow img', function(){
+				const content = $(this).closest('.pr-item').find('.proler-option-content');
+				if(content.is(':visible')) $(this).attr('src', proler.right_arrow);
+				else $(this).attr('src', proler.down_arrow);
+				content.toggle('slow');
+			});
+			$(document.body).on('click', 'input[name="hide_price"]', function(){
+				const textarea = $(this).closest('.mpcdp_settings_section').find('textarea');
+				if($(this).is(':checked')) textarea.prop('disabled', false);
+				else textarea.prop('disabled', true);
+			});
+
+			$(document.body).on('click', '.add-new-disrange', function(){
+				$(this).closest('.discount-ranges-main').find('.discount-range-wrap').append($('.discount-range-demo').html());
+			});
+			$(document.body).on('click', '.delete-disrange', function(){
+				const range = $(this).closest('.disrange-item');
+				range.hide('slow', function(){
+					range.remove();
+				});
+			});
+		}
+		initCommonEvents(){
+			$(document.body).on('click', '.hurkanSwitch-switch-item', function(){
+				const switchWrap = $(this).closest('.hurkanSwitch-switch-box');
+				switchWrap.find('.hurkanSwitch-switch-item').each(function(){
+					if($(this).hasClass('active')) $(this).removeClass('active');
+					else $(this).addClass('active');
+				});
+				const wrap = $(this).closest('.mpcdp_row');
+				wrap.find('input[type="checkbox"]').trigger('click');
+				wrap.find('.prdis-msg').toggle('slow');
+			});
+		}
+		initProductTabEvents(){
+			$(document.body).on('click', 'input[name="proler_stype"]', function(){
+				const val = $(this).val();
+				const wrap = $('.role-settings-content');
+				if(val === 'proler-based') wrap.show('slow');
+				else wrap.hide('slow');
+			});
+
+			// auto hide tab content if it's not in correct scope.
+			const type = $('input[name="proler_stype"]:checked').val();
+			if(type !== 'proler-based' && $('.role-settings-content').is(':visible')) $('.role-settings-content').hide();
+		}
+
+		getSettings(){
+			const self = this;
+			const data = {};
+			const type = $( 'input[name="proler_stype"]:checked' ).val();
+			if(typeof type !== 'undefined') data['proler_stype'] = type;
+
+			data['roles'] = {};
+			$('.pr-settings').find('.pr-item').each(function(){
+				var role = $(this).find('.proler-roles').val();
+				if(typeof role !== 'undefined' && role.length > 0){
+					data['roles'][role] = self.getRoleSettings($(this));
+				}
+			});
+			return data;
+		}
+		getRoleSettings(row){
+			const data = {};
+			const fields = [
+				{type: 'checkbox', name: 'pr_enable'},
+				{type: 'checkbox', name: 'hide_price'},
+				{type: 'textarea', name: 'hide_txt'},
+				{type: 'input', name: 'min_qty'},
+				{type: 'input', name: 'max_qty'},
+				{type: 'input', name: 'discount'},
+				{type: 'select', name: 'discount_type'},
+				{type: 'checkbox', name: 'discount_text'},
+				{type: 'checkbox', name: 'hide_regular_price'},
+				{type: 'select', name: 'additional_discount_display'},
+				{type: 'select', name: 'category'},
+				{type: 'select', name: 'product_type'},
+				{type: 'input', name: 'schedule_start'},
+				{type: 'input', name: 'schedule_end'},
+			];
+			for(const i in fields){
+				const fieldType = fields[i].type === 'checkbox' ? 'input' : fields[i].type;
+				const field = row.find(`${fieldType}[name="${fields[i].name}"]`);
+				if(fields[i].type === 'checkbox' && field.is(':checked')) data[fields[i].name] = true;
+				else data[fields[i].name] = field.val();
+			}
+			data['ranges'] = this.getDiscountTiers(row);
+			return data;
+		}
+		getDiscountTiers(row){
+			const fields = [
+				{type: 'select', name: 'discount_type'},
+				{type: 'input', name: 'min_value'},
+				{type: 'input', name: 'max_value'},
+				{type: 'input', name: 'discount_value'},
+			];
+			const data = [];
+			row.find('.discount-range-wrap .disrange-item').each(function(){
+				const item = {};
+				for(const i in fields){
+					const field = $(this).find(`${fields[i].type}[name="${fields[i].name}"]`);
+					if(fields[i].type === 'checkbox' && field.is(':checked')) item[fields[i].name] = true;
+					else item[fields[i].name] = field.val();
+				}
+				data.push(item);
+			});
+			return data;
+		}
+
+		renderPopup(item){
+			const label = item.attr('data-protxt');
+			if(!label || label.length === 0) return;
+			const popup = $(document.body).find('.proler-popup');
+			popup.find('.focus span').text(label);
+			popup.show();
+			item.val('');
 		}
     }
 
     new prolerAdminClass();
 })(jQuery, window, document);
-
-
-(function ($) {
-	$( document ).ready( function () {
-		var key = false;
-		
-		
-
-		$( 'body' ).on( 'click', '.wfl-nopro', function (e) {
-			e.preventDefault();
-			var txt = $( this ).attr( 'data-protxt' );
-			$( '.proler-popup .focus span' ).text( txt );
-			$( '.proler-popup' ).show();
-		});
-
-		$( 'body' ).on( 'input', '.wfl-nopro', function (e) {
-			e.preventDefault();
-			var txt = $( this ).attr( 'data-protxt' );
-			$( '.proler-popup .focus span' ).text( txt );
-			$( '.proler-popup' ).show();
-			
-			$( this ).val( '' );
-		});
-
-		$( 'body' ).on( 'click', '.proler-popup .close', function () {
-			$( '.proler-popup' ).hide();
-		});
-
-		$( 'body' ).on( 'click', 'input[name="proler_stype"]', function () {
-			var v = $( this ).val();
-			$( '.prs-notice' ).remove();
-
-			if ( v == 'default' ) {
-				$( '.role-settings-content' ).hide( 'slow' );
-			} else if ( v == 'proler-based' ) {
-				$( '.role-settings-content' ).show( 'slow' );
-			} else {
-				$( '.role-settings-content' ).hide( 'slow' );
-			}
-		});
-
-		// convert json to string - for using as input field value
-		function json_populate_input( field, data ){
-			var s = JSON.stringify( data );
-			s     = s.replaceAll( '\"', '\"' );
-			$( 'input[name="' + field + '"]' ).val( s );
-		}
-		function validate_input( val ){
-			val = val.replaceAll( '\'', ':*snglqt*:' ).replaceAll( '\"', ':*dblqt*:' );
-			return val;
-		}
-		function get_range_data( row ){
-			var data = [];
-			row.find( '.discount-range-wrap .disrange-item' ).each(function(){
-				var row = $(this);
-				var range  = {};
-				if ( row.find( 'select[name="discount_type"]' ).val().length > 0 ) {
-					range['discount_type'] = validate_input( row.find( 'select[name="discount_type"]' ).val() );
-				}
-				if ( row.find( 'input[name="min_value"]' ).val().length > 0 ) {
-					range['min'] = validate_input( row.find( 'input[name="min_value"]' ).val() );
-				}
-				if ( row.find( 'input[name="max_value"]' ).val().length > 0 ) {
-					range['max'] = validate_input( row.find( 'input[name="max_value"]' ).val() );
-				}
-				if ( row.find( 'input[name="discount_value"]' ).val().length > 0 ) {
-					range['discount'] = validate_input( row.find( 'input[name="discount_value"]' ).val() );
-				}
-				if( range['min'] || range['max'] ){
-					data.push( range );
-				}
-			});
-
-			return data;
-		}
-		function get_role_settings( row ){
-			var data = {};
-
-			if ( row.find( 'input[name="discount_text"]' ).is( ':checked' ) ) {
-				data[ 'discount_text' ] = true;
-			}
-
-			if ( row.find( 'input[name="hide_price"]' ).is( ':checked' ) ) {
-				data[ 'hide_price' ] = true;
-			}
-
-			if ( row.find( 'textarea[name="hide_txt"]' ).val().length > 0 ) {
-				data[ 'hide_txt'] = encodeURIComponent( row.find( 'textarea[name="hide_txt"]' ).val() );
-			}
-
-			var discount = '';
-			if ( row.find( 'input[name="discount"]' ).val().length > 0 ) {
-				discount = validate_input( row.find( 'input[name="discount"]' ).val() );
-			}
-			data['discount'] = discount;
-
-			var discount_type = '';
-			if ( row.find( 'select[name="discount_type"]' ).val().length > 0 ) {
-				discount_type = validate_input( row.find( 'select[name="discount_type"]' ).val() );
-			}
-			data['discount_type'] = discount_type;
-
-			var min_qty = '';
-			if ( row.find( 'input[name="min_qty"]' ).val().length > 0 && proler.has_pro == true ) {
-				min_qty = validate_input( row.find( 'input[name="min_qty"]' ).val() );
-			}
-			data['min_qty'] = min_qty;
-
-			var max_qty = '';
-			if ( row.find( 'input[name="max_qty"]' ).val().length > 0 && proler.has_pro == true ) {
-				max_qty = validate_input( row.find( 'input[name="max_qty"]' ).val() );
-			}
-			data['max_qty'] = max_qty;
-
-			if ( row.find( 'input[name="pr_enable"]' ).is( ':checked' ) ) {
-				data[ 'pr_enable' ] = true;
-			}
-
-			var category = '';
-			if ( row.find( 'select[name="category"]' ).val() && row.find( 'select[name="category"]' ).val().length > 0 ) {
-				category = validate_input( row.find( 'select[name="category"]' ).val() );
-			}
-			data['category'] = category;
-
-			var product_type = '';
-			if ( row.find( 'select[name="product_type"]' ).val() && row.find( 'select[name="product_type"]' ).val().length > 0 ) {
-				product_type = validate_input( row.find( 'select[name="product_type"]' ).val() );
-			}
-			data['product_type'] = product_type;
-			
-			const start = row.find('input[name="schedule_start"]').val();
-			const end   = row.find('input[name="schedule_end"]').val();
-			if(start.length > 0 || end.length > 0){
-				data['schedule'] = {};
-			}
-			if(start.length > 0){
-				data['schedule']['start'] = validate_input(start);
-			}
-			if(end.length > 0){
-				data['schedule']['end'] = validate_input(end);
-			}
-			
-			data['hide_regular_price'] = false;
-			if ( row.find( 'input[name="hide_regular_price"]' ).is( ':checked' ) ) {
-				data[ 'hide_regular_price' ] = true;
-			}
-
-			data['ranges'] = get_range_data( row );
-
-			var additional_discount_display = '';
-			if ( row.find( 'select[name="additional_discount_display"]' ).val().length > 0 ) {
-				additional_discount_display = validate_input( row.find( 'select[name="additional_discount_display"]' ).val() );
-			}
-			data['additional_discount_display'] = additional_discount_display;
-			// console.log( data );
-
-			return data;
-		}
-		function get_settings(){
-			var data = {};
-
-			if ( typeof $( 'input[name="proler_stype"]:checked' ).val() != 'undefined' ) {
-				data['proler_stype'] = $( 'input[name="proler_stype"]:checked' ).val();
-			}
-
-			data['roles'] = {};
-
-			// per role data
-			$( '.pr-settings' ).find( '.pr-item' ).each( function () {
-				var role = $( this ).find( '.proler-roles' ).val();
-				if ( role.length > 0 ) {
-					data['roles'][role] = get_role_settings( $( this ) );
-				}
-			});
-
-			return data;
-		}
-		function set_input_val( data ){
-			if ( typeof data == 'object' && ! $.isEmptyObject( data ) ) {
-				json_populate_input( 'proler_data', data );
-			} else {
-				$( 'input[name="proler_data"]' ).val( '' );
-			}
-		}
-
-		function show_diable_msg( btn ){
-			var input = btn.closest( '.mpcdp_settings_option_field' ).find( 'input[name="pr_enable"]' );
-
-			if ( typeof input == 'undefined' || input.length == 0 ) {
-				return;
-			}
-
-			btn.closest( '.mpcdp_row' ).find( '.prdis-msg' ).toggle( 'slow' );
-		}
-		function toggle_button( btn ){
-			var wrap = btn.closest( '.hurkanSwitch-switch-box' );
-
-			wrap.find( '.hurkanSwitch-switch-item' ).each( function () {
-				if ( $( this ).hasClass( 'active' ) ) {
-					$( this ).removeClass( 'active' );
-				} else {
-					$( this ).addClass( 'active' );
-				}
-			});
-
-			btn.closest( '.mpcdp_settings_option_field' ).find( 'input[type="checkbox"]' ).trigger( 'click' );
-			show_diable_msg( btn );
-		}
-
-
-		function checkRanges(){
-			var allOK = true;
-
-			$( '.pr-settings' ).find( '.pr-item' ).each( function () {
-				var role = $( this ).find( '.proler-roles' ).val();
-				if ( role.length > 0 ) {
-					var row = $(this);
-					row.find( '.disrange-item' ).each(function(){
-						var min = $(this).find( 'input[name="min_value"]' ).val();
-						var max = $(this).find( 'input[name="max_value"]' ).val();
-
-						min = min ? parseFloat( min ) : '';
-						max = max ? parseFloat( max ) : '';
-						console.log( min, max );
-
-						if( min && max && min > max ){
-							allOK = false;
-
-							// console.log( 'min > max' );
-							$([document.documentElement, document.body]).animate({
-								scrollTop: $( '.discount-ranges-main' ).offset().top - 100
-							}, 2000);
-
-							alert( 'Range error: Minimum value cannot be more than maximum.' );
-						}
-					});
-				}
-			});
-
-			return allOK;
-		}
-
-
-
-		$( '.pr-settings' ).on( 'click', '.hurkanSwitch-switch-item', function (e) {
-			toggle_button( $( this ) );
-		});
-
-		$( '.pr-settings' ).on( 'click', '.proler-arrow img', function () {
-			var item = $( this ).closest( '.pr-item' );
-
-			if ( item.find( '.proler-option-content' ).is( ':visible' ) ) {
-				$( this ).attr( 'src', proler.right_arrow );
-			} else {
-				$( this ).attr( 'src', proler.down_arrow );
-			}
-
-			item.find( '.proler-option-content' ).toggle( 'slow' );
-		});
-
-		$( '.pr-settings' ).on( 'click', '.proler-delete', function () {
-			$( this ).closest( '.pr-item' ).hide( 'slow', function () {
-				$( this ).closest( '.pr-item' ).remove();
-			});
-		});
-
-		$('.add-new' ).on( 'click', function () {
-			$( '.pr-settings' ).append( '<div class="mpcdp_settings_toggle pr-item">' + $( '.demo-item' ).html() + '</div>' );
-		});
-
-		// init - frontend on load.
-		if ( typeof $( '.pr-settings' ).find( '.pr-item' ) == 'undefined' || $( '.pr-settings' ).find( '.pr-item' ).length == 0 ) {
-			$( '.add-new' ).trigger( 'click' );
-		}
-
-		$( 'body' ).on( 'click', '.add-new-disrange', function(){
-			var wrap = $(this).closest( '.discount-ranges-main' );
-			wrap.find( '.discount-range-wrap' ).append( $( '.discount-range-demo' ).html() );
-		});
-
-		// init - frontend on load.
-		$( '.discount-ranges-main' ).each(function(){
-			var discount_ranges = $(this).find( '.discount-range-wrap .mpcdp_row' );
-
-			if ( discount_ranges.length === 0 ) {
-				$(this).find( '.add-new-disrange' ).trigger( 'click' );
-			}
-		});
-
-		$( 'body' ).on( 'click', '.delete-disrange', function(){
-			$(this).closest( '.disrange-item' ).hide( 'slow', function(){
-				$(this).remove();
-			});
-		});
-
-		// init - admin product edit page.
-		if ( typeof $( 'input[name="proler_stype"]:checked' ).val() != 'undefined' ) {
-			var val = $( 'input[name="proler_stype"]:checked' ).val();
-
-			if ( val != 'proler-based' && $( '.role-settings-content' ).is( ':visible' ) ) {
-				$( '.role-settings-content' ).hide();
-			}
-		}
-
-		// delete user role.
-		$( '.proler-delete-role' ).on( 'click', function(e){
-			if( ! confirm( proler.delete_role_msg ) ){
-				e.preventDefault();
-			}
-		});
-
-		// single product update/save button clicked event
-		$( 'input[type="submit"],button.mpcdp_submit_button' ).on( 'click', function (e) {
-			// e.preventDefault();
-			if( checkRanges() === false ){
-				e.preventDefault();
-			}
-
-			var data = get_settings();
-			// console.log( data );
-
-			set_input_val( data );
-		});
-
-		// disbale hide price text field until hide price toggle button is checked.
-		$( '.pr-settings' ).on( 'click', 'input[name="hide_price"]', function(){
-			var section = $(this).closest( '.mpcdp_settings_section' );
-			var textarea = section.find( 'textarea' );
-
-			if( $(this).is( ':checked' ) ){
-				textarea.closest( '.mpcdp_row' ).find( '.mpcdp_settings_option_description' ).removeClass( 'disabled' );
-				textarea.prop( 'disabled', false );
-			}else{
-				textarea.closest( '.mpcdp_row' ).find( '.mpcdp_settings_option_description' ).addClass( 'disabled' );
-				textarea.prop( 'disabled', true );
-			}
-		});
-
-		var expanded = false;
-		$( 'body' ).find( '.pr-item' ).each(function(){
-			// console.log( 'expanded?', expanded, 'item hidden?', $(this).find( '.proler-option-content' ).is( ':hidden' ) );
-			if( expanded === false && $(this).find( '.proler-option-content' ).is( ':hidden' ) ){
-				$(this).find( '.proler-arrow img' ).trigger( 'click' );
-				expanded = true;
-			}
-		});
-	});
-})( jQuery );

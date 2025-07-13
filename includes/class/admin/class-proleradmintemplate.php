@@ -419,12 +419,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				</div>
 			</div>
 			<?php do_action( 'proler_admin_extra_section' ); ?>
-			<div class="mpcdp_settings_option visible" style="margin-top:20px;">
-				<div class="mpcdp_row">
-					<input type="hidden" value="" name="proler_data">
-					<a class="add-new" href="javaScript:void(0)"><?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
-				</div>
-			</div>
+			<a class="add-new" href="javaScript:void(0)"><?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
+			<input type="hidden" value="" name="proler_data">
 			<?php
 
 		}
