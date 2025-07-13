@@ -73,6 +73,7 @@ if ( ! class_exists( 'ProlerLoader' ) ) {
 
 			include PROLER_PATH . 'includes/class/class-proler.php';
 			include PROLER_PATH . 'includes/class/admin/class-proleradmintemplate.php';
+			include PROLER_PATH . 'includes/class/admin/class-proler-settings.php';
 			include PROLER_PATH . 'includes/class/admin/class-prolersettings.php';
 
 			$this->check_pro();

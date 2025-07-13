@@ -31,10 +31,10 @@
 					if(!$(this).find('.proler-option-content').is(':hidden')) $(this).find('span.proler-arrow img').trigger('click');
 				});
 			});
-			$(document.body).on('click input', '.wfl-nopro', function(e){
-				e.preventDefault();
-				self.renderPopup($(this));
-			});
+			// $(document.body).on('click input', '.wfl-nopro', function(e){
+			// 	e.preventDefault();
+			// 	self.renderPopup($(this));
+			// });
 			$(document.body).on('click', '.proler-popup .close', () => {
 				$(document.body).find('.proler-popup').hide();
 			});
@@ -44,10 +44,10 @@
 			});
 
 			$(document.body).on('click', 'input[type="submit"],button.mpcdp_submit_button', function(e){
-				e.preventDefault();
+				// e.preventDefault();
 				const data = self.getSettings();
 				console.log(data);
-				if(Object.keys(data).length !== 0) e.preventDefault();
+				if(Object.keys(data).length === 0) e.preventDefault();
 				$('input[name="proler_data"]').val(JSON.stringify(data));
 			});
 		}
@@ -154,9 +154,9 @@
 		getDiscountTiers(row){
 			const fields = [
 				{type: 'select', name: 'discount_type'},
-				{type: 'input', name: 'min_value'},
-				{type: 'input', name: 'max_value'},
-				{type: 'input', name: 'discount_value'},
+				{type: 'input', name: 'min'},
+				{type: 'input', name: 'max'},
+				{type: 'input', name: 'discount'},
 			];
 			const data = [];
 			row.find('.discount-range-wrap .disrange-item').each(function(){
