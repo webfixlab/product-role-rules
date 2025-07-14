@@ -1,9 +1,13 @@
-/* Wrapper section */
+:root{
+	--proler-background-color: #f8f8f8;
+}
 #left-side {
 	width: 15%;
 }
 #middle-content {
 	width: 65%;
+	padding: 0 20px;
+	margin: 0 0 20px 0;
 }
 #right-side {
 	width: 20%;
@@ -61,19 +65,16 @@ div#proler_product_data_tab #mpcdp_settings{
 #mpcdp_toolbar_icons a span:hover {
     color: #ff8c00;
 }
-.mpcdp_settings_content{
-	padding: 0 40px 30px;
-}
-.mpcdp_settings_section .mpcdp_settings_toggle{
-	background: #f8f8f8;
-}
-.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option{
+.mpcdp_settings_option{
 	padding: 20px;
 	position: relative;
 	border: 1px solid #ececec;
 }
-.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option:first-child{
-	padding-top: 20px;
+.pr-item .mpcdp_settings_option.proler-option-head{
+	background-color: var(--proler-background-color);
+}
+.pr-item .mpcdp_settings_option.proler-option-head .mpcdp_row .col-md-6:last-child{
+	text-align: right;
 }
 .mpcdp_settings_option.proler-option-content {
 	background: #fff;
@@ -96,15 +97,6 @@ div#proler_product_data_tab #mpcdp_settings{
 }
 .role-settings-content {
     margin-top: 30px;
-}
-.proler-discount .mpcdp_settings_option_field_text {
-    display: flex;
-}
-.mpcdp_settings_option_field.mpcdp_settings_option_field_text {
-	text-align: right;
-}
-.proler-option-content .mpcdp_settings_option_field.mpcdp_settings_option_field_text {
-	text-align: left;
 }
 .mpcdp_option_description{
 	color: #acb0b6;
@@ -133,7 +125,7 @@ div#proler_product_data_tab #mpcdp_settings{
 	font-size: 20px;
     margin: 20px 0 30px 0;
 }
-.proler-option-content .mpcdp_settings_section_title:first-child {
+.proler-option-content .mpcdp_settings_section_title:first-child, .general-settings .mpcdp_settings_section_title:first-child {
 	margin-top: 0;
 }
 span.proler-arrow {
@@ -170,6 +162,8 @@ a.add-new {
     border-radius: 4px;
     padding: 10px 30px;
 	cursor: pointer;
+	display: inline-block;
+	margin-top: 20px;
 }
 .add-new-disrange{
     padding: 10px 30px;
@@ -531,9 +525,6 @@ span.dashicons.dashicons-trash:hover {
 	#mpcdp_settings{
 		margin: 20px 20px 0 0;
 	}
-	.mpcdp_settings_content {
-		padding: 0 20px 20px;
-	}
 	.proler-option-content input[type="datetime-local"], .pr-settings select{
 		border: 1px solid #dfdfdf;
 		border-radius: 5px;
@@ -579,10 +570,10 @@ span.dashicons.dashicons-trash:hover {
 		margin: 0;
 		margin-top: 10px;
 	}
-	.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option, .mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option:first-child{
+	.mpcdp_settings_option, .mpcdp_settings_option:first-child{
 		padding: 10px;
 	}
-	.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option.proler-option-head, .mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option.proler-option-head:first-child{
+	.mpcdp_settings_option.proler-option-head, .mpcdp_settings_option.proler-option-head:first-child{
 		padding: 5px 0 10px 10px;
 	}
 	.proler-option-content .mpcdp_row.disrange-item {

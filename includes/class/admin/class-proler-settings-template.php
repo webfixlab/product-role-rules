@@ -54,6 +54,19 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 
 
 
+		public static function global_settings_page() {
+			if( ! current_user_can( 'manage_options' ) ) return;
+			self::settings_page( 'settings' );
+		}
+		public static function general_settings_page() {
+			if( ! current_user_can( 'manage_options' ) ) return;
+			self::settings_page( 'general-settings' );
+		}
+		public static function new_role_page() {
+			if( ! current_user_can( 'manage_options' ) ) return;
+			self::settings_page( 'newrole' );
+		}
+
 		/**
 		 * Add WooCommerce product settings data tab
 		 *
@@ -93,53 +106,29 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 			$proler__['which_page'] = 'product';
 			?>
 			<div id="proler_product_data_tab" class="panel woocommerce_options_panel">
-				<div id="mpcdp_settings" class="mpcdp_container">
-					<div class="mpcdp_settings_content">
-						<div class="mpcdp_settings_section">
-							<div class="mpcdp_settings_section_title proler-page-title"><span class="proler-gradient"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></span></div>
-                            <div class="role-settings-head mpcdp_settings_toggle mpcdp_container" data-toggle-id="wmc_redirect">
-                                <div class="mpcdp_settings_option visible" data-field-id="wmc_redirect">
-                                    <div class="mpcdp_row">
-                                        <div class="mpcdp_settings_option_description col-md-6">
-                                            <div class="mpcdp_option_label"><?php echo esc_html__( 'Role Based Pricing', 'product-role-rules' ); ?></div>
-                                            <div class="mpcdp_option_description"><?php echo esc_html__( 'Choose Custom to overwrite the global pricing settings.', 'product-role-rules' ); ?></div>
-                                        </div>
-                                        <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-                                            <div class="switch-field">
-                                                <?php self::settings_type(); ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-							<div class="role-settings-content">
-								<?php self::role_settings_content(); ?>
+				<div id="mpcdp_settings">
+					<div class="mpcdp_settings_section_title proler-page-title"><span class="proler-gradient"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></span></div>
+					<div class="mpcdp_row">
+						<div class="col-md-6">
+							<div class="mpcdp_option_label"><?php echo esc_html__( 'Role Based Pricing', 'product-role-rules' ); ?></div>
+							<div class="mpcdp_option_description"><?php echo esc_html__( 'Choose Custom to overwrite the global pricing settings.', 'product-role-rules' ); ?></div>
+						</div>
+						<div class="col-md-6">
+							<div class="switch-field">
+								<?php self::settings_type(); ?>
 							</div>
-							<?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
 						</div>
 					</div>
+					<div class="role-settings-content">
+						<?php self::role_settings_content(); ?>
+					</div>
+					<?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
 				</div>
 				<?php self::popup(); ?>
 			</div>
 			<?php
-
 		}
 
-
-
-		public static function global_settings_page() {
-			if( ! current_user_can( 'manage_options' ) ) return;
-			self::settings_page( 'settings' );
-		}
-		public static function general_settings_page() {
-			if( ! current_user_can( 'manage_options' ) ) return;
-			self::settings_page( 'general-settings' );
-		}
-		public static function new_role_page() {
-			if( ! current_user_can( 'manage_options' ) ) return;
-			self::settings_page( 'newrole' );
-		}
-		
 
 
         /**
@@ -152,10 +141,9 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
             self::$page = $page_slug;
 			?>
 			<form action="" method="POST">
-                <div id="mpcdp_settings" class="mpcdp_container">
+                <div id="mpcdp_settings">
                     <div id="mpcdp_settings_page_header">
                         <div id="mpcdp_logo"><?php echo esc_html__( 'Role Based Pricing for WooCommerce', 'product-role-rules' ); ?></div>
-                        <div id="mpcdp_customizer_wrapper"></div>
                         <div id="mpcdp_toolbar_icons">
                             <a class="mpcdp-tippy" target="_blank" href="<?php echo esc_url( $proler__['url']['support'] ); ?>" data-tooltip="<?php echo esc_html__( 'Support', 'product-role-rules' ); ?>">
                             <span class="tab_icon dashicons dashicons-email"></span>
@@ -172,11 +160,7 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
                 </div>
 			</form>
 			<?php
-
 		}
-
-
-
         /**
 		 * Display settings page content
 		 */
@@ -185,7 +169,6 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 
 			// set a flag in which page the settings is rendering | option page or product level.
 			$proler__['which_page'] = 'option_page';
-
 			?>
             <div id="left-side" class="col-md-3">
 				<div class="proler-nav-wrap">
@@ -194,40 +177,36 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 				</div>
             </div>
             <div class="col-md-6" id="middle-content">
-                <div class="mpcdp_settings_content">
-                    <div class="mpcdp_settings_section">
-                        <div class="mpcdp_settings_section_title proler-page-title">
-							<span class="proler-gradient">
-								<?php
-									if ( 'settings' === self::$page ) {
-										echo esc_html__( 'Global Role Based Settings', 'product-role-rules' );
-									} elseif ( 'newrole' === self::$page ) {
-										echo esc_html__( 'Add a Custom User Role', 'product-role-rules' );
-									} elseif ( 'general-settings' === self::$page ) {
-										echo esc_html__( 'General Settings', 'product-role-rules' );
-									}
-								?>
-							</span>
-                        </div>
-						<?php if( 'settings' === self::$page ) : ?>
-							<div class="proler-collapse-wrap">
-								<span class="proler-collapse-all">Collapse all</span>
-							</div>
-						<?php endif; ?>
-                        <?php
-							self::settings_saved_notice();
+				<div class="mpcdp_settings_section_title proler-page-title">
+					<span class="proler-gradient">
+						<?php
+							if ( 'settings' === self::$page ) {
+								echo esc_html__( 'Global Role Based Settings', 'product-role-rules' );
+							} elseif ( 'newrole' === self::$page ) {
+								echo esc_html__( 'Add a Custom User Role', 'product-role-rules' );
+							} elseif ( 'general-settings' === self::$page ) {
+								echo esc_html__( 'General Settings', 'product-role-rules' );
+							}
+						?>
+					</span>
+				</div>
+				<?php if( 'settings' === self::$page ) : ?>
+					<div class="proler-collapse-wrap">
+						<span class="proler-collapse-all">Collapse all</span>
+					</div>
+				<?php endif; ?>
+				<?php
+					self::settings_saved_notice();
 
-                            if ( 'settings' === self::$page ) {
-                                self::role_settings_content();
-                            } elseif ( 'newrole' === self::$page ) {
-                                self::new_role_content();
-                            } elseif ( 'general-settings' === self::$page ) {
-                                self::general_settings_content();
-                            }
-                        ?>
-                        <?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
-                    </div>
-                </div>
+					if ( 'settings' === self::$page ) {
+						self::role_settings_content();
+					} elseif ( 'newrole' === self::$page ) {
+						self::new_role_content();
+					} elseif ( 'general-settings' === self::$page ) {
+						self::general_settings_content();
+					}
+				?>
+				<?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
             </div>
 			<?php
 
@@ -241,14 +220,14 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 			<div class="mpcdp_settings_section_description">
 				<?php echo esc_html__( 'Role names can include letters, numbers, spaces or underscores. Just make sure it starts with a letter!', 'product-role-rules' ); ?>
 			</div>
-			<div class="mpcdp_settings_toggle mpcdp_container new-role-wrap">
-				<div class="mpcdp_settings_option visible">
+			<div class="new-role-wrap">
+				<div class="mpcdp_settings_option">
 					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
+						<div class="col-md-6">
 							<input type="text" name="proler_admin_new_role" placeholder="<?php echo esc_html__( 'Example: \'B2B Customer\'', 'product-role-rules' ); ?>" >
 							<?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
 						</div>
-						<div class="mpcdp_settings_option_description col-md-6">
+						<div class="col-md-6">
 							<div class="mpcdp_settings_submit" id="proler-role-create">
 								<div class="submit">
 									<button class="mpcdp_submit_button">
@@ -261,8 +240,8 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 					</div>
 				</div>
 			</div>
-			<div class="mpcdp_settings_toggle mpcdp_container">
-				<div class="mpcdp_settings_option visible">
+			<div class="">
+				<div class="mpcdp_settings_option">
 					<?php self::user_role_list(); ?>
 				</div>
 			</div>
@@ -275,15 +254,13 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		public static function general_settings_content(){
 			global $proler__;
 			?>
-			<div class="mpcdp_settings_toggle mpcdp_container pr-settings general-settings">
-				<div class="mpcdp_settings_option visible">
-					<div class="mpcdp_settings_section">
-						<?php
-							foreach( $proler__['general_settings'] as $field ){
-								self::general_settings_section( $field );
-							}
-						?>
-					</div>
+			<div class="pr-settings general-settings">
+				<div class="mpcdp_settings_option">
+					<?php
+						foreach( $proler__['general_settings'] as $field ){
+							self::general_settings_section( $field );
+						}
+					?>
 				</div>
 			</div>
 			<?php
@@ -295,9 +272,9 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 				<div class="mpcdp_settings_section_title"><?php echo esc_html( $data['section_title'] ); ?></div>
 			<?php endif; ?>
 			<div class="mpcdp_row">
-				<div class="mpcdp_settings_option_description col-md-6">
+				<div class="col-md-6">
 					<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
-						<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_settings_option_ribbon"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
 					<?php endif; ?>
 					<div class="mpcdp_option_label">
 						<?php echo esc_html( $data['field_name'] ); ?>
@@ -306,7 +283,7 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 						<?php echo esc_html( $data['desc'] ); ?>
 					</div>
 				</div>
-				<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+				<div class="col-md-6">
 					<?php self::general_settings_field( $data ); ?>
 				</div>
 			</div>
@@ -421,7 +398,6 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
                 </div>
             </div>
 			<?php
-
 		}
 
 
@@ -445,7 +421,6 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 
             foreach ( $types as $v => $label ) {
                 echo '<div class="swatch-item">';
-
                 printf(
                     '<input type="radio" id="proler_stype_%s" name="proler_stype" value="%s" %s><label for="proler_stype_%s">%s</label>',
                     esc_attr( $v ),
@@ -454,7 +429,6 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
                     esc_attr( $v ),
                     esc_html( $label )
                 );
-
                 echo '</div>';
             }
 		}
@@ -482,14 +456,13 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		 */
 		public static function saved_role_settings() {
             $data = self::$data;
-
 			if ( empty( $data ) || ! isset( $data['roles'] ) ) {
 				return;
 			}
 
 			foreach ( $data['roles'] as $role => $rd ) {
 				?>
-				<div class="mpcdp_settings_toggle pr-item">
+				<div class="pr-item">
 					<?php self::role_settings_head( $role, $rd ); ?>
 					<?php self::role_settings_details( $rd ); ?>
 				</div>
@@ -512,12 +485,12 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 
 			$str = self::role_settings_overview( $rd );
 			?>
-			<div class="mpcdp_settings_option visible proler-option-head">
+			<div class="mpcdp_settings_option proler-option-head">
 				<div class="mpcdp_row">
-					<div class="mpcdp_settings_option_description col-md-6">
+					<div class="col-md-6">
 						<?php self::roles_select( $role ); ?>
 					</div>
-					<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+					<div class="col-md-6">
 						<?php
 							self::switch_box(
 								esc_html__( 'Off', 'product-role-rules' ),
@@ -544,6 +517,44 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 			<?php
 		}
 
+		/**
+		 * Display all roles select dropdown
+		 *
+		 * @param string $selected role name that should be selected.
+		 */
+		public static function roles_select( $selected ) {
+            $options = sprintf( '<option value="">%s</option>', esc_html__( 'Choose a role', 'product-role-rules' ) );
+            
+            foreach ( wp_roles()->roles as $role => $data ) {
+                $options .= sprintf(
+                    '<option value="%s" %s>%s</option>',
+                    esc_attr( $role ),
+                    $selected === $role ? 'selected' : '',
+                    esc_html( $data['name'] )
+                );
+            }
+            
+            $options .= sprintf(
+                '<option value="visitor" %s>%s</option>',
+                'visitor' === $selected ? 'selected' : '',
+                esc_html__( 'Unregistered user', 'product-role-rules' )
+            );
+
+            echo wp_kses(
+                '<select name="proler_roles" class="proler-roles">' . $options . '</select>',
+                array(
+                    'select' => array(
+                        'name'  => array(),
+                        'class' => array(),
+                    ),
+                    'option' => array(
+                        'value'    => array(),
+                        'selected' => array()
+                    ),
+                )
+            );
+		}
+
         /**
 		 * Display individual role settings content
 		 *
@@ -558,307 +569,283 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 			?>
 			<div class="mpcdp_settings_option proler-option-content" style="display:none;">
 				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Price Options', 'product-role-rules' ); ?></div>
-				<div class="mpcdp_settings_section">
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Price', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Enable if you want to hide price or show custom text instead of price.', 'product-role-rules' ); ?>
-							</div>
-						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<?php
-								$checked = isset( $rd['hide_price'] ) && '1' === $rd['hide_price'] ? 'on' : 'off';
-								self::switch_box( __( 'Show', 'product-role-rules' ), __( 'Hide', 'product-role-rules' ), $checked );
-							?>
-							<input type="checkbox" name="hide_price" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Price', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Enable if you want to hide price or show custom text instead of price.', 'product-role-rules' ); ?>
 						</div>
 					</div>
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-12 <?php echo 'off' === $checked ? 'disabled' : ''; ?>">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Custom Text Instead of Price', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Show a custom message instead of product price. Like "Only for B2B users". Enable "Hide Price" to use this.', 'product-role-rules' ); ?>
-							</div>
-							<textarea class="proler-widefat" name="hide_txt" cols="30" placeholder="<?php echo esc_html__( 'Placeholder text', 'product-role-rules' ); ?>" <?php echo 'off' === $checked ? esc_attr( 'disabled' ) : ''; ?>><?php echo isset( $rd['hide_txt'] ) ? esc_html( $rd['hide_txt'] ) : ''; ?></textarea>
+					<div class="col-md-6">
+						<?php
+							$checked = isset( $rd['hide_price'] ) && '1' === $rd['hide_price'] ? 'on' : 'off';
+							self::switch_box( __( 'Show', 'product-role-rules' ), __( 'Hide', 'product-role-rules' ), $checked );
+						?>
+						<input type="checkbox" name="hide_price" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
+					</div>
+				</div>
+				<div class="mpcdp_row">
+					<div class="col-md-12 <?php echo 'off' === $checked ? 'disabled' : ''; ?>">
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Custom Text Instead of Price', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Show a custom message instead of product price. Like "Only for B2B users". Enable "Hide Price" to use this.', 'product-role-rules' ); ?>
 						</div>
+						<textarea class="proler-widefat" name="hide_txt" cols="30" placeholder="<?php echo esc_html__( 'Placeholder text', 'product-role-rules' ); ?>" <?php echo 'off' === $checked ? esc_attr( 'disabled' ) : ''; ?>><?php echo isset( $rd['hide_txt'] ) ? esc_html( $rd['hide_txt'] ) : ''; ?></textarea>
 					</div>
 				</div>
 				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Purchase Limits', 'product-role-rules' ); ?></div>
-				<div class="mpcdp_settings_section">
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
-								<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
-							<?php endif; ?>
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Minimum Quantity', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Set the minimum product quantity a user must buy.', 'product-role-rules' ); ?>
-							</div>
-						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<input type="text" name="min_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" data-protxt="<?php echo esc_html__( 'Minimum Quantity', 'product-role-rules' ); ?>">
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
+							<div class="mpcdp_settings_option_ribbon"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+						<?php endif; ?>
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Minimum Quantity', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Set the minimum product quantity a user must buy.', 'product-role-rules' ); ?>
 						</div>
 					</div>
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
-								<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
-							<?php endif; ?>
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Maximum Quantity', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Set the maximum product quantity a user can buy.', 'product-role-rules' ); ?>
-							</div>
+					<div class="col-md-6">
+						<input type="text" name="min_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['min_qty'] ) ? esc_attr( $rd['min_qty'] ) : ''; ?>" data-protxt="<?php echo esc_html__( 'Minimum Quantity', 'product-role-rules' ); ?>">
+					</div>
+				</div>
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
+							<div class="mpcdp_settings_option_ribbon"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+						<?php endif; ?>
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Maximum Quantity', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Set the maximum product quantity a user can buy.', 'product-role-rules' ); ?>
 						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<input type="text" name="max_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['max_qty'] ) ? esc_attr( $rd['max_qty'] ) : ''; ?>" data-protxt="<?php echo esc_html__( 'Minimum Quantity', 'product-role-rules' ); ?>">
-						</div>
+					</div>
+					<div class="col-md-6">
+						<input type="text" name="max_qty" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo isset( $rd['max_qty'] ) ? esc_attr( $rd['max_qty'] ) : ''; ?>" data-protxt="<?php echo esc_html__( 'Minimum Quantity', 'product-role-rules' ); ?>">
 					</div>
 				</div>
 				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Discount Settings', 'product-role-rules' ); ?></div>
-				<div class="mpcdp_settings_section">
-					<div class="mpcdp_row proler-discount">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Flat Discount', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Set discount for all users of this role.', 'product-role-rules' ); ?>
-							</div>
-						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<input type="text" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>">
-							<select name="discount_type">
-								<option value="percent" <?php echo esc_attr( 'percent' === $discount_type ? 'selected' : '' ); ?>>%</option>
-								<option value="price" <?php echo esc_attr( 'price' === $discount_type ? 'selected' : '' ); ?>><?php echo esc_html( get_woocommerce_currency_symbol() ); ?></option>
-							</select>
+				<div class="mpcdp_row proler-discount">
+					<div class="col-md-6">
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Flat Discount', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Set discount for all users of this role.', 'product-role-rules' ); ?>
 						</div>
 					</div>
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Show Discount Text', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Displays a "Save up to ..." message for each product.', 'product-role-rules' ); ?>
-							</div>
-						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<?php
-								$checked = ! isset( $rd['discount_text'] ) ? 'off' : 'on';
-								self::switch_box(
-									esc_html__( 'Show', 'product-role-rules' ),
-									esc_html__( 'Hide', 'product-role-rules' ),
-									$checked
-								);
-							?>
-							<input type="checkbox" name="discount_text" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
+					<div class="col-md-6">
+						<input type="text" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>">
+						<select name="discount_type">
+							<option value="percent" <?php echo esc_attr( 'percent' === $discount_type ? 'selected' : '' ); ?>>%</option>
+							<option value="price" <?php echo esc_attr( 'price' === $discount_type ? 'selected' : '' ); ?>><?php echo esc_html( get_woocommerce_currency_symbol() ); ?></option>
+						</select>
+					</div>
+				</div>
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Show Discount Text', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Displays a "Save up to ..." message for each product.', 'product-role-rules' ); ?>
 						</div>
 					</div>
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
-								<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
-							<?php endif; ?>
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Regular Price', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Only show discounted price. Removes regular price and show only sale price.', 'product-role-rules' ); ?>
-							</div>
+					<div class="col-md-6">
+						<?php
+							$checked = ! isset( $rd['discount_text'] ) ? 'off' : 'on';
+							self::switch_box(
+								esc_html__( 'Show', 'product-role-rules' ),
+								esc_html__( 'Hide', 'product-role-rules' ),
+								$checked
+							);
+						?>
+						<input type="checkbox" name="discount_text" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
+					</div>
+				</div>
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
+							<div class="mpcdp_settings_option_ribbon"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+						<?php endif; ?>
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Regular Price', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Only show discounted price. Removes regular price and show only sale price.', 'product-role-rules' ); ?>
 						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<?php
-								$checked = isset( $rd['hide_regular_price'] ) && '1' === $rd['hide_regular_price'] ? 'on' : 'off';
+					</div>
+					<div class="col-md-6">
+						<?php
+							$checked = isset( $rd['hide_regular_price'] ) && '1' === $rd['hide_regular_price'] ? 'on' : 'off';
 
-								self::switch_box(
-									esc_html__( 'Hide', 'product-role-rules' ),
-									esc_html__( 'Show', 'product-role-rules' ),
-									$checked
-								);
-							?>
-							<input type="checkbox" name="hide_regular_price" class="<?php echo esc_attr( $pro_class ); ?>" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;" data-protxt="<?php echo esc_html__( 'Hide Regular Price', 'product-role-rules' ); ?>">
-						</div>
+							self::switch_box(
+								esc_html__( 'Hide', 'product-role-rules' ),
+								esc_html__( 'Show', 'product-role-rules' ),
+								$checked
+							);
+						?>
+						<input type="checkbox" name="hide_regular_price" class="<?php echo esc_attr( $pro_class ); ?>" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;" data-protxt="<?php echo esc_html__( 'Hide Regular Price', 'product-role-rules' ); ?>">
 					</div>
-					<div class="mpcdp_row proler-full-section">
-						<div class="mpcdp_settings_option_description col-md-12">
-							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
-								<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
-							<?php endif; ?>
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Discount Tiers', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Offer more discount when user buys more, either by quantity or total spend. Examples: offer 30% off of product when user buys more than $2,000 or offer $15 off of product when user buys more than 10 items.', 'product-role-rules' ); ?>
-							</div>
-						</div>
-					</div>
-					<div class="mpcdp_row discount-ranges-main">
-						<div class="mpcdp_settings_option_description col-md-12">
-							<div class="discount-range-wrap">
-								<?php
-									if ( isset( $rd['ranges'] ) ) {
-										foreach ( $rd['ranges'] as $item ) {
-											self::discount_range_row( $item );
-										}
-									}
-								?>
-							</div>
-							<div class="mpcdp_row discount-range-demo">
-								<?php self::discount_range_row(); ?>
-							</div>
-							<div class="add-new-disrange"><?php echo esc_html__( 'Add Tier', 'product-role-rules' ); ?></div>
-						</div>
-					</div>
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
-								<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
-							<?php endif; ?>
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Discount Tiers View', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Choose how to display discount tiers.', 'product-role-rules' ); ?>
-							</div>
-						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<select name="additional_discount_display" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Options', 'product-role-rules' ); ?>">
-								<?php
-									$ads = array(
-										'table_max' => __( 'Table - show both min and max range', 'product-role-rules' ),
-										'table_min' => __( 'Table - show only min', 'product-role-rules' ),
-										'tag_max'   => __( 'List - show both min and max', 'product-role-rules' ),
-										'tag_min'   => __( 'List - show only min', 'product-role-rules' ),
-									);
-
-									foreach( $ads as $val => $label ){
-										printf(
-											'<option value="%s" %s>%s</option>',
-											esc_attr( $val ),
-											$val === $ad_display ? esc_attr( 'selected' ) : '',
-											esc_html( $label )
-										);
-									}
-								?>
-							</select>
+				</div>
+				<div class="mpcdp_row proler-full-section">
+					<div class="col-md-12">
+						<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
+							<div class="mpcdp_settings_option_ribbon"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+						<?php endif; ?>
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Discount Tiers', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Offer more discount when user buys more, either by quantity or total spend. Examples: offer 30% off of product when user buys more than $2,000 or offer $15 off of product when user buys more than 10 items.', 'product-role-rules' ); ?>
 						</div>
 					</div>
 				</div>
-				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Apply Rule If...', 'product-role-rules' ); ?></div>
-				<div class="mpcdp_settings_section">
-					<?php if ( 'option_page' === $proler__['which_page'] ) : ?>
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Category', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Choose on which category this rule will apply.', 'product-role-rules' ); ?>
-							</div>
-						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<select name="category">
-								<option value=""><?php echo esc_html__( 'Choose a category', 'product-role-rules' ); ?></option>
-								<?php
-									$args = array(
-										'taxonomy'   => 'product_cat',
-										'hide_empty' => false,
-										'orderby'    => 'name',
-										'order'      => 'ASC',
-									);
-
-									$cats = get_terms( $args );
-
-									if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
-										foreach ( $cats as $cat ) {
-											printf(
-												'<option value="%s" %s>%s</option>',
-												esc_attr( $cat->term_id ),
-												isset( $rd['category'] ) && $cat->term_id === (int) $rd['category'] ? esc_attr( 'selected' ) : '',
-												esc_html( $cat->name )
-											);
-										}
-									}
-								?>
-							</select>
-						</div>
-					</div>
-					<?php endif; ?>
-					<?php if ( 'option_page' === $proler__['which_page'] ) : ?>
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Product Type', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php echo esc_html__( 'Choose on which product type this rule will apply.', 'product-role-rules' ); ?>
-							</div>
-						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<select name="product_type">
-								<?php
-									$options = array(
-										'none'     => __( 'Choose a type', 'product-role-rules' ),
-										'simple'   => __( 'Simple', 'product-role-rules' ),
-										'variable' => __( 'Variable', 'product-role-rules' )
-									);
-
-									foreach( $options as $val => $label ){
-										printf(
-											'<option value="%s" %s>%s</option>',
-											'none' === $val ? '' : esc_attr( $val ),
-											isset( $rd['product_type'] ) && $val === $rd['product_type'] ? 'selected' : '',
-											esc_html( $label )
-										);
-									}
-								?>
-							</select>
-						</div>
-					</div>
-					<?php endif; ?>
-					<?php
-						$date_from = $rd['schedule']['start'] ?? '';
-						$date_to   = $rd['schedule']['end'] ?? '';
-						// self::log('start ' . $date_from . ', end ' . $date_to);
-					?>
-					<div class="mpcdp_row proler-full-section">
-						<div class="mpcdp_settings_option_description col-md-12">
-							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
-								<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
-							<?php endif; ?>
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Schedule', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description">
-								<?php
-									echo sprintf(
-										// translators: %1$s is the current time.
-										__( 'Set the time frame when this rule will be active. Note: current time is %1$s', 'product-role-rules' ),
-										self::convert_to_wp_timezone( '', false )
-									);
-
-									if( ! self::check_schedule( $date_from, $date_to ) ){
-										echo wp_kses_post( '<br><span>Please note: The time schedule is <strong style="color: #f84f09;">INACTIVE</strong>.</span>' );
-									}
-								?>
-							</div>
-						</div>
-					</div>
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<?php $date_from = !empty( $date_from ) ? self::convert_to_wp_timezone( $date_from, true ) : ''; ?>
-							<input
-								type="datetime-local"
-								name="schedule_start"
-								class="<?php echo esc_attr( $pro_class ); ?>"
-								data-protxt="<?php echo esc_html__( 'Schedule Start', 'product-role-rules' ); ?>"
-								<?php echo !empty( $date_from ) ? "value=\"{$date_from}\"" : ''; ?>>
-						</div>
-						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<!-- <input
-								type="datetime-local"
-								name="schedule_start"
-								placeholder="%s"
-								class="%s"
-								data-protxt="%s"
-								value="%s"> -->
+				<div class="mpcdp_row discount-ranges-main">
+					<div class="col-md-12">
+						<div class="discount-range-wrap">
 							<?php
-								$value_to = !empty( $date_to ) ? self::convert_to_wp_timezone( $date_to ) : '';
-								printf(
-									'<input type="datetime-local" name="schedule_end" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									esc_html( $value_to ),
-									esc_html__( 'Ending Date and Time', 'product-role-rules' ),
-									esc_attr( $pro_class ),
-									esc_html__( 'Schedule End', 'product-role-rules' )
-								);
-								// self::log('processed from ' . $value_from . ', end ' . $value_to);
+								if ( isset( $rd['ranges'] ) ) {
+									foreach ( $rd['ranges'] as $item ) {
+										self::discount_range_row( $item );
+									}
+								}
 							?>
 						</div>
+						<div class="mpcdp_row discount-range-demo">
+							<?php self::discount_range_row(); ?>
+						</div>
+						<div class="add-new-disrange"><?php echo esc_html__( 'Add Tier', 'product-role-rules' ); ?></div>
+					</div>
+				</div>
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
+							<div class="mpcdp_settings_option_ribbon"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+						<?php endif; ?>
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Discount Tiers View', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Choose how to display discount tiers.', 'product-role-rules' ); ?>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<select name="additional_discount_display" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Options', 'product-role-rules' ); ?>">
+							<?php
+								$ads = array(
+									'table_max' => __( 'Table - show both min and max range', 'product-role-rules' ),
+									'table_min' => __( 'Table - show only min', 'product-role-rules' ),
+									'tag_max'   => __( 'List - show both min and max', 'product-role-rules' ),
+									'tag_min'   => __( 'List - show only min', 'product-role-rules' ),
+								);
+
+								foreach( $ads as $val => $label ){
+									printf(
+										'<option value="%s" %s>%s</option>',
+										esc_attr( $val ),
+										$val === $ad_display ? esc_attr( 'selected' ) : '',
+										esc_html( $label )
+									);
+								}
+							?>
+						</select>
+					</div>
+				</div>
+				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Apply Rule If...', 'product-role-rules' ); ?></div>
+				<?php if ( 'option_page' === $proler__['which_page'] ) : ?>
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Category', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Choose on which category this rule will apply.', 'product-role-rules' ); ?>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<select name="category">
+							<option value=""><?php echo esc_html__( 'Choose a category', 'product-role-rules' ); ?></option>
+							<?php
+								$args = array(
+									'taxonomy'   => 'product_cat',
+									'hide_empty' => false,
+									'orderby'    => 'name',
+									'order'      => 'ASC',
+								);
+
+								$cats = get_terms( $args );
+
+								if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
+									foreach ( $cats as $cat ) {
+										printf(
+											'<option value="%s" %s>%s</option>',
+											esc_attr( $cat->term_id ),
+											isset( $rd['category'] ) && $cat->term_id === (int) $rd['category'] ? esc_attr( 'selected' ) : '',
+											esc_html( $cat->name )
+										);
+									}
+								}
+							?>
+						</select>
+					</div>
+				</div>
+				<?php endif; ?>
+				<?php if ( 'option_page' === $proler__['which_page'] ) : ?>
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Product Type', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo esc_html__( 'Choose on which product type this rule will apply.', 'product-role-rules' ); ?>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<select name="product_type">
+							<?php
+								$options = array(
+									'none'     => __( 'Choose a type', 'product-role-rules' ),
+									'simple'   => __( 'Simple', 'product-role-rules' ),
+									'variable' => __( 'Variable', 'product-role-rules' )
+								);
+
+								foreach( $options as $val => $label ){
+									printf(
+										'<option value="%s" %s>%s</option>',
+										'none' === $val ? '' : esc_attr( $val ),
+										isset( $rd['product_type'] ) && $val === $rd['product_type'] ? 'selected' : '',
+										esc_html( $label )
+									);
+								}
+							?>
+						</select>
+					</div>
+				</div>
+				<?php endif; ?>
+				<?php
+					$date_from = $rd['schedule']['start'] ?? '';
+					$date_to   = $rd['schedule']['end'] ?? '';
+				?>
+				<div class="mpcdp_row proler-full-section">
+					<div class="col-md-12">
+						<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
+							<div class="mpcdp_settings_option_ribbon"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+						<?php endif; ?>
+						<div class="mpcdp_option_label"><?php echo esc_html__( 'Schedule', 'product-role-rules' ); ?></div>
+						<div class="mpcdp_option_description">
+							<?php echo sprintf(
+								// translators: %1$s is the current time.
+								__( 'Set the time frame when this rule will be active. Note: current time is %1$s', 'product-role-rules' ),
+								self::convert_to_wp_timezone( '', false )
+							); ?>
+							<?php if( ! self::check_schedule( $date_from, $date_to ) ) : ?>
+								<br><span>Please note: The time schedule is <strong style="color: #f84f09;">INACTIVE</strong>.</span>
+							<?php endif; ?>
+						</div>
+					</div>
+				</div>
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<?php $date_from = !empty( $date_from ) ? self::convert_to_wp_timezone( $date_from, true ) : ''; ?>
+						<input
+							type="datetime-local"
+							name="schedule_start"
+							class="<?php echo esc_attr( $pro_class ); ?>"
+							data-protxt="<?php echo esc_html__( 'Schedule Start', 'product-role-rules' ); ?>"
+							<?php echo !empty( $date_from ) ? "value=\"{$date_from}\"" : ''; ?>>
+					</div>
+					<div class="col-md-6">
+						<input
+							type="datetime-local"
+							name="schedule_end"
+							class="<?php echo esc_attr( $pro_class ); ?>"
+							data-protxt="<?php echo esc_html__( 'Ending Date and Time', 'product-role-rules' ); ?>"
+							<?php echo !empty( $date_from ) ? "value=\"{$date_to}\"" : ''; ?>>
 					</div>
 				</div>
 			</div>
@@ -927,7 +914,7 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		public static function switch_box( $on, $off, $value ) {
 			$checked = ! empty( $value ) && ( 'on' === $value || true === $value ) ? 'on' : 'off';
 			?>
-			<div class="hurkanSwitch hurkanSwitch-switch-plugin-box">
+			<div class="hurkanSwitch">
 				<div class="hurkanSwitch-switch-box switch-animated-<?php echo esc_attr( $checked ); ?>">
 					<a class="hurkanSwitch-switch-item <?php echo 'on' === $checked ? 'active' : ''; ?> hurkanSwitch-switch-item-color-success  hurkanSwitch-switch-item-status-on">
 						<span class="lbl"><?php echo esc_html( $off ); ?></span>
@@ -1052,107 +1039,63 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		 * Display a list of all user roles
 		 */
 		public static function user_role_list() {
-			global $proler__;
+			$default = array( 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'customer', 'shop_manager' );
 
-			// get all user roles.
-			$roles           = array();
-			$roles['global'] = __( 'All roles', 'product-role-rules' );
-
+			$custom_roles  = [];
+			$default_roles = [];
+			// $roles['global'] = __( 'All roles', 'product-role-rules' );
 			foreach ( wp_roles()->roles as $role => $rd ) {
-				$roles[ $role ] = $rd['name'];
+				if( in_array( $role, $default, true ) ) $default_roles[ $role ] = $rd['name'];
+				else $custom_roles[ $role ] = $rd['name'];
 			}
-            
-			$roles['visitor'] = __( 'Unregistered user', 'product-role-rules' );
+			$custom_roles['visitor'] = __( 'Unregistered user', 'product-role-rules' );
 
 			// sort the roles in title ascending order.
-			asort( $roles );
-
-			// pro missing indicator class.
-			$pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
-
-			// default WordPress user roles | for avoiding these.
-			$default_roles = array( 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'customer', 'shop_manager' );
+			asort( $default_roles );
+			asort( $custom_roles );
 			?>
 			<div class="mpcdp_row proler-custom-roles">
-				<div class="mpcdp_settings_option_description col-md-12">
+				<div class="col-md-12">
 					<div class="proler-role-list">
 						<h2><?php echo esc_html__( 'All Custom Roles', 'product-role-rules' ); ?></h2>
 						<ul>
-							<?php foreach ( $roles as $role => $name ) : ?>
-								<?php
-									if ( in_array( $role, $default_roles, true ) ) {
-										continue;
-									}
-								?>
-								<li>
-									<?php echo esc_html( $name ); ?>
-									<?php if ( ! in_array( $role, array( 'global', 'visitor' ), true ) ) : ?>
-										<a href="<?php echo esc_url( admin_url( 'admin.php?page=proler-newrole&delete=' . esc_attr( $role ) . '&nonce=' . esc_attr( wp_create_nonce( 'proler_delete_role' ) ) ) ); ?>" class="proler-delete-role"><span class="dashicons dashicons-trash <?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html( $name ); ?>"></span></a>
-									<?php endif; ?>
-								</li>
-							<?php endforeach; ?>
+							<?php self::custom_role_list( $custom_roles ); ?>
 						</ul>
 					</div>
-				</div>
-			</div>
-			<div class="mpcdp_row">
-				<div class="mpcdp_settings_option_description col-md-12">
 					<div class="proler-role-list">
 						<h2><?php echo esc_html__( 'All Default Roles', 'product-role-rules' ); ?></h2>
 						<ul>
-							<?php foreach ( $roles as $role => $name ) : ?>
-								<?php
-									if ( ! in_array( $role, $default_roles, true ) ) {
-										continue;
-									}
-								?>
-								<li><?php echo esc_html( $name ); ?></li>
-							<?php endforeach; ?>
+							<?php self::default_role_list( $default_roles ); ?>
 						</ul>
 					</div>
 				</div>
 			</div>
 			<?php
 		}
-
-        /**
-		 * Display all roles select dropdown
-		 *
-		 * @param string $selected role name that should be selected.
-		 */
-		public static function roles_select( $selected ) {
-            $options = sprintf( '<option value="">%s</option>', esc_html__( 'Choose a role', 'product-role-rules' ) );
-            
-            foreach ( wp_roles()->roles as $role => $data ) {
-                $options .= sprintf(
-                    '<option value="%s" %s>%s</option>',
-                    esc_attr( $role ),
-                    $selected === $role ? 'selected' : '',
-                    esc_html( $data['name'] )
-                );
-            }
-            
-            $options .= sprintf(
-                '<option value="visitor" %s>%s</option>',
-                'visitor' === $selected ? 'selected' : '',
-                esc_html__( 'Unregistered user', 'product-role-rules' )
-            );
-
-            echo wp_kses(
-                '<select name="proler_roles" class="proler-roles">' . $options . '</select>',
-                array(
-                    'select' => array(
-                        'name'  => array(),
-                        'class' => array(),
-                    ),
-                    'option' => array(
-                        'value'    => array(),
-                        'selected' => array()
-                    ),
-                )
-            );
+		public static function custom_role_list( $roles ){
+			global $proler__;
+			$pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
+			
+			foreach( $roles as $slug => $name ){
+				if( 'visitor' === $slug ){
+					echo sprintf( '<li>%s</li>', esc_html__( 'Visitor', 'product-role-rules' ) );
+					continue;
+				}
+				echo sprintf(
+					'<li>%s <a href="%s" class="proler-delete-role"><span class="dashicons dashicons-trash %s" data-protxt="%s"></span></a>',
+					esc_html( $name ),
+					esc_url( admin_url( 'admin.php?page=proler-newrole&delete=' . esc_attr( $slug ) . '&nonce=' . esc_attr( wp_create_nonce( 'proler_delete_role' ) ) ) ),
+					esc_attr( $pro_class ),
+					esc_html( $name )
+				);
+			}
 		}
-
+		public static function default_role_list( $roles ){
+			foreach( $roles as $slug => $name ){
+				echo sprintf( '<li>%s</li>', esc_html( $name ) );
+			}
+		}
+		
 
 
 		/**

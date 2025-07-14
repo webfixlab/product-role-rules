@@ -27,7 +27,7 @@
 		initGlobalEvents(){
 			const self = this;
 			$(document.body).on('click', '.proler-collapse-all', function(){
-				$(this).closest('.mpcdp_settings_section').find('.pr-settings .pr-item').each(function(){
+				$('.pr-settings .pr-item').each(function(){
 					if(!$(this).find('.proler-option-content').is(':hidden')) $(this).find('span.proler-arrow img').trigger('click');
 				});
 			});
@@ -54,7 +54,7 @@
 		initSectionEvents(){
 			const self = this;
 			$(document.body).on('click', '.add-new', function(){
-				$('.pr-settings').append(`<div class="mpcdp_settings_toggle pr-item">${$('.demo-item').html()}</div>`);
+				$('.pr-settings').append(`<div class="pr-item">${$('.demo-item').html()}</div>`);
 			});
 			$(document.body).on('click', '.proler-delete', function(){
 				const section = $(this).closest('.pr-item');
@@ -69,7 +69,7 @@
 				content.toggle('slow');
 			});
 			$(document.body).on('click', 'input[name="hide_price"]', function(){
-				const textarea = $(this).closest('.mpcdp_settings_section').find('textarea');
+				const textarea = $(this).closest('.mpcdp_row').find('textarea');
 				if($(this).is(':checked')) textarea.prop('disabled', false);
 				else textarea.prop('disabled', true);
 			});
