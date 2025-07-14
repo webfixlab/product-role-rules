@@ -7,12 +7,12 @@
  * @since      3.0
  */
 
-if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
+if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 
 	/**
 	 * Role based settings admin class
 	 */
-	class ProlerAdminTemplate {
+	class Proler_Settings_Template {
 
 
         /**
@@ -20,14 +20,14 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
          *
          * @var array
          */
-        private $data;
+        private static $data;
 
         /**
 		 * Current settings page slug
 		 *
 		 * @var string.
 		 */
-		private $page;
+		private static $page;
 
 
 
@@ -44,15 +44,53 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				$data = get_option( 'proler_role_table' );
 			}
 
-			$this->data = $data;
+			self::$data = $data;
         }
+		public static function init() {
+			// woocommerce product data tab, tab and menu.
+			add_filter( 'woocommerce_product_data_tabs', array( __CLASS__, 'data_tab' ), 10, 1 );
+			add_action( 'woocommerce_product_data_panels', array( __CLASS__, 'data_tab_content' ) );
+		}
 
 
 
-        /**
+		/**
+		 * Add WooCommerce product settings data tab
+		 *
+		 * @param array $default_tabs current product settings tabs.
+		 */
+		public static function data_tab( $default_tabs ) {
+			global $post;
+			global $proler__;
+
+			$product = wc_get_product( $post->ID );
+			$type    = $product->get_type();
+			$proler__['product'] = array(
+				'type' => $type
+			);
+
+			if( in_array( $type, array( 'grouped', 'external' ), true ) ) return $default_tabs;
+
+			$default_tabs['role_based_pricing'] = array(
+				'label'    => __( 'Role Based Pricing', 'product-role-rules' ),
+				'target'   => 'proler_product_data_tab', // data tab panel id to focus.
+				'priority' => 60,
+				'class'    => array(),
+			);
+
+			return $default_tabs;
+		}
+		 /**
 		 * Add product settings data tab content
 		 */
-		public function data_tab_content() {
+		public static function data_tab_content() {
+			global $proler__;
+
+			$type = $proler__['product']['type'];
+			if( in_array( $type, array( 'grouped', 'external' ), true ) ) return;
+
+			// set a flag in which page the settings is rendering | option page or product level.
+			$proler__['which_page'] = 'product';
 			?>
 			<div id="proler_product_data_tab" class="panel woocommerce_options_panel">
 				<div id="mpcdp_settings" class="mpcdp_container">
@@ -68,33 +106,50 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
                                         </div>
                                         <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
                                             <div class="switch-field">
-                                                <?php $this->settings_type(); ?>
+                                                <?php self::settings_type(); ?>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 							<div class="role-settings-content">
-								<?php $this->role_settings_content(); ?>
+								<?php self::role_settings_content(); ?>
 							</div>
 							<?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
 						</div>
 					</div>
 				</div>
-				<?php $this->popup(); ?>
+				<?php self::popup(); ?>
 			</div>
 			<?php
 
 		}
+
+
+
+		public static function global_settings_page() {
+			if( ! current_user_can( 'manage_options' ) ) return;
+			self::settings_page( 'settings' );
+		}
+		public static function general_settings_page() {
+			if( ! current_user_can( 'manage_options' ) ) return;
+			self::settings_page( 'general-settings' );
+		}
+		public static function new_role_page() {
+			if( ! current_user_can( 'manage_options' ) ) return;
+			self::settings_page( 'newrole' );
+		}
+		
+
 
         /**
 		 * Settings page initialization
          *
          * @param string $page_slug settings page slug.
 		 */
-		public function settings_page( $page_slug ) {
+		public static function settings_page( $page_slug ) {
             global $proler__;
-            $this->page = $page_slug;
+            self::$page = $page_slug;
 			?>
 			<form action="" method="POST">
                 <div id="mpcdp_settings" class="mpcdp_container">
@@ -108,11 +163,11 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
                         </div>
                     </div>
                     <div class="mpcdp_row">
-                        <?php $this->settings_content(); ?>
+                        <?php self::settings_content(); ?>
 						<div id="right-side">
-							<?php $this->sidebar(); ?>
+							<?php self::sidebar(); ?>
 						</div>
-						<?php $this->popup(); ?>
+						<?php self::popup(); ?>
                     </div>
                 </div>
 			</form>
@@ -125,7 +180,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
         /**
 		 * Display settings page content
 		 */
-		public function settings_content() {
+		public static function settings_content() {
 			global $proler__;
 
 			// set a flag in which page the settings is rendering | option page or product level.
@@ -134,8 +189,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			?>
             <div id="left-side" class="col-md-3">
 				<div class="proler-nav-wrap">
-					<?php $this->settings_menu(); ?>
-					<?php $this->settings_submit(); ?>
+					<?php self::settings_menu(); ?>
+					<?php self::settings_submit(); ?>
 				</div>
             </div>
             <div class="col-md-6" id="middle-content">
@@ -144,30 +199,30 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
                         <div class="mpcdp_settings_section_title proler-page-title">
 							<span class="proler-gradient">
 								<?php
-									if ( 'settings' === $this->page ) {
+									if ( 'settings' === self::$page ) {
 										echo esc_html__( 'Global Role Based Settings', 'product-role-rules' );
-									} elseif ( 'newrole' === $this->page ) {
+									} elseif ( 'newrole' === self::$page ) {
 										echo esc_html__( 'Add a Custom User Role', 'product-role-rules' );
-									} elseif ( 'general-settings' === $this->page ) {
+									} elseif ( 'general-settings' === self::$page ) {
 										echo esc_html__( 'General Settings', 'product-role-rules' );
 									}
 								?>
 							</span>
                         </div>
-						<?php if( 'settings' === $this->page ) : ?>
+						<?php if( 'settings' === self::$page ) : ?>
 							<div class="proler-collapse-wrap">
 								<span class="proler-collapse-all">Collapse all</span>
 							</div>
 						<?php endif; ?>
                         <?php
-							$this->settings_saved_notice();
+							self::settings_saved_notice();
 
-                            if ( 'settings' === $this->page ) {
-                                $this->role_settings_content();
-                            } elseif ( 'newrole' === $this->page ) {
-                                $this->new_role_content();
-                            } elseif ( 'general-settings' === $this->page ) {
-                                $this->general_settings_content();
+                            if ( 'settings' === self::$page ) {
+                                self::role_settings_content();
+                            } elseif ( 'newrole' === self::$page ) {
+                                self::new_role_content();
+                            } elseif ( 'general-settings' === self::$page ) {
+                                self::general_settings_content();
                             }
                         ?>
                         <?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
@@ -181,7 +236,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
         /**
 		 * Add new role page content
 		 */
-		public function new_role_content() {
+		public static function new_role_content() {
 			?>
 			<div class="mpcdp_settings_section_description">
 				<?php echo esc_html__( 'Role names can include letters, numbers, spaces or underscores. Just make sure it starts with a letter!', 'product-role-rules' ); ?>
@@ -208,7 +263,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			</div>
 			<div class="mpcdp_settings_toggle mpcdp_container">
 				<div class="mpcdp_settings_option visible">
-					<?php $this->user_role_list(); ?>
+					<?php self::user_role_list(); ?>
 				</div>
 			</div>
 			<?php
@@ -217,7 +272,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		/**
 		 * General settings page content
 		 */
-		private function general_settings_content(){
+		public static function general_settings_content(){
 			global $proler__;
 			?>
 			<div class="mpcdp_settings_toggle mpcdp_container pr-settings general-settings">
@@ -225,7 +280,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					<div class="mpcdp_settings_section">
 						<?php
 							foreach( $proler__['general_settings'] as $field ){
-								$this->general_settings_section( $field );
+								self::general_settings_section( $field );
 							}
 						?>
 					</div>
@@ -233,7 +288,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			</div>
 			<?php
 		}
-		public function general_settings_section( $data ){
+		public static function general_settings_section( $data ){
 			global $proler__;
 			?>
 			<?php if( isset( $data['section_title'] ) && !empty( $data['section_title'] ) ) : ?>
@@ -252,12 +307,12 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					</div>
 				</div>
 				<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-					<?php $this->general_settings_field( $data ); ?>
+					<?php self::general_settings_field( $data ); ?>
 				</div>
 			</div>
 			<?php
 		}
-		public function general_settings_field( $data ){
+		public static function general_settings_field( $data ){
 			global $proler__;
 
 			$pro_class   = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
@@ -283,7 +338,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
         /**
 		 * Display settings page menu
 		 */
-		public function settings_menu() {
+		public static function settings_menu() {
 			global $proler__;
 
 			$pages = array(
@@ -322,14 +377,14 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			);
 
 			foreach ( $pages as $menu ) {
-				$this->display_menu_item( $menu );
+				self::display_menu_item( $menu );
 			}
 		}
-		public function display_menu_item( $menu ){
+		public static function display_menu_item( $menu ){
 			global $proler__;
 
 			if( 'pro' === $menu['slug'] && 'activated' === $proler__['prostate'] ) return;
-			$is_active = $menu['slug'] === $this->page ? 'active' : '';
+			$is_active = $menu['slug'] === self::$page ? 'active' : '';
 			?>
 			<a href="<?php echo esc_url( $menu['url'] ); ?>">
 				<div class="nav-item <?php echo esc_attr( $menu['class'] ) . ' ' . esc_attr( $is_active ); ?>">
@@ -345,18 +400,17 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		/**
 		 * Display settings page submit button
 		 */
-		public function settings_submit() {
-			if ( 'newrole' === $this->page ) {
+		public static function settings_submit() {
+			if ( 'newrole' === self::$page ) {
 				return;
 			}
 
 			$long  = '';
 			$short = '';
-			if ( 'settings' === $this->page || 'general-settings' === $this->page ) {
+			if ( 'settings' === self::$page || 'general-settings' === self::$page ) {
 				$long  = __( 'Save Settings', 'product-role-rules' );
 				$short = __( 'Save', 'product-role-rules' );
 			}
-
 			?>
             <div class="mpcdp_settings_submit">
                 <div class="submit">
@@ -375,8 +429,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
         /**
 		 * Display product page settings type indicator
 		 */
-		public function settings_type() {
-			$data = $this->data;
+		public static function settings_type() {
+			$data = self::$data;
 
 			$value = 'default';
 			if ( ! empty( $data ) && isset( $data['proler_stype'] ) ) {
@@ -408,42 +462,38 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
         /**
 		 * Role settings wrapper
 		 */
-		public function role_settings_content() {
-
+		public static function role_settings_content() {
 			?>
 			<div class="pr-settings">
-				<?php $this->saved_role_settings(); ?>
+				<?php self::saved_role_settings(); ?>
 				<div class="demo-item" style="display:none;">
-					<?php $this->role_settings_head(); ?>
-					<?php $this->role_settings_details(); ?>
+					<?php self::role_settings_head(); ?>
+					<?php self::role_settings_details(); ?>
 				</div>
 			</div>
 			<?php do_action( 'proler_admin_extra_section' ); ?>
 			<a class="add-new" href="javaScript:void(0)"><?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
 			<input type="hidden" value="" name="proler_data">
 			<?php
-
 		}
 
         /**
 		 * Get saved role settings
 		 */
-		public function saved_role_settings() {
-            $data = $this->data;
+		public static function saved_role_settings() {
+            $data = self::$data;
 
 			if ( empty( $data ) || ! isset( $data['roles'] ) ) {
 				return;
 			}
 
 			foreach ( $data['roles'] as $role => $rd ) {
-
 				?>
 				<div class="mpcdp_settings_toggle pr-item">
-					<?php $this->role_settings_head( $role, $rd ); ?>
-					<?php $this->role_settings_details( $rd ); ?>
+					<?php self::role_settings_head( $role, $rd ); ?>
+					<?php self::role_settings_details( $rd ); ?>
 				</div>
 				<?php
-
 			}
 		}
 
@@ -453,24 +503,23 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 * @param string $role user role name.
 		 * @param array  $rd   role settings data.
 		 */
-		public function role_settings_head( $role = '', $rd = array() ) {
+		public static function role_settings_head( $role = '', $rd = array() ) {
 			$checked = isset( $rd['pr_enable'] ) && '1' === $rd['pr_enable'] ? 'on' : 'off';
 
 			if ( empty( $rd ) ) {
 				$checked = 'on';
 			}
 
-			$str = $this->role_settings_overview( $rd );
-
+			$str = self::role_settings_overview( $rd );
 			?>
 			<div class="mpcdp_settings_option visible proler-option-head">
 				<div class="mpcdp_row">
 					<div class="mpcdp_settings_option_description col-md-6">
-						<?php $this->roles_select( $role ); ?>
+						<?php self::roles_select( $role ); ?>
 					</div>
 					<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
 						<?php
-							$this->switch_box(
+							self::switch_box(
 								esc_html__( 'Off', 'product-role-rules' ),
 								esc_html__( 'On', 'product-role-rules' ),
 								$checked
@@ -493,7 +542,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				<?php endif; ?>
 			</div>
 			<?php
-
 		}
 
         /**
@@ -501,13 +549,12 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 *
 		 * @param array $rd role settings data.
 		 */
-		public function role_settings_details( $rd = array() ) {
+		public static function role_settings_details( $rd = array() ) {
 			global $proler__;
-			$this->log( 'has pro? ' . $proler__['has_pro'] );
+			// self::log( 'has pro? ' . $proler__['has_pro'] );
 			$discount_type = isset( $rd['discount_type'] ) ? $rd['discount_type'] : '';
 			$pro_class     = isset( $proler__['has_pro'] ) && !$proler__['has_pro'] ? 'wfl-nopro' : '';
 			$ad_display    = isset( $rd['additional_discount_display'] ) ? $rd['additional_discount_display'] : 'table_min';
-
 			?>
 			<div class="mpcdp_settings_option proler-option-content" style="display:none;">
 				<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Price Options', 'product-role-rules' ); ?></div>
@@ -522,7 +569,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
 							<?php
 								$checked = isset( $rd['hide_price'] ) && '1' === $rd['hide_price'] ? 'on' : 'off';
-								$this->switch_box( __( 'Show', 'product-role-rules' ), __( 'Hide', 'product-role-rules' ), $checked );
+								self::switch_box( __( 'Show', 'product-role-rules' ), __( 'Hide', 'product-role-rules' ), $checked );
 							?>
 							<input type="checkbox" name="hide_price" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;">
 						</div>
@@ -595,7 +642,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
 							<?php
 								$checked = ! isset( $rd['discount_text'] ) ? 'off' : 'on';
-								$this->switch_box(
+								self::switch_box(
 									esc_html__( 'Show', 'product-role-rules' ),
 									esc_html__( 'Hide', 'product-role-rules' ),
 									$checked
@@ -618,7 +665,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 							<?php
 								$checked = isset( $rd['hide_regular_price'] ) && '1' === $rd['hide_regular_price'] ? 'on' : 'off';
 
-								$this->switch_box(
+								self::switch_box(
 									esc_html__( 'Hide', 'product-role-rules' ),
 									esc_html__( 'Show', 'product-role-rules' ),
 									$checked
@@ -644,13 +691,13 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 								<?php
 									if ( isset( $rd['ranges'] ) ) {
 										foreach ( $rd['ranges'] as $item ) {
-											$this->discount_range_row( $item );
+											self::discount_range_row( $item );
 										}
 									}
 								?>
 							</div>
 							<div class="mpcdp_row discount-range-demo">
-								<?php $this->discount_range_row(); ?>
+								<?php self::discount_range_row(); ?>
 							</div>
 							<div class="add-new-disrange"><?php echo esc_html__( 'Add Tier', 'product-role-rules' ); ?></div>
 						</div>
@@ -759,7 +806,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					<?php
 						$date_from = $rd['schedule']['start'] ?? '';
 						$date_to   = $rd['schedule']['end'] ?? '';
-						// $this->log('start ' . $date_from . ', end ' . $date_to);
+						// self::log('start ' . $date_from . ', end ' . $date_to);
 					?>
 					<div class="mpcdp_row proler-full-section">
 						<div class="mpcdp_settings_option_description col-md-12">
@@ -772,10 +819,10 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 									echo sprintf(
 										// translators: %1$s is the current time.
 										__( 'Set the time frame when this rule will be active. Note: current time is %1$s', 'product-role-rules' ),
-										$this->convert_to_wp_timezone( '', false )
+										self::convert_to_wp_timezone( '', false )
 									);
 
-									if( ! $this->check_schedule( $date_from, $date_to ) ){
+									if( ! self::check_schedule( $date_from, $date_to ) ){
 										echo wp_kses_post( '<br><span>Please note: The time schedule is <strong style="color: #f84f09;">INACTIVE</strong>.</span>' );
 									}
 								?>
@@ -784,7 +831,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					</div>
 					<div class="mpcdp_row">
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
-							<?php $date_from = !empty( $date_from ) ? $this->convert_to_wp_timezone( $date_from, true ) : ''; ?>
+							<?php $date_from = !empty( $date_from ) ? self::convert_to_wp_timezone( $date_from, true ) : ''; ?>
 							<input
 								type="datetime-local"
 								name="schedule_start"
@@ -801,7 +848,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 								data-protxt="%s"
 								value="%s"> -->
 							<?php
-								$value_to = !empty( $date_to ) ? $this->convert_to_wp_timezone( $date_to ) : '';
+								$value_to = !empty( $date_to ) ? self::convert_to_wp_timezone( $date_to ) : '';
 								printf(
 									'<input type="datetime-local" name="schedule_end" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
 									esc_html( $value_to ),
@@ -809,10 +856,9 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule End', 'product-role-rules' )
 								);
-								// $this->log('processed from ' . $value_from . ', end ' . $value_to);
+								// self::log('processed from ' . $value_from . ', end ' . $value_to);
 							?>
 						</div>
-
 					</div>
 				</div>
 			</div>
@@ -825,7 +871,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
          * @param string $value     Given date time string.
          * @param bool   $for_input If it's for displaying in an input field.
          */
-        public function convert_to_wp_timezone( $value = '', $for_input = true ){
+        public static function convert_to_wp_timezone( $value = '', $for_input = true ){
             $value       = !isset( $value ) || empty( $value ) ? 'now' : $value;
             $wp_timezone = new DateTimeZone( wp_timezone_string() );
 
@@ -845,7 +891,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
          * @param string $date_from Schedule start datetime.
          * @param string $date_to   Schedule ending datetime.
          */
-        public function check_schedule( $date_from, $date_to ){
+        public static function check_schedule( $date_from, $date_to ){
             $wp_timezone = new DateTimeZone( wp_timezone_string() );
 
             // convert saved UTC datetime to WP Timezone.
@@ -878,9 +924,8 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 * @param string $off   off status text.
 		 * @param string $value value of the switch box.
 		 */
-		public function switch_box( $on, $off, $value ) {
+		public static function switch_box( $on, $off, $value ) {
 			$checked = ! empty( $value ) && ( 'on' === $value || true === $value ) ? 'on' : 'off';
-
 			?>
 			<div class="hurkanSwitch hurkanSwitch-switch-plugin-box">
 				<div class="hurkanSwitch-switch-box switch-animated-<?php echo esc_attr( $checked ); ?>">
@@ -895,7 +940,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				</div>
 			</div>
 			<?php
-
 		}
 
         /**
@@ -903,7 +947,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 *
 		 * @param array $data saved data.
 		 */
-		public function discount_range_row( $data = array() ) {
+		public static function discount_range_row( $data = array() ) {
 			global $proler__;
 
 			$pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
@@ -912,11 +956,10 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			$min      = isset( $data['min'] ) ? $data['min'] : '';
 			$max      = isset( $data['max'] ) ? $data['max'] : '';
 			$discount = isset( $data['discount'] ) ? $data['discount'] : '';
-
 			?>
 			<div class="mpcdp_row disrange-item">
 				<select name="discount_type">
-					<?php $this->discount_tier_type( $type ); ?>
+					<?php self::discount_tier_type( $type ); ?>
 				</select>
 				<input type="text" name="min" class="<?php echo esc_attr( $pro_class ); ?>" placeholder="<?php echo esc_html__( 'Min', 'product-role-rules' ); ?>" value="<?php echo esc_attr( $min ); ?>" data-protxt="<?php echo esc_html__( 'Min Value', 'product-role-rules' ); ?>">
 				<input type="text" name="max" class="<?php echo esc_attr( $pro_class ); ?>" placeholder="<?php echo esc_html__( 'Max', 'product-role-rules' ); ?>" value="<?php echo esc_attr( $max ); ?>" data-protxt="<?php echo esc_html__( 'Max Value', 'product-role-rules' ); ?>">
@@ -925,7 +968,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			</div>
 			<?php
 		}
-		public function discount_tier_type( $type ){
+		public static function discount_tier_type( $type ){
 			$symbol = get_woocommerce_currency_symbol();
 			$options = array(
 				'amount_percent' => __( 'Discount on Total', 'product-role-rules' ),
@@ -947,14 +990,13 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 *
 		 * @param array $rd role settings data.
 		 */
-		public function role_settings_overview( $rd ) {
+		public static function role_settings_overview( $rd ) {
 			// if this role settings isn't enabled, return empty.
 			if ( ! isset( $rd['pr_enable'] ) ) {
 				return '';
 			}
 
 			$str = '';
-
 			if ( isset( $rd['hide_price'] ) && '1' === $rd['hide_price'] ) {
 				$str .= __( 'Price', 'product-role-rules' ) . ' <strong style="color: #d30e0e;">' . __( 'HIDDEN', 'product-role-rules' ) . '</strong>';
 			}
@@ -971,12 +1013,12 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		/**
 		 * Display settings saved notice
 		 */
-		public function settings_saved_notice(){
+		public static function settings_saved_notice(){
 			global $proler__;
 
 			// this update nontice is for "Add new role" page only.
 			if( isset( $proler__['user_role_msg'] ) && !empty( $proler__['user_role_msg'] ) ){
-				$this->update_notice( $proler__['user_role_msg']['msg'], $proler__['user_role_msg']['cls'] );
+				self::update_notice( $proler__['user_role_msg']['msg'], $proler__['user_role_msg']['cls'] );
 				return;
 			}
 
@@ -988,7 +1030,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				return;
 			}
 
-			$this->update_notice( 'Your settings have been saved.', 'saved' );
+			self::update_notice( 'Your settings have been saved.', 'saved' );
 		}
 
 		/**
@@ -997,7 +1039,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 * @param mixed $icon
 		 * @return void
 		 */
-		public function update_notice( $msg, $icon ){
+		public static function update_notice( $msg, $icon ){
 			?>
 			<div class="proler-saved-settings <?php echo esc_attr( $icon ); ?>">
 				<span class="dashicons dashicons-<?php echo esc_attr( $icon ); ?>"></span>
@@ -1005,20 +1047,11 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			</div>
 			<?php
 		}
-		private function log( $data ) {
-			if ( true === WP_DEBUG ) {
-				if ( is_array( $data ) || is_object( $data ) ) {
-					error_log( print_r( $data, true ) );
-				} else {
-					error_log( $data );
-				}
-			}
-		}
 
         /**
 		 * Display a list of all user roles
 		 */
-		public function user_role_list() {
+		public static function user_role_list() {
 			global $proler__;
 
 			// get all user roles.
@@ -1039,7 +1072,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 
 			// default WordPress user roles | for avoiding these.
 			$default_roles = array( 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'customer', 'shop_manager' );
-
 			?>
 			<div class="mpcdp_row proler-custom-roles">
 				<div class="mpcdp_settings_option_description col-md-12">
@@ -1088,7 +1120,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		 *
 		 * @param string $selected role name that should be selected.
 		 */
-		public function roles_select( $selected ) {
+		public static function roles_select( $selected ) {
             $options = sprintf( '<option value="">%s</option>', esc_html__( 'Choose a role', 'product-role-rules' ) );
             
             foreach ( wp_roles()->roles as $role => $data ) {
@@ -1126,7 +1158,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		/**
 		 * Display pro field pop-up
 		 */
-		public function popup(){
+		public static function popup(){
 			global $proler__;
 			?>
 			<div id="prolerpop" class="proler-popup">
@@ -1142,13 +1174,12 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				</div>
 			</div>
 			<?php
-
 		}
 
 		/**
 		 * Display settings sidebar
 		 */
-		public function sidebar(){
+		public static function sidebar(){
 			global $proler__;
 
 			$sidebar_title = __( 'Upgrade to PRO Now', 'product-role-rules' );
@@ -1164,7 +1195,6 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				$sidebar_title = __( 'PRO License Activated', 'product-role-rules' );
 				$side_tagline  = __( 'Get our exclusive PRO Support 24/7 only for you.', 'product-role-rules' );
 			}
-
 			?>
 			<div class="sidebar_top">
 				<h3><?php echo esc_html( $sidebar_title ); ?></h3>
@@ -1193,7 +1223,19 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 				<p><a href="<?php echo esc_url( $proler__['url']['support'] ); ?>" target="_blank"><?php echo esc_html__( 'Contact us', 'product-role-rules' ); ?></a></p>
 			</div>
 			<?php
+		}
 
+
+		private static function log( $data ) {
+			if ( true === WP_DEBUG ) {
+				if ( is_array( $data ) || is_object( $data ) ) {
+					error_log( print_r( $data, true ) );
+				} else {
+					error_log( $data );
+				}
+			}
 		}
     }
 }
+
+Proler_Settings_Template::init();
