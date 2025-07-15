@@ -40,6 +40,10 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_assets' ) );
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend_assets' ) );
+
+			// woocommerce product data tab, tab and menu.
+			add_filter( 'woocommerce_product_data_tabs', array( __CLASS__, 'data_tab' ), 10, 1 );
+			add_action( 'woocommerce_product_data_panels', array( __CLASS__, 'data_tab_content' ) );
 		}
 		public static function includes(){
 			include PROLER_PATH . 'includes/core-data.php';
@@ -97,7 +101,7 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 				__( 'Role Pricing', 'product-role-rules' ),
 				'manage_options',
 				'proler-settings',
-				array( 'Proler_Settings_Template', 'global_settings_page' ),
+				array( __CLASS__, 'global_settings_page' ),
 				plugin_dir_url( PROLER ) . 'assets/images/admin-icon.svg',
 				56
 			);
@@ -118,7 +122,7 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 				__( 'Add New Role', 'product-role-rules' ),
 				'manage_options',
 				'proler-newrole',
-				array( 'Proler_Settings_Template', 'new_role_page' )
+				array( __CLASS__, 'new_role_page' )
 			);
 
 			// settings submenu - Add new role.
@@ -128,7 +132,7 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 				__( 'Settings', 'product-role-rules' ),
 				'manage_options',
 				'proler-general-settings',
-				array( 'Proler_Settings_Template', 'general_settings_page' )
+				array( __CLASS__, 'general_settings_page' )
 			);
 
 			// Conditional extra links.
@@ -141,6 +145,19 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 					esc_url( $proler__['url']['pro'] )
 				);
 			}
+		}
+
+		public static function global_settings_page() {
+			if( ! current_user_can( 'manage_options' ) ) return;
+			Proler_Settings_Template::settings_page( 'settings' );
+		}
+		public static function general_settings_page() {
+			if( ! current_user_can( 'manage_options' ) ) return;
+			Proler_Settings_Template::settings_page( 'general-settings' );
+		}
+		public static function new_role_page() {
+			if( ! current_user_can( 'manage_options' ) ) return;
+			Proler_Settings_Template::settings_page( 'newrole' );
 		}
 
 		/**
@@ -238,6 +255,70 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 
 			// localize frontend data.
             wp_localize_script( 'proler-front-script', 'proler', $data );
+		}
+
+
+
+		/**
+		 * Add WooCommerce product settings data tab
+		 *
+		 * @param array $default_tabs current product settings tabs.
+		 */
+		public static function data_tab( $default_tabs ) {
+			global $post;
+			global $proler__;
+
+			$product = wc_get_product( $post->ID );
+			$type    = $product->get_type();
+			$proler__['product'] = array(
+				'type' => $type
+			);
+
+			if( in_array( $type, array( 'grouped', 'external' ), true ) ) return $default_tabs;
+
+			$default_tabs['role_based_pricing'] = array(
+				'label'    => __( 'Role Based Pricing', 'product-role-rules' ),
+				'target'   => 'proler_product_data_tab', // data tab panel id to focus.
+				'priority' => 60,
+				'class'    => array(),
+			);
+
+			return $default_tabs;
+		}
+		 /**
+		 * Add product settings data tab content
+		 */
+		public static function data_tab_content() {
+			global $proler__;
+
+			$type = $proler__['product']['type'];
+			if( in_array( $type, array( 'grouped', 'external' ), true ) ) return;
+
+			// set a flag in which page the settings is rendering | option page or product level.
+			$proler__['which_page'] = 'product';
+			?>
+			<div id="proler_product_data_tab" class="panel woocommerce_options_panel">
+				<div id="mpcdp_settings">
+					<div class="mpcdp_settings_section_title proler-page-title"><span class="proler-gradient"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></span></div>
+					<div class="mpcdp_row">
+						<div class="col-md-6">
+							<div class="mpcdp_option_label"><?php echo esc_html__( 'Role Based Pricing', 'product-role-rules' ); ?></div>
+							<div class="mpcdp_option_description"><?php echo esc_html__( 'Choose Custom to overwrite the global pricing settings.', 'product-role-rules' ); ?></div>
+						</div>
+						<div class="col-md-6">
+							<div class="switch-field">
+								<?php Proler_Settings_Template::settings_type(); ?>
+							</div>
+						</div>
+					</div>
+					<div class="role-settings-content">
+						<?php Proler_Settings_Template::role_settings_content(); ?>
+					</div>
+					<?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
+				</div>
+				<?php Proler_Settings_Template::popup(); ?>
+			</div>
+			<?php
 		}
 
 

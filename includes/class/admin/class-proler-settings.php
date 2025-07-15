@@ -17,24 +17,24 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 		/**
 		 * Class init hooks
 		 */
-		public function init() {
-			add_action( 'admin_init', array( $this, 'save_plugin_settings' ) );
-			add_action( 'save_post', array( $this, 'save_settings' ), 10, 3 );
-			add_action( 'woocommerce_ajax_save_product_variations', array( $this, 'save_settings' ), 1 );
+		public static function init() {
+			add_action( 'admin_init', array( __CLASS__, 'save_plugin_settings' ) );
+			add_action( 'save_post', array( __CLASS__, 'save_settings' ), 10, 3 );
+			add_action( 'woocommerce_ajax_save_product_variations', array( __CLASS__, 'save_settings' ), 1 );
 		}
 
 		/**
 		 * Save settings initialization
 		 */
-		public function save_plugin_settings() {
+		public static function save_plugin_settings() {
             $page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
             if( 'proler-newrole' === $page ){
-                $this->add_new_role();
-                $this->delete_custom_role();
+                self::add_new_role();
+                self::delete_custom_role();
                 return;
             }
 
-            $this->save_settings();
+            self::save_settings();
 		}
 
 		/**
@@ -46,7 +46,7 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 		 *
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
-		public function save_settings( $post_id = 0, $post = array(), $update = false ) {
+		public static function save_settings( $post_id = 0, $post = array(), $update = false ) {
             global $proler__;
 
 			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
@@ -60,20 +60,20 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
                 if( !isset( $_POST[ $key ] ) ) continue;
                 $general[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
             }
-            $this->save_general_settings( $general );
+            self::save_general_settings( $general );
 
 			if ( ! isset( $_POST['proler_data'] ) || ( isset( $post->post_type ) && 'product' !== $post->post_type ) ) return;
 
             // get role based settings data.
 			$settings = json_decode( sanitize_text_field( wp_unslash( $_POST['proler_data'] ) ), true );
-            $this->save_role_settings( $settings, $post_id );
+            self::save_role_settings( $settings, $post_id );
 		}
-        public function save_general_settings( $general ){
+        public static function save_general_settings( $general ){
             foreach( $general as $key => $value ){
                 update_option( $key, $value );
             }
         }
-        public function save_role_settings( $data, $post_id ){
+        public static function save_role_settings( $data, $post_id ){
             if( !empty( $post_id ) ) {
 				update_post_meta( $post_id, 'proler_data', $data );
 			} else {
@@ -86,12 +86,10 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 		/**
 		 * Add new user role
 		 *
-		 * Must start with letter and only letters, digits, '_' ( underscore ) and ' ' ( space ) allowed
-		 * Must be more than three (3) characters long
-		 * Must not exists before, as user role
-		 * 'Customer' user role must exists or defined before
+		 * Must start with a letter and only letters, digits, '_' ( underscores ) and ' ' ( white spaces ) are allowed
+		 * Must be at least 3 ( three ) letters long
 		 */
-		public function add_new_role() {
+		public static function add_new_role() {
 			global $proler__;
 
 			if ( ! isset( $_POST['proler_admin_new_role'] ) ) {
@@ -162,7 +160,7 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 		/**
 		 * Delete custom user role
 		 */
-		public function delete_custom_role() {
+		public static function delete_custom_role() {
 			global $proler__;
 
 			if ( ! isset( $_GET['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['nonce'] ) ), 'proler_delete_role' ) ) {
@@ -176,9 +174,9 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 
 			// get custom user role name to delete.
 			$role = isset( $_GET['delete'] ) ? sanitize_key( wp_unslash( $_GET['delete'] ) ) : '';
-            $this->remove_role( $role );
+            self::remove_role( $role );
         }
-        private function remove_role( $role ){
+        public static function remove_role( $role ){
             global $proler__;
             if( empty( $role ) ) return;
 
@@ -212,7 +210,7 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 
 
         
-        private function log( $data ) {
+        private static function log( $data ) {
 			if ( true === WP_DEBUG ) {
 				if ( is_array( $data ) || is_object( $data ) ) {
 					error_log( print_r( $data, true ) );
@@ -224,5 +222,4 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 	}
 }
 
-$proler_settings_cls = new Proler_Settings();
-$proler_settings_cls->init();
+Proler_Settings::init();

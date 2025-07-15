@@ -20,90 +20,7 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		 * @var string.
 		 */
 		private static $page;
-
-		public static function init() {
-			// woocommerce product data tab, tab and menu.
-			add_filter( 'woocommerce_product_data_tabs', array( __CLASS__, 'data_tab' ), 10, 1 );
-			add_action( 'woocommerce_product_data_panels', array( __CLASS__, 'data_tab_content' ) );
-		}
-
-
-
-		public static function global_settings_page() {
-			if( ! current_user_can( 'manage_options' ) ) return;
-			self::settings_page( 'settings' );
-		}
-		public static function general_settings_page() {
-			if( ! current_user_can( 'manage_options' ) ) return;
-			self::settings_page( 'general-settings' );
-		}
-		public static function new_role_page() {
-			if( ! current_user_can( 'manage_options' ) ) return;
-			self::settings_page( 'newrole' );
-		}
-
-		/**
-		 * Add WooCommerce product settings data tab
-		 *
-		 * @param array $default_tabs current product settings tabs.
-		 */
-		public static function data_tab( $default_tabs ) {
-			global $post;
-			global $proler__;
-
-			$product = wc_get_product( $post->ID );
-			$type    = $product->get_type();
-			$proler__['product'] = array(
-				'type' => $type
-			);
-
-			if( in_array( $type, array( 'grouped', 'external' ), true ) ) return $default_tabs;
-
-			$default_tabs['role_based_pricing'] = array(
-				'label'    => __( 'Role Based Pricing', 'product-role-rules' ),
-				'target'   => 'proler_product_data_tab', // data tab panel id to focus.
-				'priority' => 60,
-				'class'    => array(),
-			);
-
-			return $default_tabs;
-		}
-		 /**
-		 * Add product settings data tab content
-		 */
-		public static function data_tab_content() {
-			global $proler__;
-
-			$type = $proler__['product']['type'];
-			if( in_array( $type, array( 'grouped', 'external' ), true ) ) return;
-
-			// set a flag in which page the settings is rendering | option page or product level.
-			$proler__['which_page'] = 'product';
-			?>
-			<div id="proler_product_data_tab" class="panel woocommerce_options_panel">
-				<div id="mpcdp_settings">
-					<div class="mpcdp_settings_section_title proler-page-title"><span class="proler-gradient"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></span></div>
-					<div class="mpcdp_row">
-						<div class="col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Role Based Pricing', 'product-role-rules' ); ?></div>
-							<div class="mpcdp_option_description"><?php echo esc_html__( 'Choose Custom to overwrite the global pricing settings.', 'product-role-rules' ); ?></div>
-						</div>
-						<div class="col-md-6">
-							<div class="switch-field">
-								<?php self::settings_type(); ?>
-							</div>
-						</div>
-					</div>
-					<div class="role-settings-content">
-						<?php self::role_settings_content(); ?>
-					</div>
-					<?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
-				</div>
-				<?php self::popup(); ?>
-			</div>
-			<?php
-		}
-
+		
 
 
         /**
@@ -377,31 +294,21 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		 * Display product page settings type indicator
 		 */
 		public static function settings_type() {
-			$data = Proler_Settings::get_settings();
-
-			$value = 'default';
-			if ( ! empty( $data ) && isset( $data['proler_stype'] ) ) {
-				$value = $data['proler_stype'];
-			}
-
 			$types = array(
 				'default'      => __( 'Global', 'product-role-rules' ),
 				'proler-based' => __( 'Custom', 'product-role-rules' ),
 				'disable'      => __( 'Disable', 'product-role-rules' ),
 			);
 
-            foreach ( $types as $v => $label ) {
-                echo '<div class="swatch-item">';
-                printf(
-                    '<input type="radio" id="proler_stype_%s" name="proler_stype" value="%s" %s><label for="proler_stype_%s">%s</label>',
-                    esc_attr( $v ),
-                    esc_attr( $v ),
-                    $v === $value ? 'checked' : '',
-                    esc_attr( $v ),
-                    esc_html( $label )
-                );
-                echo '</div>';
-            }
+			$data     = Proler_Settings::get_settings();
+			$selected = isset( $data['proler_stype'] ) && !empty( $data['proler_stype'] ) ? $data['proler_stype'] : 'default';
+
+			foreach( $types as $slug => $value ) : ?>
+			<div class="swatch-item">
+				<input type="radio" id="proler_stype_<?php echo esc_attr( $slug ); ?>" name="proler_stype" value="<?php echo esc_attr( $slug ); ?>" <?php echo $slug === $selected ? 'checked' : ''; ?>>
+				<label for="proler_stype_<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( $value ); ?></label>
+			</div>
+			<?php endforeach;
 		}
 
         /**
@@ -490,36 +397,19 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		 * @param string $selected role name that should be selected.
 		 */
 		public static function roles_select( $selected ) {
-            $options = sprintf( '<option value="">%s</option>', esc_html__( 'Choose a role', 'product-role-rules' ) );
-            
-            foreach ( wp_roles()->roles as $role => $data ) {
-                $options .= sprintf(
-                    '<option value="%s" %s>%s</option>',
-                    esc_attr( $role ),
-                    $selected === $role ? 'selected' : '',
-                    esc_html( $data['name'] )
-                );
+			$roles = [];
+			foreach ( wp_roles()->roles as $role => $data ) {
+				$roles[ $role ] = $data['name'];
             }
-            
-            $options .= sprintf(
-                '<option value="visitor" %s>%s</option>',
-                'visitor' === $selected ? 'selected' : '',
-                esc_html__( 'Unregistered user', 'product-role-rules' )
-            );
-
-            echo wp_kses(
-                '<select name="proler_roles" class="proler-roles">' . $options . '</select>',
-                array(
-                    'select' => array(
-                        'name'  => array(),
-                        'class' => array(),
-                    ),
-                    'option' => array(
-                        'value'    => array(),
-                        'selected' => array()
-                    ),
-                )
-            );
+			$roles[ 'visitor' ] = __( 'Unregistered user', 'product-role-rules' );
+			?>
+			<select name="proler_roles" class="proler-roles">
+				<option value=""><?php echo __( 'Choose a role', 'product-role-rules' ); ?></option>
+				<?php foreach( $roles as $role => $name ) : ?>
+					<option value="<?php echo esc_attr( $role ); ?>" <?php echo $role === $selected ? 'selected' : ''; ?>><?php echo esc_html( $name ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php
 		}
 
         /**
@@ -984,7 +874,7 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 				return;
 			}
 
-			self::update_notice( 'Your settings have been saved.', 'saved' );
+			self::update_notice( __( 'Your settings have been saved.', 'product-role-rules' ), 'saved' );
 		}
 
 		/**
@@ -1147,5 +1037,3 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		}
     }
 }
-
-Proler_Settings_Template::init();
