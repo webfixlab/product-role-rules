@@ -130,21 +130,22 @@
 				{type: 'checkbox', name: 'pr_enable'},
 				{type: 'checkbox', name: 'hide_price'},
 				{type: 'textarea', name: 'hide_txt'},
-				{type: 'input', name: 'min_qty'},
-				{type: 'input', name: 'max_qty'},
-				{type: 'input', name: 'discount'},
-				{type: 'select', name: 'discount_type'},
+				{type: 'input',    name: 'min_qty'},
+				{type: 'input',    name: 'max_qty'},
+				{type: 'input',    name: 'discount'},
+				{type: 'select',   name: 'discount_type'},
 				{type: 'checkbox', name: 'discount_text'},
 				{type: 'checkbox', name: 'hide_regular_price'},
-				{type: 'select', name: 'additional_discount_display'},
-				{type: 'select', name: 'category'},
-				{type: 'select', name: 'product_type'},
-				{type: 'input', name: 'schedule_start'},
-				{type: 'input', name: 'schedule_end'},
+				{type: 'select',   name: 'additional_discount_display'},
+				{type: 'select',   name: 'category'},
+				{type: 'select',   name: 'product_type'},
+				{type: 'input',    name: 'schedule_start'},
+				{type: 'input',    name: 'schedule_end'},
 			];
 			for(const i in fields){
 				const fieldType = fields[i].type === 'checkbox' ? 'input' : fields[i].type;
-				const field = row.find(`${fieldType}[name="${fields[i].name}"]`);
+				const field     = row.find(`${fieldType}[name="${fields[i].name}"]`);
+
 				if(fields[i].type === 'checkbox' && field.is(':checked')) data[fields[i].name] = true;
 				else data[fields[i].name] = field.val();
 			}
@@ -154,15 +155,16 @@
 		getDiscountTiers(row){
 			const fields = [
 				{type: 'select', name: 'discount_type'},
-				{type: 'input', name: 'min'},
-				{type: 'input', name: 'max'},
-				{type: 'input', name: 'discount'},
+				{type: 'input',  name: 'min'},
+				{type: 'input',  name: 'max'},
+				{type: 'input',  name: 'discount'},
 			];
 			const data = [];
 			row.find('.discount-range-wrap .disrange-item').each(function(){
 				const item = {};
 				for(const i in fields){
 					const field = $(this).find(`${fields[i].type}[name="${fields[i].name}"]`);
+					
 					if(fields[i].type === 'checkbox' && field.is(':checked')) item[fields[i].name] = true;
 					else item[fields[i].name] = field.val();
 				}

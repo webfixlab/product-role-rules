@@ -201,6 +201,16 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
         }
 
 
+
+		/**
+         * Template class constructor
+         */
+        public static function get_settings(){
+            global $post;
+			return isset( $post->ID ) && !empty( $post->ID ) ? get_post_meta( $post->ID, 'proler_data', true ) : get_option( 'proler_role_table' );
+        }
+
+
         
         private function log( $data ) {
 			if ( true === WP_DEBUG ) {

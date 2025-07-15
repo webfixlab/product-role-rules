@@ -14,14 +14,6 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 	 */
 	class Proler_Settings_Template {
 
-
-        /**
-         * Get role based settings for appropriate scope
-         *
-         * @var array
-         */
-        private static $data;
-
         /**
 		 * Current settings page slug
 		 *
@@ -29,23 +21,6 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		 */
 		private static $page;
 
-
-
-        /**
-         * Template class constructor
-         */
-        public function __construct(){
-            // get settings data.
-            global $post;
-
-			if ( isset( $post->ID ) ) {
-				$data = get_post_meta( $post->ID, 'proler_data', true );
-			} else {
-				$data = get_option( 'proler_role_table' );
-			}
-
-			self::$data = $data;
-        }
 		public static function init() {
 			// woocommerce product data tab, tab and menu.
 			add_filter( 'woocommerce_product_data_tabs', array( __CLASS__, 'data_tab' ), 10, 1 );
@@ -145,8 +120,8 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
                     <div id="mpcdp_settings_page_header">
                         <div id="mpcdp_logo"><?php echo esc_html__( 'Role Based Pricing for WooCommerce', 'product-role-rules' ); ?></div>
                         <div id="mpcdp_toolbar_icons">
-                            <a class="mpcdp-tippy" target="_blank" href="<?php echo esc_url( $proler__['url']['support'] ); ?>" data-tooltip="<?php echo esc_html__( 'Support', 'product-role-rules' ); ?>">
-                            <span class="tab_icon dashicons dashicons-email"></span>
+                            <a target="_blank" href="<?php echo esc_url( $proler__['url']['support'] ); ?>" data-tooltip="<?php echo esc_html__( 'Support', 'product-role-rules' ); ?>">
+								<span class="tab_icon dashicons dashicons-email"></span>
                             </a>
                         </div>
                     </div>
@@ -221,29 +196,25 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 				<?php echo esc_html__( 'Role names can include letters, numbers, spaces or underscores. Just make sure it starts with a letter!', 'product-role-rules' ); ?>
 			</div>
 			<div class="new-role-wrap">
-				<div class="mpcdp_settings_option">
-					<div class="mpcdp_row">
-						<div class="col-md-6">
-							<input type="text" name="proler_admin_new_role" placeholder="<?php echo esc_html__( 'Example: \'B2B Customer\'', 'product-role-rules' ); ?>" >
-							<?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
-						</div>
-						<div class="col-md-6">
-							<div class="mpcdp_settings_submit" id="proler-role-create">
-								<div class="submit">
-									<button class="mpcdp_submit_button">
-										<div class="save-text"><?php echo esc_html__( 'Add New Role', 'product-role-rules' ); ?></div>
-										<div class="save-text save-text-mobile"><?php echo esc_html__( 'Add', 'product-role-rules' ); ?></div>
-									</button>
-								</div>
+				<div class="mpcdp_row">
+					<div class="col-md-6">
+						<input type="text" name="proler_admin_new_role" placeholder="<?php echo esc_html__( 'Example: \'B2B Customer\'', 'product-role-rules' ); ?>" >
+						<?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
+					</div>
+					<div class="col-md-6">
+						<div class="mpcdp_settings_submit" id="proler-role-create">
+							<div class="submit">
+								<button class="mpcdp_submit_button">
+									<div class="save-text"><?php echo esc_html__( 'Add New Role', 'product-role-rules' ); ?></div>
+									<div class="save-text save-text-mobile"><?php echo esc_html__( 'Add', 'product-role-rules' ); ?></div>
+								</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="">
-				<div class="mpcdp_settings_option">
-					<?php self::user_role_list(); ?>
-				</div>
+			<div class="mpcdp_settings_option">
+				<?php self::user_role_list(); ?>
 			</div>
 			<?php
 		}
@@ -406,7 +377,7 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		 * Display product page settings type indicator
 		 */
 		public static function settings_type() {
-			$data = self::$data;
+			$data = Proler_Settings::get_settings();
 
 			$value = 'default';
 			if ( ! empty( $data ) && isset( $data['proler_stype'] ) ) {
@@ -440,10 +411,10 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 			?>
 			<div class="pr-settings">
 				<?php self::saved_role_settings(); ?>
-				<div class="demo-item" style="display:none;">
-					<?php self::role_settings_head(); ?>
-					<?php self::role_settings_details(); ?>
-				</div>
+			</div>
+			<div class="demo-item">
+				<?php self::role_settings_head(); ?>
+				<?php self::role_settings_details(); ?>
 			</div>
 			<?php do_action( 'proler_admin_extra_section' ); ?>
 			<a class="add-new" href="javaScript:void(0)"><?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
@@ -455,10 +426,8 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		 * Get saved role settings
 		 */
 		public static function saved_role_settings() {
-            $data = self::$data;
-			if ( empty( $data ) || ! isset( $data['roles'] ) ) {
-				return;
-			}
+			$data = Proler_Settings::get_settings();
+			if ( empty( $data ) || ! isset( $data['roles'] ) ) return;
 
 			foreach ( $data['roles'] as $role => $rd ) {
 				?>
@@ -477,11 +446,9 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 		 * @param array  $rd   role settings data.
 		 */
 		public static function role_settings_head( $role = '', $rd = array() ) {
-			$checked = isset( $rd['pr_enable'] ) && '1' === $rd['pr_enable'] ? 'on' : 'off';
-
-			if ( empty( $rd ) ) {
-				$checked = 'on';
-			}
+			$checked = isset( $rd['pr_enable'] ) ? $rd['pr_enable'] : '';
+			$checked = !empty( $checked ) && ( '1' === $checked || true === $checked ) ? 'on' : 'off';
+			$checked = empty( $rd ) ? 'on' : $checked;
 
 			$str = self::role_settings_overview( $rd );
 			?>
@@ -630,7 +597,7 @@ if ( ! class_exists( 'Proler_Settings_Template' ) ) {
 							<?php echo esc_html__( 'Set discount for all users of this role.', 'product-role-rules' ); ?>
 						</div>
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-6 proler-inline">
 						<input type="text" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>">
 						<select name="discount_type">
 							<option value="percent" <?php echo esc_attr( 'percent' === $discount_type ? 'selected' : '' ); ?>>%</option>

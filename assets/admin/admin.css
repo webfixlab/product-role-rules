@@ -1,6 +1,9 @@
 :root{
 	--proler-background-color: #f8f8f8;
 }
+.demo-item{
+	display: none;
+}
 #left-side {
 	width: 15%;
 }
@@ -29,7 +32,6 @@
 }
 #mpcdp_settings{
 	background: white;
-	max-width: 97%;
 	margin: 40px 0 0 20px;
 	border-radius: 5px;
 	overflow: hidden;
@@ -39,6 +41,7 @@
 }
 div#proler_product_data_tab #mpcdp_settings{
 	margin: 20px;
+	padding: 20px;
 }
 #mpcdp_settings_page_header {
 	display: flex;
@@ -187,9 +190,6 @@ span.proler-delete:hover {
 	border: 1px solid #dfdfdf;
 	line-height: 36px;
 }
-.proler-discount select[name="discount_type"] {
-	max-width: 70px;
-}
 .pr-settings input[type="text"], .new-role-wrap input[type="text"] {
 	border: 1px solid #dfdfdf;
 	padding: 4px 10px;
@@ -203,6 +203,12 @@ span.proler-delete:hover {
 }
 .disrange-item input[type="text"], input[type="datetime-local"] {
 	padding: 4px 10px;
+}
+.col-md-6.proler-inline{
+	display: inline-flex;
+}
+.proler-inline select{
+	max-width: 25%;
 }
 textarea.proler-widefat {
 	width: 100%;
@@ -566,6 +572,10 @@ span.dashicons.dashicons-trash:hover {
 	}
 }
 @media screen and (max-width: 767px) {
+	#middle-content{
+		padding: 10px;
+		width: 79%;
+	}
 	#mpcdp_settings {
 		margin: 0;
 		margin-top: 10px;
@@ -584,6 +594,11 @@ span.dashicons.dashicons-trash:hover {
 	}
 	span.proler-arrow img{
 		right: 0;
+	}
+	span.proler-delete{
+		top: -10px;
+		right: -10px;
+		font-size: 20px;
 	}
 	.proler-option-head select {
 		padding: 5px;
@@ -611,8 +626,8 @@ span.dashicons.dashicons-trash:hover {
 		padding: 5px 10px;
 	}
 	.add-new-disrange, a.add-new{
-		margin: 0;
-	}
+        margin: 15px 0 0 0;
+    }
 	.proler-role-list li{
 		margin-right: 5px;
         padding: 5px 10px;
@@ -635,9 +650,6 @@ span.dashicons.dashicons-trash:hover {
 	}
 	.mpcdp_settings_submit button.mpcdp_submit_button{
 		padding: 5px 10px;
-	}
-	.proler-discount select[name="discount_type"]{
-		max-width: 50px;
 	}
 	.proler-option-content textarea {
         padding: 5px;
@@ -680,5 +692,8 @@ span.dashicons.dashicons-trash:hover {
 	}
 	#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.hurkanSwitch-switch-item-status-on>.hurkanSwitch-switch-cursor-selector{
 		right: 5px;
+	}
+	.col-md-6.proler-inline {
+		display: inline-flex;
 	}
 }
