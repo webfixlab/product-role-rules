@@ -53,7 +53,7 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			include PROLER_PATH . 'includes/class/admin/class-proler-settings.php';
 			include PROLER_PATH . 'includes/class/admin/class-proler-settings-template.php';
 			
-			include PROLER_PATH . 'includes/class/class-proler-helper.php';
+			include PROLER_PATH . 'includes/class/class-proler-front-helper.php';
 			include PROLER_PATH . 'includes/class/class-proler-front-loader.php';
 			include PROLER_PATH . 'includes/class/class-proler-cart.php';
 		}

@@ -38,22 +38,22 @@ if ( ! class_exists( 'Proler_Front_Loader' ) ) {
 		public static function get_price_html( $price, $product ) {
 			if( 'external' === $product->get_type() ) return $price;
 			
-			$data = Proler_Helper::get_product_settings( $product );
+			$data = Proler_Front_Helper::get_product_settings( $product );
 
-			if ( ! Proler_Helper::if_apply_settings( $data ) ) {
+			if ( ! Proler_Front_Helper::if_apply_settings( $data ) ) {
 				return $price;
 			}
 
-			$placeholder = self::price_placeholder( $data );
+			$placeholder = Proler_Front_Helper::price_placeholder( $data );
 			if ( false !== $placeholder ) {
 				return $placeholder;
 			}
 
 			if ( 'variable' === $data['type'] || 'grouped' === $data['type'] ) {
-				return self::price_range( $price, $product, $data );
+				return Proler_Front_Helper::price_range( $price, $product, $data );
 			}
 
-			$prices = self::get_prices( $data );
+			$prices = Proler_Front_Helper::get_prices( $data );
 			if ( ! is_array( $prices ) ) {
 				return $price;
 			}
@@ -75,13 +75,13 @@ if ( ! class_exists( 'Proler_Front_Loader' ) ) {
 		 * @param object $product product object.
 		 */
 		public static function archive_page_cart_btn( $button, $product ) {
-			$data = Proler_Helper::get_product_settings( $product );
+			$data = Proler_Front_Helper::get_product_settings( $product );
 
 			if ( empty( $data ) || ! isset( $data['settings'] ) ) {
 				return $button;
 			}
 
-			if ( ! Proler_Helper::if_apply_settings( $data ) ) {
+			if ( ! Proler_Front_Helper::if_apply_settings( $data ) ) {
 				return $button;
 			}
 
@@ -101,13 +101,13 @@ if ( ! class_exists( 'Proler_Front_Loader' ) ) {
 		public static function is_on_sale( $on_sale, $product ) {
 			if( 'external' === $product->get_type() ) return $on_sale;
 			
-			$data = Proler_Helper::get_product_settings( $product );
+			$data = Proler_Front_Helper::get_product_settings( $product );
 
 			if ( empty( $data ) || ! isset( $data['settings'] ) ) {
 				return $on_sale;
 			}
 
-			if ( ! Proler_Helper::if_apply_settings( $data ) ) {
+			if ( ! Proler_Front_Helper::if_apply_settings( $data ) ) {
 				return $on_sale;
 			}
 
@@ -115,7 +115,7 @@ if ( ! class_exists( 'Proler_Front_Loader' ) ) {
 				return false;
 			}
 
-			$prices = self::get_prices( $data );
+			$prices = Proler_Front_Helper::get_prices( $data );
 
 			if ( ! is_array( $prices ) || $prices['rp'] === $prices['sp'] || empty( $prices['sp'] ) ) {
 				return $on_sale;
@@ -126,112 +126,6 @@ if ( ! class_exists( 'Proler_Front_Loader' ) ) {
 		
 
 
-		
-
-
-
-		/**
-		 * Get regular and sale price of a product
-		 *
-		 * @param array $data settings data.
-		 */
-		public static function get_prices( $data ) {
-			$enable = ! isset( $data['settings']['pr_enable'] ) || empty( $data['settings']['pr_enable'] ) ? false : true;
-
-			if ( empty( $data ) || false === $enable ) {
-				return false;
-			}
-
-			$has_range = 'variable' === $data['type'] || 'grouped' === $data['type'];
-			$prices    = array(
-				'rp' => $has_range ? $data['max_price'] : $data['regular_price'],
-				'sp' => $has_range ? $data['min_price'] : $data['sale_price']
-			);
-
-			return self::apply_discount( $data, $prices );
-		}
-
-		/**
-		 * Handle product discount
-		 *
-		 * @param array $data   Settings data.
-		 * @param array $prices Regular and sale prices of the product.
-		 */
-		public static function apply_discount( $data, $prices ) {
-			if( !isset( $data['settings']['discount'] ) || empty( $data['settings']['discount'] ) ) return $prices;
-
-			$discount = array(
-				'amount' => (float) $data['settings']['discount'],
-				'type'   => $data['settings']['discount_type']
-			);
-			$discount = apply_filters( 'proler_get_discount', $discount, $prices, $data );
-
-			$price = isset( $prices['sp'] ) && ! empty( $prices['sp'] ) ? $prices['sp'] : $prices['rp'];
-			$price = !empty( $price ) ? (float) $price : $price;
-
-			$sale_price = empty( $discount['type'] ) || 'percent' === $discount['type'] ? ( $price * ( 100 - $discount['amount'] ) ) / 100 : $price - $discount['amount'];
-			$prices['sp'] = max( 0, $sale_price );
-
-			return $prices;
-		}
-
-		/**
-		 * Variable product price range html
-		 *
-		 * @param string $price   product price html.
-		 * @param object $product product object.
-		 * @param array  $data    settings data.
-		 */
-		public static function price_range( $price, $product, $data ) {
-			if( empty( $data ) || !isset( $data['settings'] ) || !isset( $data['settings']['discount'] ) ) return $price;
-			
-			$discount = $data['settings']['discount'];
-			if( empty( $discount ) || 0 === $discount ) return $price;
-
-			$discount = (float) $discount;
-			$discount = max(0, ( 100 - $discount ) );
-
-			$if_percent = empty( $data['settings']['discount_type'] ) || 'percent' === $data['settings']['discount_type'] ? true : false;
-
-			$min = $if_percent ? ( $data['min_price'] * $discount ) / 100 : $data['min_price'] - $discount;
-			$max = $if_percent ? ( $data['max_price'] * $discount ) / 100 : $data['max_price'] - $discount;
-
-			if( $min !== $max ){
-				return wc_price( $min ) . ' - ' . wc_price( $max );
-			}else if( $min === $max && $max !== (float) $data['rp'] ){
-				return wc_format_sale_price( $data['rp'], $min );
-			}else{
-				return wc_price( $data['rp'] );
-			}
-		}
-
-		/**
-		 * Hide price or show placeholder price instead of price
-		 *
-		 * @param array $data settings data.
-		 */
-		public static function price_placeholder( $data ) {
-			$is_hidden = isset( $data['settings']['hide_price'] ) ? $data['settings']['hide_price'] : '';
-			$is_hidden = ! empty( $is_hidden ) && '1' === $is_hidden ? true : false;
-			if ( ! $is_hidden ) return false;
-
-			self::remove_add_to_cart();
-
-			return isset( $data['settings']['hide_txt'] ) ? $data['settings']['hide_txt'] : __( 'Price hidden', 'product-role-rules' );
-		}
-
-		/**
-		 * Remove add to cart button from product page
-		 */
-		public static function remove_add_to_cart(){
-			remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
-			remove_action( 'woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30 );
-			remove_action( 'woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30 );
-			remove_action( 'woocommerce_external_add_to_cart', 'woocommerce_external_add_to_cart', 30 );
-		}
-
-
-		
 		/**
 		 * Discount text for single product page
 		 */
@@ -245,8 +139,8 @@ if ( ! class_exists( 'Proler_Front_Loader' ) ) {
 		public static function discount_text_loop() {
 			global $product;
 
-			$data = Proler_Helper::get_product_settings( $product );
-			if ( ! Proler_Helper::if_apply_settings( $data ) ) {
+			$data = Proler_Front_Helper::get_product_settings( $product );
+			if ( ! Proler_Front_Helper::if_apply_settings( $data ) ) {
 				return;
 			}
 
@@ -307,22 +201,6 @@ if ( ! class_exists( 'Proler_Front_Loader' ) ) {
 			}
 
 			echo '<div class="proler-saving">' . __( 'Save', 'product-role-rules' ) . ' ' . esc_html( $text_data['amount'] ) . esc_attr( $text_data['symbol'] ) . '</div>';
-		}
-
-
-
-		/**
-		 * Get all user roles
-		 */
-		public static function user_roles() {
-			$userid = get_current_user_id();
-			if( 0 === $userid ) {
-				return array( 'visitor' );
-			}
-
-			// get roles of currently logged in user.
-			$user  = get_userdata( $userid );
-			return $user->roles;
 		}
 
 

@@ -7,12 +7,12 @@
  * @since      4.0
  */
 
-if ( ! class_exists( 'Proler_Helper' ) ) {
+if ( ! class_exists( 'Proler_Front_Helper' ) ) {
 
 	/**
 	 * Plugin class for frontend feature
 	 */
-	class Proler_Helper {
+	class Proler_Front_Helper {
 
 		/**
 		 * Get product settings
@@ -246,6 +246,106 @@ if ( ! class_exists( 'Proler_Helper' ) ) {
 			// get roles of currently logged in user.
 			$user = get_userdata( $userid );
 			return $user->roles;
+		}
+
+
+
+		/**
+		 * Get regular and sale price of a product
+		 *
+		 * @param array $data settings data.
+		 */
+		public static function get_prices( $data ) {
+			$enable = ! isset( $data['settings']['pr_enable'] ) || empty( $data['settings']['pr_enable'] ) ? false : true;
+
+			if ( empty( $data ) || false === $enable ) return false;
+
+			$has_range = 'variable' === $data['type'] || 'grouped' === $data['type'];
+			$prices    = array(
+				'rp' => $has_range ? $data['max_price'] : $data['regular_price'],
+				'sp' => $has_range ? $data['min_price'] : $data['sale_price']
+			);
+
+			return self::apply_discount( $data, $prices );
+		}
+
+		/**
+		 * Handle product discount
+		 *
+		 * @param array $data   Settings data.
+		 * @param array $prices Regular and sale prices of the product.
+		 */
+		public static function apply_discount( $data, $prices ) {
+			if( !isset( $data['settings']['discount'] ) || empty( $data['settings']['discount'] ) ) return $prices;
+
+			$discount = array(
+				'amount' => (float) $data['settings']['discount'],
+				'type'   => $data['settings']['discount_type']
+			);
+			$discount = apply_filters( 'proler_get_discount', $discount, $prices, $data );
+
+			$price = isset( $prices['sp'] ) && ! empty( $prices['sp'] ) ? $prices['sp'] : $prices['rp'];
+			$price = !empty( $price ) ? (float) $price : $price;
+
+			$sale_price = empty( $discount['type'] ) || 'percent' === $discount['type'] ? ( $price * ( 100 - $discount['amount'] ) ) / 100 : $price - $discount['amount'];
+			$prices['sp'] = max( 0, $sale_price );
+
+			return $prices;
+		}
+
+		/**
+		 * Variable product price range html
+		 *
+		 * @param string $price   product price html.
+		 * @param object $product product object.
+		 * @param array  $data    settings data.
+		 */
+		public static function price_range( $price, $product, $data ) {
+			if( empty( $data ) || !isset( $data['settings'] ) || !isset( $data['settings']['discount'] ) ) return $price;
+			
+			$discount = $data['settings']['discount'];
+			if( empty( $discount ) || 0 === $discount ) return $price;
+
+			$discount = (float) $discount;
+			$discount = max(0, ( 100 - $discount ) );
+
+			$if_percent = empty( $data['settings']['discount_type'] ) || 'percent' === $data['settings']['discount_type'] ? true : false;
+
+			$min = $if_percent ? ( $data['min_price'] * $discount ) / 100 : $data['min_price'] - $discount;
+			$max = $if_percent ? ( $data['max_price'] * $discount ) / 100 : $data['max_price'] - $discount;
+
+			if( $min !== $max ){
+				return wc_price( $min ) . ' - ' . wc_price( $max );
+			}else if( $min === $max && $max !== (float) $data['rp'] ){
+				return wc_format_sale_price( $data['rp'], $min );
+			}else{
+				return wc_price( $data['rp'] );
+			}
+		}
+
+		/**
+		 * Hide price or show placeholder price instead of price
+		 *
+		 * @param array $data settings data.
+		 */
+		public static function price_placeholder( $data ) {
+			$is_hidden = isset( $data['settings']['hide_price'] ) ? $data['settings']['hide_price'] : '';
+			$is_hidden = ! empty( $is_hidden ) && '1' === $is_hidden ? true : false;
+			if ( ! $is_hidden ) return false;
+
+			self::remove_add_to_cart();
+
+			return isset( $data['settings']['hide_txt'] ) ? $data['settings']['hide_txt'] : __( 'Price hidden', 'product-role-rules' );
+		}
+
+		/**
+		 * Remove add to cart button from product page
+		 */
+		public static function remove_add_to_cart(){
+			remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
+			remove_action( 'woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30 );
+			remove_action( 'woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30 );
+			remove_action( 'woocommerce_external_add_to_cart', 'woocommerce_external_add_to_cart', 30 );
 		}
 
 

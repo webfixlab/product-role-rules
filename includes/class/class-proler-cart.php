@@ -87,13 +87,13 @@ if ( ! class_exists( 'Proler_Cart' ) ) {
 				$data = self::get_cart_item_settings( $cart_item );
 				if( !$data ) continue;
 
-				$placeholder = self::price_placeholder( $data );
+				$placeholder = Proler_Front_Helper::price_placeholder( $data );
 				if ( false !== $placeholder && !empty( $cart_item_key ) ){
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
 				}
 				
-				$prices = self::get_prices( $data );
+				$prices = Proler_Front_Helper::get_prices( $data );
 				if ( ! is_array( $prices ) ) continue;
 				
 				$price = empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
@@ -112,13 +112,13 @@ if ( ! class_exists( 'Proler_Cart' ) ) {
 				$data = self::get_cart_item_settings( $cart_item );
 				if( !$data ) continue;
 
-				$placeholder = self::price_placeholder( $data );
+				$placeholder = Proler_Front_Helper::price_placeholder( $data );
 				if ( false !== $placeholder && !empty( $cart_item_key ) ){
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
 				}
 				
-				$prices = self::get_prices( $data );
+				$prices = Proler_Front_Helper::get_prices( $data );
 				if ( ! is_array( $prices ) ) continue;
 				
 				$price = empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
@@ -163,10 +163,10 @@ if ( ! class_exists( 'Proler_Cart' ) ) {
 			$data = self::get_cart_item_settings( $cart_item );
 			if( !$data ) return '';
 
-			$placeholder = self::price_placeholder( $data );
+			$placeholder = Proler_Front_Helper::price_placeholder( $data );
 			if ( false !== $placeholder ) $placeholder;
 			
-			$prices = self::get_prices( $data );
+			$prices = Proler_Front_Helper::get_prices( $data );
 			if ( ! is_array( $prices ) ) return '';
 			
 			return empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
@@ -182,121 +182,17 @@ if ( ! class_exists( 'Proler_Cart' ) ) {
 
 			if( isset( $cart_item['variation_id'] ) && ! empty( $cart_item['variation_id'] ) ){
 				$product = wc_get_product( $cart_item['variation_id'] );
-				$data    = Proler_Helper::get_product_settings( $product );
+				$data    = Proler_Front_Helper::get_product_settings( $product );
 			}else{
 				$product = wc_get_product( $id );
-				$data    = Proler_Helper::get_product_settings( $product );
+				$data    = Proler_Front_Helper::get_product_settings( $product );
 			}
 
-			return !self::if_apply_settings( $data ) ? false : $data;
+			return !Proler_Front_Helper::if_apply_settings( $data ) ? false : $data;
 		}
-
-
-
-
-
-
-
-
-
 		
 
-		/**
-		 * Check if role based settings should apply
-		 *
-		 * @param array $data role based settings data.
-		 */
-		public static function if_apply_settings( $data ) {
-			if ( false === $data || ( ! isset( $data['settings'] ) || false === $data['settings'] ) ) return false;
-			
-			$enable = isset( $data['settings']['pr_enable'] ) && ! empty( $data['settings']['pr_enable'] ) ? (bool) $data['settings']['pr_enable'] : true;
-			if ( false === $enable ) return false;
-			
-			// check type.
-			if ( isset( $data['settings']['product_type'] ) && ! empty( $data['settings']['product_type'] ) ) {
-				if ( $data['type'] !== $data['settings']['product_type'] ) return false;
-			}
-			
-			// check category and that could either be it's parent or in children.
-			if ( 'variation' !== $data['type'] && ! Proler_Helper::if_in_cat( $data ) ) return false;
-
-			return apply_filters( 'proler_if_apply_settings', $data );
-		}
-
-
-
-		/**
-		 * Get regular and sale price of a product
-		 *
-		 * @param array $data settings data.
-		 */
-		public static function get_prices( $data ) {
-			$enable = ! isset( $data['settings']['pr_enable'] ) || empty( $data['settings']['pr_enable'] ) ? false : true;
-
-			if ( empty( $data ) || false === $enable ) return false;
-
-			$has_range = 'variable' === $data['type'] || 'grouped' === $data['type'];
-			$prices    = array(
-				'rp' => $has_range ? $data['max_price'] : $data['regular_price'],
-				'sp' => $has_range ? $data['min_price'] : $data['sale_price']
-			);
-
-			return self::apply_discount( $data, $prices );
-		}
-
-		/**
-		 * Handle product discount
-		 *
-		 * @param array $data   Settings data.
-		 * @param array $prices Regular and sale prices of the product.
-		 */
-		public static function apply_discount( $data, $prices ) {
-			if( !isset( $data['settings']['discount'] ) || empty( $data['settings']['discount'] ) ) return $prices;
-
-			$discount = array(
-				'amount' => (float) $data['settings']['discount'],
-				'type'   => $data['settings']['discount_type']
-			);
-			$discount = apply_filters( 'proler_get_discount', $discount, $prices, $data );
-
-			$price = isset( $prices['sp'] ) && ! empty( $prices['sp'] ) ? $prices['sp'] : $prices['rp'];
-			$price = !empty( $price ) ? (float) $price : $price;
-
-			$sale_price = empty( $discount['type'] ) || 'percent' === $discount['type'] ? ( $price * ( 100 - $discount['amount'] ) ) / 100 : $price - $discount['amount'];
-			$prices['sp'] = max( 0, $sale_price );
-
-			return $prices;
-		}
-
-
-
-		/**
-		 * Hide price or show placeholder price instead of price
-		 *
-		 * @param array $data settings data.
-		 */
-		public static function price_placeholder( $data ) {
-			$is_hidden = isset( $data['settings']['hide_price'] ) ? $data['settings']['hide_price'] : '';
-			$is_hidden = ! empty( $is_hidden ) && '1' === $is_hidden ? true : false;
-			if ( ! $is_hidden ) return false;
-
-			self::remove_add_to_cart();
-
-			return isset( $data['settings']['hide_txt'] ) ? $data['settings']['hide_txt'] : __( 'Price hidden', 'product-role-rules' );
-		}
-
-		/**
-		 * Remove add to cart button from product page
-		 */
-		public static function remove_add_to_cart(){
-			remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
-			remove_action( 'woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30 );
-			remove_action( 'woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30 );
-			remove_action( 'woocommerce_external_add_to_cart', 'woocommerce_external_add_to_cart', 30 );
-		}
-
-
-
+		
 		private function log( $data ) {
 			if ( true === WP_DEBUG ) {
 				if ( is_array( $data ) || is_object( $data ) ) {
