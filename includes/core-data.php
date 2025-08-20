@@ -49,19 +49,19 @@ $proler__ = array(
 			'pro_txt'       => __( 'Purchase limit notice position', 'product-role-rules' ),
 			'options'       => array(
 				'only_cart'    => __( 'Show only on cart page', 'product-role-rules' ),
-				'product_cart' => __( 'Show on product page and cart', 'product-role-rules' ),
+				'product_cart' => __( 'Show on both product and cart page', 'product-role-rules' ),
 			),
 		),
 		array(
 			'key'           => 'proler_cart_info_msg',
 			'section_title' => __( 'Others', 'product-role-rules' ),
 			'field_name'    => __( 'Cart info message', 'product-role-rules' ),
-			'desc'          => __( 'Cart info message example  - "You already have x in your cart"? Please note, by default it will not show if no discount tiers or the product is not in the cart.', 'product-role-rules' ),
+			'desc'          => __( 'Cart info message example  - "You already have x in your cart". Please note, by default it will not show if no discount tiers or the product is not in the cart.', 'product-role-rules' ),
 			'default'       => 'level_on',
 			'pro_txt'       => __( 'Cart info message', '' ),
 			'options'       => array(
 				'level_on'  => __( 'Show', 'product-role-rules' ),
-				'level_1'   => __( 'Hide only when no discount tiers available', 'product-role-rules' ),
+				'level_1'   => __( 'Hide if no discount tiers are available', 'product-role-rules' ),
 				'level_off' => __( 'Hide', 'product-role-rules' ),
 			),
 		)

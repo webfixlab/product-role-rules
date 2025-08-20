@@ -10,18 +10,16 @@
     class roleBasedPricing{
         constructor(){
             $(document).ready(() => {
-                // console.log('proler', proler);
                 this.init();
             });
         }
         init(){
             const self = this;
-
             setTimeout(function(){
                 self.loadMinicart();
             }, 1500);
         }
-        
+
         loadMinicart(){
             $.ajax({
                 method: "POST",
@@ -30,17 +28,16 @@
                     'action': 'proler_minicart',
                 },
                 async: 'false',
-                success: function( data ) {
-                    // console.log('proler:minicart-loaded');
-                    if ( data && data.fragments ) {
-                        $.each( data.fragments, function( key, value ) {
-                            $( key ).replaceWith( value );
+                success: function(data){
+                    if(data && data.fragments){
+                        $.each(data.fragments, function(key, value){
+                            $(key).replaceWith(value);
                         });
-                        $( document.body ).trigger( 'wc_fragments_refreshed' );
+                        $(document.body).trigger('wc_fragments_refreshed');
                     }
                 },
                 error: function() {
-                    $( document.body ).trigger( 'wc_fragments_ajax_error' );
+                    $(document.body).trigger('wc_fragments_ajax_error');
                 }
             });
         }

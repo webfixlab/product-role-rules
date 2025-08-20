@@ -1,5 +1,5 @@
 .proler-saving {
-    border: 1px solid #464646;
+    border: 1px solid #ccc;
     border-radius: 3px;
     padding: 5px 15px;
     display: inline-block;
@@ -9,6 +9,5 @@ li.product .proler-saving {
     display: inline-block;
     margin: 0 auto;
     margin-bottom: 1rem;
-    color: #6d6d6d;
     border-color: #6d6d6d;
 }
