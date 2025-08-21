@@ -11,7 +11,7 @@
  * Requires PHP:         7.0
  * Tags:                 role based pricing, dynamic pricing, wholesale pricing, prices by user role, hide price
  * WC requires at least: 3.6
- * WC tested up to:      10.0.4
+ * WC tested up to:      10.1.0
  * License:              GPL2
  * License URI:          https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:          product-role-rules

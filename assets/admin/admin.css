@@ -313,11 +313,11 @@ a.proler-delete img {
 .proler-role-list li {
 	display: inline-block;
     margin-right: 10px;
-    padding: 10px 40px;
+    padding: 5px 10px;
     margin-bottom: 13px;
     border-radius: 3px;
     border: 1px solid #a9a9a9;
-	line-height: 25px;
+    line-height: 22px;
 }
 .proler-role-list ul {
 	margin-bottom: 0;
@@ -556,7 +556,7 @@ textarea.proler-widefat {
 }
 .proler-role-list ul li a {
     text-decoration: none;
-	margin-left: 20px;
+	margin-left: 5px;
 }
 .mpcdp_settings_section .notice {
     margin: 20px 0 0 0;
@@ -573,10 +573,13 @@ textarea.proler-widefat {
 }
 #mpcdp_settings .proler-saved-settings {
 	margin-bottom: 25px;
-    padding: 20px;
+    padding: 20px 15px;
     display: block;
     background: #e6e6e6;
-	font-size: 14px;
+    font-size: 14px;
+}
+#mpcdp_settings .proler-saved-settings.saved span.dashicons {
+    padding-right: 10px;
 }
 #mpcdp_settings .proler-saved-settings strong{
 	font-weight: bold;
@@ -684,14 +687,15 @@ span.delete-disrange:hover{
 }
 /* HurkanSwitch end */
 .proler-pro-info-row {
-    background: #e6e6e6;
+    background: #fff0f1;
     padding: 20px;
-    border-left: 5px solid #b32d2e;
-	margin-bottom: 25px;
+    margin-bottom: 25px;
+    border: 1px solid #ebb4b5;
+    border-radius: 5px;
 }
 .proler-pro-info-row span.dashicons {
-    font-size: 20px;
     color: #b32d2e;
+	padding-right: 10px;
 }
 .mpcdp_container .mpcdp_row.proler-row-title:not(:last-of-type){
 	margin-bottom: 10px;

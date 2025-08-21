@@ -186,37 +186,28 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		public function new_role_content() {
 			$this->pro_info_msg( 'new-role' );
 			?>
-			<div class="mpcdp_settings_toggle mpcdp_container new-role-wrap">
-				<div class="mpcdp_settings_option visible">
-					<div class="mpcdp_row proler-row-title">
-						<div class="mpcdp_settings_option_description col-md-12">
-							<div class="mpcdp_settings_section_description">
-								<?php echo esc_html__( 'Role names can include letters, numbers, spaces or underscores. Just make sure it starts with a letter!', 'product-role-rules' ); ?>
+			<div class="new-role-wrap">
+				<div class="mpcdp_settings_toggle mpcdp_container">
+					<div class="mpcdp_settings_option visible">
+						<div class="mpcdp_row">
+							<div class="mpcdp_settings_option_description col-md-6">
+								<input type="text" name="proler_admin_new_role" placeholder="<?php echo esc_html__( 'Example: \'B2B Customer\'', 'product-role-rules' ); ?>" >
+								<?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
 							</div>
-						</div>
-					</div>
-					<div class="mpcdp_row">
-						<div class="mpcdp_settings_option_description col-md-6">
-							<input type="text" name="proler_admin_new_role" placeholder="<?php echo esc_html__( 'Example: \'B2B Customer\'', 'product-role-rules' ); ?>" >
-							<?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
-						</div>
-						<div class="mpcdp_settings_option_description col-md-6">
-							<div class="mpcdp_settings_submit" id="proler-role-create">
-								<div class="submit">
-									<button class="mpcdp_submit_button">
-										<div class="save-text"><?php echo esc_html__( 'Add New Role', 'product-role-rules' ); ?></div>
-										<div class="save-text save-text-mobile"><?php echo esc_html__( 'Add', 'product-role-rules' ); ?></div>
-									</button>
+							<div class="mpcdp_settings_option_description col-md-6">
+								<div class="mpcdp_settings_submit" id="proler-role-create">
+									<div class="submit">
+										<button class="mpcdp_submit_button">
+											<div class="save-text"><?php echo esc_html__( 'Add New Role', 'product-role-rules' ); ?></div>
+											<div class="save-text save-text-mobile"><?php echo esc_html__( 'Add', 'product-role-rules' ); ?></div>
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="mpcdp_settings_toggle mpcdp_container">
-				<div class="mpcdp_settings_option visible">
-					<?php $this->user_role_list(); ?>
-				</div>
+				<?php $this->user_role_list(); ?>
 			</div>
 			<?php
 		}
@@ -236,7 +227,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 							// translators: %s: is pro plugin name with url.
 							__( 'Please note: you can add custom roles but to delete those you need the %s.', 'product-role-rules' ),
 							wp_kses_post( $plugin )
-						);	
+						);
 					}else{
 						echo sprintf(
 							// translators: %s: is pro plugin name with url.
@@ -246,7 +237,12 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					}
 				?>
 			</div>
+			<?php if( 'new-role' === $page ) : ?>
+				<div class="proler-pro-info-row">
+					<?php echo esc_html__( 'Please note: Role name must start with a letter and allows only letters, numbers, spaces or underscores!', 'product-role-rules' ); ?>
+				</div>
 			<?php
+			endif;
 		}
 
 		/**
@@ -1030,10 +1026,10 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 			$default_roles = array( 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'customer', 'shop_manager' );
 
 			?>
-			<div class="mpcdp_row proler-custom-roles">
-				<div class="mpcdp_settings_option_description col-md-12">
+			<div class="mpcdp_settings_toggle proler-custom-roles">
+				<div class="mpcdp_settings_option visible">
 					<div class="proler-role-list">
-						<h2><?php echo esc_html__( 'All Custom Roles', 'product-role-rules' ); ?></h2>
+						<h3><?php echo esc_html__( 'All Custom Roles', 'product-role-rules' ); ?></h3>
 						<ul>
 							<?php foreach ( $roles as $role => $name ) : ?>
 								<?php
@@ -1052,10 +1048,10 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					</div>
 				</div>
 			</div>
-			<div class="mpcdp_row">
-				<div class="mpcdp_settings_option_description col-md-12">
+			<div class="mpcdp_settings_toggle ">
+				<div class="mpcdp_settings_option visible">
 					<div class="proler-role-list">
-						<h2><?php echo esc_html__( 'All Default Roles', 'product-role-rules' ); ?></h2>
+						<h3><?php echo esc_html__( 'All Default Roles', 'product-role-rules' ); ?></h3>
 						<ul>
 							<?php foreach ( $roles as $role => $name ) : ?>
 								<?php
