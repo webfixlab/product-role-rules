@@ -572,20 +572,19 @@ textarea.proler-widefat {
 	float: none;
 }
 #mpcdp_settings .proler-saved-settings {
-	margin-bottom: 25px;
+    margin-bottom: 25px;
     padding: 20px 15px;
     display: block;
-    background: #e6e6e6;
+    background: #e8fded;
     font-size: 14px;
+    border: 1px solid #00a32a;
+    border-radius: 5px;
 }
 #mpcdp_settings .proler-saved-settings.saved span.dashicons {
     padding-right: 10px;
 }
 #mpcdp_settings .proler-saved-settings strong{
 	font-weight: bold;
-}
-#mpcdp_settings .proler-saved-settings.saved {
-	border-left: 5px solid #00a32a;
 }
 #mpcdp_settings .proler-merge-cols .proler-merge-item {
 	margin: 0;
