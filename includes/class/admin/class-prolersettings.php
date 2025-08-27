@@ -154,18 +154,16 @@ if ( ! class_exists( 'ProlerSettings' ) ) {
 				}
 
 				if ( isset( $rd['schedule'] ) ) {
-					$wp_timezone = new DateTimeZone( wp_timezone_string() );
-
 					$rdt[ $role ]['schedule'] = array();
 					if ( isset( $rd['schedule']['start'] ) && !empty($rd['schedule']['start']) ) {
-						// Convert date of WP timezone to UTC and when using it again convert that to WP.
-						$datetime = new DateTime( $this->input_sanitize( $rd['schedule']['start'] ), $wp_timezone );
-						$datetime->setTimezone( new DateTimeZone( 'UTC' ) );
+						// Convert time to UTC referenced by wp timezone.
+						$datetime = new \DateTime( $this->input_sanitize( $rd['schedule']['start'] ), wp_timezone() );
+						$datetime->setTimezone( new \DateTimeZone( 'UTC' ) );
 						$rdt[ $role ]['schedule']['start'] = $datetime->format( 'Y-m-d H:i:s' );
 					}
 					if ( isset( $rd['schedule']['end'] ) && !empty($rd['schedule']['end']) ) {
-						$datetime = new DateTime( $this->input_sanitize( $rd['schedule']['end'] ), $wp_timezone );
-						$datetime->setTimezone( new DateTimeZone( 'UTC' ) );
+						$datetime = new \DateTime( $this->input_sanitize( $rd['schedule']['end'] ), wp_timezone() );
+						$datetime->setTimezone( new \DateTimeZone( 'UTC' ) );
 						$rdt[ $role ]['schedule']['end'] = $datetime->format( 'Y-m-d H:i:s' );
 					}
 				}

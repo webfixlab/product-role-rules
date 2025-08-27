@@ -103,13 +103,12 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 *
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
-		public function cart_item_subtotal( $price_html, $cart_item, $cart_item_key ) {
+		public function cart_item_subtotal( $subtotal, $cart_item, $cart_item_key ) {
 			$price = $this->get_cart_item_price( $cart_item );
 			if ( empty( $price ) || ! is_numeric( $price ) ) {
-				return $price_html;
+				return $subtotal;
 			}
-
-			return wc_price( $price );
+			return wc_price( $price * $cart_item['quantity'] );
 		}
 
 		/**
@@ -368,7 +367,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				}
 			}
 
-			if ( isset( $settings[ $id ][ $role ] ) ) {
+			if ( isset( $settings[ $id ][ $role ] ) && !empty( $settings[ $id ][ $role ] ) ) {
 				return $settings[ $id ][ $role ];
 			}
 
@@ -436,29 +435,6 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				}
 			}
 
-			// Convert saved UTC datetime to wp.
-			if( isset( $settings[$id]['settings']['schedule'] ) ){
-				$wp_timezone = new DateTimeZone( wp_timezone_string() );
-									
-				$date_from = $settings[$id]['settings']['schedule']['start'] ?? '';
-				$date_to   = $settings[$id]['settings']['schedule']['end'] ?? '';
-
-				$from = new DateTime( $date_from, new DateTimeZone( 'UTC' ) );
-				$to   = new DateTime( $date_to, new DateTimeZone( 'UTC' ) );
-				
-				$from->setTimezone( $wp_timezone );
-				$to->setTimezone( $wp_timezone );
-
-				if( ! empty( $date_from ) ){
-					$date_from = $from->format( 'Y-m-d H:i:s' );
-					$settings[$id]['settings']['schedule']['start'] = $date_from;
-				}
-				if( ! empty( $date_to ) ){
-					$date_to   = $to->format( 'Y-m-d H:i:s' );
-					$settings[$id]['settings']['schedule']['end'] = $date_to;
-				}
-			}
-
 			$cached_settings = [];
 			$cached_settings[$id][$role] = $settings[$id];
 
@@ -500,7 +476,8 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				return false;
 			}
 			
-			$enable = isset( $data['settings']['pr_enable'] ) && ! empty( $data['settings']['pr_enable'] ) ? (bool) $data['settings']['pr_enable'] : true;
+			$enable = $data['settings']['pr_enable'] ?? '';
+			$enable = empty( $enable ) ? true : (bool) $enable;
 			if ( false === $enable ) {
 				return false;
 			}
@@ -528,8 +505,8 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param array $data settings data.
 		 */
 		public function get_prices( $data ) {
-			$enable = ! isset( $data['settings']['pr_enable'] ) || empty( $data['settings']['pr_enable'] ) ? false : true;
-
+			$enable = $data['settings']['pr_enable'] ?? '';
+			$enable = empty( $enable ) ? true : (bool) $enable;
 			if ( empty( $data ) || false === $enable ) {
 				return false;
 			}
@@ -539,6 +516,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 				'rp' => $has_range ? $data['max_price'] : $data['regular_price'],
 				'sp' => $has_range ? $data['min_price'] : $data['sale_price']
 			);
+			$this->log( $prices );
 
 			return $this->apply_discount( $data, $prices );
 		}
@@ -603,13 +581,14 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param array $data settings data.
 		 */
 		public function price_placeholder( $data ) {
-			$is_hidden = isset( $data['settings']['hide_price'] ) ? $data['settings']['hide_price'] : '';
-			$is_hidden = ! empty( $is_hidden ) && '1' === $is_hidden ? true : false;
+			$is_hidden = $data['settings']['hide_price'] ?? '';
+			$is_hidden = !empty( $is_hidden ) && '1' === $is_hidden ? true : false;
 			if ( ! $is_hidden ) return false;
 
 			$this->remove_add_to_cart();
 
-			return isset( $data['settings']['hide_txt'] ) ? $data['settings']['hide_txt'] : __( 'Price hidden', 'product-role-rules' );
+			$txt = $data['settings']['hide_txt'] ?? '';
+			return empty( $txt ) ? __( 'Price hidden', 'product-role-rules' ) : $txt;
 		}
 
 		/**

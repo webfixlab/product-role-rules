@@ -789,6 +789,10 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					</div>
 					<?php endif; ?>
 					<?php
+						$now = current_time( 'mysql' );
+						$now_dt = new \DateTime( $now );
+						$now = $now_dt->format( 'Y-m-d h:i A' );
+
 						$date_from = $rd['schedule']['start'] ?? '';
 						$date_to   = $rd['schedule']['end'] ?? '';
 					?>
@@ -802,7 +806,7 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 								<?php echo sprintf(
 									// translators: %1$s is the current time.
 									__( 'Set the time frame when this rule will be active. Current time: <span class="proler-server-time">%1$s</span>', 'product-role-rules' ),
-									$this->convert_to_wp_timezone( '', false )
+									esc_html( $now )
 								); ?>
 								<?php do_action( 'proler_schedule_info', $date_from, $date_to ); ?>
 							</div>
@@ -811,10 +815,9 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 					<div class="mpcdp_row proler-schedule">
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
 							<?php
-								$value_from = !empty( $date_from ) ? $this->convert_to_wp_timezone( $date_from ) : '';
 								printf(
 									'<input type="datetime-local" name="schedule_start" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									esc_html( $value_from ),
+									$this->get_server_time( $date_from ),
 									esc_html__( 'Starting Date and Time', 'product-role-rules' ),
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule Start', 'product-role-rules' )
@@ -823,10 +826,9 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 						</div>
 						<div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
 							<?php
-								$value_to = !empty( $date_to ) ? $this->convert_to_wp_timezone( $date_to ) : '';
 								printf(
 									'<input type="datetime-local" name="schedule_end" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									esc_html( $value_to ),
+									$this->get_server_time( $date_to ),
 									esc_html__( 'Ending Date and Time', 'product-role-rules' ),
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule End', 'product-role-rules' )
@@ -843,21 +845,14 @@ if ( ! class_exists( 'ProlerAdminTemplate' ) ) {
 		/**
          * Convert given time, if any, to WP Timezone format
          *
-         * @param string $value     Given date time string.
-         * @param bool   $for_input If it's for displaying in an input field.
+         * @param string $date Given date time string.
          */
-        public function convert_to_wp_timezone( $value = '', $for_input = true ){
-            $value       = !isset( $value ) || empty( $value ) ? 'now' : $value;
-            $wp_timezone = new DateTimeZone( wp_timezone_string() );
+        public function get_server_time( $date ){
+			if( empty( $date ) ) return '';
 
-            if( 'now' !== $value ){
-                $datetime = new DateTime( $value, new DateTimeZone( 'UTC' ) ); 
-                $datetime->setTimezone( $wp_timezone );
-            }else{
-                $datetime = new DateTime( $value, $wp_timezone );
-            }
-
-            return $for_input ? $datetime->format( 'Y-m-d\TH:i' ) : $datetime->format( 'Y-m-d h:i a' );
+			$datetime = new \DateTime( $date, new \DateTimeZone( 'UTC' ) );
+			$datetime->setTimezone( wp_timezone() );
+			return $datetime->format( 'Y-m-d H:i:s' );
         }
 
         /**
