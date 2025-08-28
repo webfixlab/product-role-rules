@@ -553,26 +553,50 @@ if ( ! class_exists( 'PRoleR' ) ) {
 		 * @param array  $data    settings data.
 		 */
 		public function price_range( $price, $product, $data ) {
-			if( empty( $data ) || !isset( $data['settings'] ) || !isset( $data['settings']['discount'] ) ) return $price;
+			// if( empty( $data ) || !isset( $data['settings'] ) || !isset( $data['settings']['discount'] ) ) return $price;
 			
-			$discount = $data['settings']['discount'];
-			if( empty( $discount ) || 0 === $discount ) return $price;
+			$discount = $data['settings']['discount'] ?? 0;
+			$discount = empty( $discount ) ? 0 : (float) $discount;
+			// if( empty( $discount ) || 0 === $discount ) return $price;
+			// $discount = (float) $discount;
+			// $discount = max(0, ( 100 - $discount ) );
 
-			$discount = (float) $discount;
-			$discount = max(0, ( 100 - $discount ) );
+			$if_percent = $data['settings']['discount_type'] ?? 'percent';
+			$if_percent = empty( $if_percent ) || 'percent' === $if_percent ? true : false;
+			// $if_percent = empty( $data['settings']['discount_type'] ) || 'percent' === $data['settings']['discount_type'] ? true : false;
 
-			$if_percent = empty( $data['settings']['discount_type'] ) || 'percent' === $data['settings']['discount_type'] ? true : false;
-
-			$min = $if_percent ? ( $data['min_price'] * $discount ) / 100 : $data['min_price'] - $discount;
-			$max = $if_percent ? ( $data['max_price'] * $discount ) / 100 : $data['max_price'] - $discount;
-
-			if( $min !== $max ){
-				return wc_price( $min ) . ' - ' . wc_price( $max );
-			}else if( $min === $max && $max !== (float) $data['rp'] ){
-				return wc_format_sale_price( $data['rp'], $min );
-			}else{
-				return wc_price( $data['rp'] );
+			$min = $data['min_price'] ?? '';
+			$max = $data['max_price'] ?? '';
+			$min = empty( $min ) ? '' : (float) $min;
+			$max = empty( $max ) ? '' : (float) $max;
+			if( !empty( $min ) && !empty( $discount ) ){
+				$min = $if_percent ? ( $min - ( $min * $discount ) / 100 ) : $min - $discount;
+				$min = max( 0, $min );
 			}
+			if( !empty( $max ) && !empty( $discount ) ){
+				$max = $if_percent ? ( $max - ( $max * $discount ) / 100 ) : $max - $discount;
+				$max = max( 0, $max );
+			}
+			// $min = $data['min_price'] ?? '';
+			// $max = $data['max_price'] ?? '';
+			// if( !empty( $discount ) ){
+			// 	$min = $if_percent ? ( $data['min_price'] * $discount ) / 100 : $data['min_price'] - $discount;
+			// 	$max = $if_percent ? ( $data['max_price'] * $discount ) / 100 : $data['max_price'] - $discount;
+			// }
+			// $this->log( 'okhd, discount ' . $discount . ', percent? ' . $if_percent );
+			// $this->log( array(
+			// 	'min' => $min,
+			// 	'max' => $max
+			// ) );
+
+			$price_range = wc_price( $data['rp'] );
+			if( $min !== $max ){
+				$price_range = wc_price( $min ) . ' - ' . wc_price( $max );
+			}else if( $min === $max && $max !== (float) $data['rp'] ){
+				$price_range = wc_format_sale_price( $data['rp'], $min );
+			}
+			// $this->log( 'okhd price html ' . $price_range );
+			return apply_filters( 'proler_price_range', $price_range, $data, $product );
 		}
 
 		/**
