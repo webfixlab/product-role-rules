@@ -589,7 +589,7 @@ if ( ! class_exists( 'PRoleR' ) ) {
 			// 	'max' => $max
 			// ) );
 
-			$price_range = wc_price( $data['rp'] );
+			$price_range = isset( $data['rp'] ) ? wc_price( $data['rp'] ) : $price;
 			if( $min !== $max ){
 				$price_range = wc_price( $min ) . ' - ' . wc_price( $max );
 			}else if( $min === $max && $max !== (float) $data['rp'] ){
