@@ -27,4 +27,4 @@ define( 'PROLER', __FILE__ );
 define( 'PROLER_VER', '4.1.1' );
 define( 'PROLER_PATH', plugin_dir_path( PROLER ) );
 
-require PROLER_PATH . 'includes/class/admin/class-prolerloader.php';
+require PROLER_PATH . 'includes/class/admin/class-proler-loader.php';
