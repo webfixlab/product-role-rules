@@ -40,12 +40,7 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
 		public static function cart_item_price( $price_html, $cart_item, $cart_item_key ) {
-			$price = self::get_cart_item_price( $cart_item );
-			if ( empty( $price ) ) {
-				return $price_html;
-			}
-
-			return wc_price( $price );
+			return Proler_Front_Settings::get_price_html( $price_html, $cart_item['data'] );
 		}
 
 		/**
@@ -60,11 +55,7 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
 		public static function cart_item_subtotal( $subtotal, $cart_item, $cart_item_key ) {
-			$price = self::get_cart_item_price( $cart_item );
-			if ( empty( $price ) || ! is_numeric( $price ) ) {
-				return $subtotal;
-			}
-			return wc_price( $price * $cart_item['quantity'] );
+			return Proler_Front_Settings::get_cart_item_total_price_html( $subtotal, $cart_item, $cart_item_key );
 		}
 
 		/**
@@ -78,51 +69,30 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 				return;
 			}
 
-			// Avoiding hook repetition (when using price calculations for example | optional).
+			// hook repetition check.
 			if ( did_action( 'woocommerce_before_calculate_totals' ) >= 2 ) {
 				return;
 			}
 
 			// $removed_items = false;
 			foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
-				// self::handle_cart_item( $cart_item, $cart_item_key );
-				$data = self::get_cart_item_settings( $cart_item );
-				if( !$data ) continue;
-
-				$placeholder = Proler_Front_Helper::price_placeholder( $data );
-				if ( false !== $placeholder && !empty( $cart_item_key ) ){
+				$item_price = Proler_Front_Settings::get_product_price( $cart_item['data'] );
+				if( -1 === $item_price ){
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
 				}
-				
-				$prices = Proler_Front_Helper::get_prices( $data );
-				if ( ! is_array( $prices ) ) continue;
-				
-				$price = empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
-				if ( ! empty( $price ) ) {
-					$cart_item['data']->set_price( $price );
-				}
+				$cart_item['data']->set_price( $item_price );
 			}
 		}
 
 		public static function before_minicart(){
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-				$data = self::get_cart_item_settings( $cart_item );
-				if( !$data ) continue;
-
-				$placeholder = Proler_Front_Helper::price_placeholder( $data );
-				if ( false !== $placeholder && !empty( $cart_item_key ) ){
+				$item_price = Proler_Front_Settings::get_product_price( $cart_item['data'] );
+				if( -1 === $item_price ){
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
 				}
-				
-				$prices = Proler_Front_Helper::get_prices( $data );
-				if ( ! is_array( $prices ) ) continue;
-				
-				$price = empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
-				if ( ! empty( $price ) ) {
-					$cart_item['data']->set_price( $price );
-				}
+				$cart_item['data']->set_price( $item_price );
 			}
 		}
 
@@ -141,45 +111,6 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 				),
 				'cart_hash' => WC()->cart->get_cart_hash(),
 			) );
-		}
-
-		/**
-		 * Get single cart item price
-		 *
-		 * @param object $cart_item WC Cart item object.
-		 */
-		public static function get_cart_item_price( $cart_item ) {
-			$data = self::get_cart_item_settings( $cart_item );
-			if( !$data ) return '';
-
-			$placeholder = Proler_Front_Helper::price_placeholder( $data );
-			if ( false !== $placeholder ) $placeholder;
-			
-			$prices = Proler_Front_Helper::get_prices( $data );
-			if ( ! is_array( $prices ) ) {
-				return '';
-			}
-			
-			return empty( $prices['sp'] ) || $prices['rp'] === $prices['sp'] ? $prices['rp'] : $prices['sp'];
-		}
-
-		/**
-		 * Get cart item settings
-		 *
-		 * @param object $cart_item WC Cart item object.
-		 */
-		public static function get_cart_item_settings( $cart_item ){
-			$id = $cart_item['product_id'];
-
-			if( isset( $cart_item['variation_id'] ) && ! empty( $cart_item['variation_id'] ) ){
-				$product = wc_get_product( $cart_item['variation_id'] );
-				$data    = Proler_Front_Helper::get_product_settings( $product );
-			}else{
-				$product = wc_get_product( $id );
-				$data    = Proler_Front_Helper::get_product_settings( $product );
-			}
-
-			return $data;
 		}
 
 		private static function log( $data ) {

@@ -7,12 +7,12 @@
  * @since      5.0
  */
 
-if ( ! class_exists( 'Proler_Settings_Helper' ) ) {
+if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 
 	/**
 	 * Role based settings admin class
 	 */
-	class Proler_Settings_Helper {
+	class Proler_Admin_Settings_Helper {
         
         /**
 		 * Display settings saved notice

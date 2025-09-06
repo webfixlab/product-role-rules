@@ -7,38 +7,38 @@
  * @since      3.0
  */
 
-if ( ! class_exists( 'Proler_Settings' ) ) {
+if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 
 	/**
 	 * Role based settings admin class
 	 */
-	class Proler_Settings {
+	class Proler_Admin_Settings {
 
 		/**
 		 * Class init hooks
 		 */
-		public function init() {
-			add_action( 'admin_init', array( $this, 'save_plugin_settings' ) );
+		public static function init() {
+			add_action( 'admin_init', array( __CLASS__, 'save_plugin_settings' ) );
 
-			add_action( 'save_post', array( $this, 'save_settings' ), 10, 3 );
-			add_action( 'woocommerce_ajax_save_product_variations', array( $this, 'save_settings' ), 1 );
+			add_action( 'save_post', array( __CLASS__, 'save_settings' ), 10, 3 );
+			add_action( 'woocommerce_ajax_save_product_variations', array( __CLASS__, 'save_settings' ), 1 );
 		}
 
 		/**
 		 * Save settings initialization
 		 */
-		public function save_plugin_settings() {
+		public static function save_plugin_settings() {
 			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
 				return;
 			}
 
 			$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
-			$this->log( 'page? ' . $page );
+			self::log( 'page? ' . $page );
 			if( 'proler-newrole' === $page ){
-				$this->add_new_role();
+				self::add_new_role();
 			}else{
-				$this->log( 'saving settings' );
-				$this->save_settings();
+				self::log( 'saving settings' );
+				self::save_settings();
 			}
 		}
 
@@ -51,11 +51,11 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 		 *
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
-		public function save_settings( $post_id = 0, $post = array(), $update = false ) {
+		public static function save_settings( $post_id = 0, $post = array(), $update = false ) {
 			global $proler__;
 
 			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
-				$this->log( 'saving nonce checking failed, skip' );
+				self::log( 'saving nonce checking failed, skip' );
 				return;
 			}
 
@@ -63,7 +63,7 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 			foreach( $proler__['general_settings'] as $field ){
 				$key = $field['key'];
 				if( isset( $_POST[ $key ] ) ){
-					$this->log( 'saving... ' . $key . ' : ' . $_POST[ $key ] );
+					self::log( 'saving... ' . $key . ' : ' . $_POST[ $key ] );
 					$value = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
 					update_option( $key, $value );
 				}
@@ -71,12 +71,12 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 
 			// check if this is role related scope or not, if not leave this place.
 			if ( ! isset( $_POST['proler_data'] ) ) {
-				$this->log( 'no product data, skip' );
+				self::log( 'no product data, skip' );
 				return;
 			}
 
 			if ( isset( $post->post_type ) && 'product' !== $post->post_type ) {
-				$this->log( 'not product page, skip' );
+				self::log( 'not product page, skip' );
 				return;
 			}
 
@@ -94,15 +94,15 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 				} else {
 					update_option( 'proler_role_table', $data );
 				}
-				$this->log( 'no role data, skip' );
-				$this->log( $data );
+				self::log( 'no role data, skip' );
+				// self::log( $data );
 				return;
 			}
 
 			$rdt = array();
 
 			foreach ( $data['roles'] as $role => $rd ) {
-				$role         = $this->input_sanitize( $role );
+				$role         = self::input_sanitize( $role );
 				$rdt[ $role ] = array();
 
 				// hide this price?
@@ -128,40 +128,40 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 				}
 
 				if ( isset( $rd['discount'] ) ) {
-					$rdt[ $role ]['discount'] = $this->input_sanitize( $rd['discount'] );
+					$rdt[ $role ]['discount'] = self::input_sanitize( $rd['discount'] );
 				}
 				if ( isset( $rd['discount_type'] ) ) {
-					$rdt[ $role ]['discount_type'] = $this->input_sanitize( $rd['discount_type'] );
+					$rdt[ $role ]['discount_type'] = self::input_sanitize( $rd['discount_type'] );
 				}
 
 				if ( isset( $rd['min_qty'] ) ) {
-					$rdt[ $role ]['min_qty'] = $this->input_sanitize( $rd['min_qty'] );
+					$rdt[ $role ]['min_qty'] = self::input_sanitize( $rd['min_qty'] );
 				}
 				if ( isset( $rd['max_qty'] ) ) {
-					$rdt[ $role ]['max_qty'] = $this->input_sanitize( $rd['max_qty'] );
+					$rdt[ $role ]['max_qty'] = self::input_sanitize( $rd['max_qty'] );
 				}
 
 				if ( isset( $rd['category'] ) ) {
-					$rdt[ $role ]['category'] = $this->input_sanitize( $rd['category'] );
+					$rdt[ $role ]['category'] = self::input_sanitize( $rd['category'] );
 				}
 
 				if ( isset( $rd['schedule'] ) ) {
 					$rdt[ $role ]['schedule'] = array();
 					if ( isset( $rd['schedule']['start'] ) && !empty($rd['schedule']['start']) ) {
 						// Convert time to UTC referenced by wp timezone.
-						$datetime = new \DateTime( $this->input_sanitize( $rd['schedule']['start'] ), wp_timezone() );
+						$datetime = new \DateTime( self::input_sanitize( $rd['schedule']['start'] ), wp_timezone() );
 						$datetime->setTimezone( new \DateTimeZone( 'UTC' ) );
 						$rdt[ $role ]['schedule']['start'] = $datetime->format( 'Y-m-d H:i:s' );
 					}
 					if ( isset( $rd['schedule']['end'] ) && !empty($rd['schedule']['end']) ) {
-						$datetime = new \DateTime( $this->input_sanitize( $rd['schedule']['end'] ), wp_timezone() );
+						$datetime = new \DateTime( self::input_sanitize( $rd['schedule']['end'] ), wp_timezone() );
 						$datetime->setTimezone( new \DateTimeZone( 'UTC' ) );
 						$rdt[ $role ]['schedule']['end'] = $datetime->format( 'Y-m-d H:i:s' );
 					}
 				}
 
 				if ( isset( $rd['product_type'] ) ) {
-					$rdt[ $role ]['product_type'] = $this->input_sanitize( $rd['product_type'] );
+					$rdt[ $role ]['product_type'] = self::input_sanitize( $rd['product_type'] );
 				}
 
 				if ( isset( $rd['hide_regular_price'] ) ) {
@@ -194,13 +194,13 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 				}
 
 				if ( isset( $rd['additional_discount_display'] ) ) {
-					$rdt[ $role ]['additional_discount_display'] = $this->input_sanitize( $rd['additional_discount_display'] );
+					$rdt[ $role ]['additional_discount_display'] = self::input_sanitize( $rd['additional_discount_display'] );
 				}
 			}
 
 			$data['roles'] = $rdt;
-			$this->log( 'final step, data' );
-			$this->log( $data );
+			// self::log( 'final step, data' );
+			// self::log( $data );
 
 			if ( ! empty( $post_id ) ) {
 				update_post_meta( $post_id, 'proler_data', $data );
@@ -217,7 +217,7 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 		 * Must not exists before, as user role
 		 * 'Customer' user role must exists or defined before
 		 */
-		public function add_new_role() {
+		public static function add_new_role() {
 			global $proler__;
 
 			if ( ! isset( $_POST['proler_admin_new_role'] ) ) {
@@ -290,7 +290,7 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 		 *
 		 * @param string $val input value to sanitize.
 		 */
-		public function input_sanitize( $val ) {
+		public static function input_sanitize( $val ) {
 			$val = str_replace( ':*dblqt*:', '"', $val );
 			$val = str_replace( ':*snglqt*:', '\'', $val );
 			$val = sanitize_text_field( $val );
@@ -298,7 +298,7 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 			return $val;
 		}
 
-		private function log( $data ) {
+		private static function log( $data ) {
 			if ( true === WP_DEBUG ) {
 				if ( is_array( $data ) || is_object( $data ) ) {
 					error_log( print_r( $data, true ) );
@@ -310,5 +310,4 @@ if ( ! class_exists( 'Proler_Settings' ) ) {
 	}
 }
 
-$cls = new Proler_Settings();
-$cls->init();
+Proler_Admin_Settings::init();

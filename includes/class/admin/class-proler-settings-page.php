@@ -81,7 +81,7 @@ class Proler_Settings_Page {
                         <div class="mpcdp_settings_content">
                             <div class="mpcdp_settings_section">
                                 <?php self::settings_page_title(); ?>
-                                <?php Proler_Settings_Helper::settings_saved_notice(); ?>
+                                <?php Proler_Admin_Settings_Helper::settings_saved_notice(); ?>
                                 <?php self::get_settings_page_content(); ?>
                                 <?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
                             </div>
@@ -226,7 +226,7 @@ class Proler_Settings_Page {
     public static function role_settings_content() {
         ?>
         <div class="pr-settings">
-            <?php Proler_Settings_Helper::pro_info_msg( 'role-settings' ); ?>
+            <?php Proler_Admin_Settings_Helper::pro_info_msg( 'role-settings' ); ?>
             <?php Proler_Role_Settings::saved_role_settings(); ?>
             <div class="demo-item" style="display:none;">
                 <?php Proler_Role_Settings::role_settings_item(); ?>
@@ -242,7 +242,7 @@ class Proler_Settings_Page {
         <?php
     }
     public static function new_role_content() {
-        Proler_Settings_Helper::pro_info_msg( 'new-role' );
+        Proler_Admin_Settings_Helper::pro_info_msg( 'new-role' );
         ?>
         <div class="new-role-wrap">
             <div class="mpcdp_settings_toggle mpcdp_container">
@@ -327,7 +327,7 @@ class Proler_Settings_Page {
     }
     public static function general_settings_content(){
         global $proler__;
-        Proler_Settings_Helper::pro_info_msg( 'general-settings' );
+        Proler_Admin_Settings_Helper::pro_info_msg( 'general-settings' );
         ?>
         <div class="mpcdp_settings_toggle mpcdp_container pr-settings general-settings">
             <div class="mpcdp_settings_option visible">

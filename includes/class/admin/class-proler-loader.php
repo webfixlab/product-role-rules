@@ -77,15 +77,15 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			include PROLER_PATH . 'includes/core-data.php';
 
 			// helper functions and templates.
-			include PROLER_PATH . 'includes/class/admin/class-proler-settings-helper.php';
+			include PROLER_PATH . 'includes/class/admin/class-proler-admin-settings-helper.php';
 			include PROLER_PATH . 'includes/class/admin/class-proler-role-settings.php';
 
 			// settings function.
 			include PROLER_PATH . 'includes/class/admin/class-proler-settings-page.php';
 			include PROLER_PATH . 'includes/class/admin/class-proler-product-settings.php';
-			include PROLER_PATH . 'includes/class/admin/class-proler-settings.php';
+			include PROLER_PATH . 'includes/class/admin/class-proler-admin-settings.php';
 
-			include PROLER_PATH . 'includes/class/class-proler-front-helper.php';
+			include PROLER_PATH . 'includes/class/class-proler-front-settings.php';
 			include PROLER_PATH . 'includes/class/class-proler-product-handler.php';
 			include PROLER_PATH . 'includes/class/class-proler-cart-handler.php';
 		}

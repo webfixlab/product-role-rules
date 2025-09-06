@@ -137,7 +137,7 @@ class Proler_Product_Settings {
     public static function role_settings_content() {
         ?>
         <div class="pr-settings">
-            <?php Proler_Settings_Helper::pro_info_msg( 'role-settings' ); ?>
+            <?php Proler_Admin_Settings_Helper::pro_info_msg( 'role-settings' ); ?>
             <?php Proler_Role_Settings::saved_role_settings(); ?>
             <div class="demo-item" style="display:none;">
                 <?php Proler_Role_Settings::role_settings_item(); ?>
