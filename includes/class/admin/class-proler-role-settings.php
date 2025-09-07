@@ -301,10 +301,10 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							<select name="additional_discount_display" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Options', 'product-role-rules' ); ?>">
 								<?php
 									$ads = array(
-										'table_max' => __( 'Table - show both min and max range', 'product-role-rules' ),
-										'table_min' => __( 'Table - show only min', 'product-role-rules' ),
-										'tag_max'   => __( 'List - show both min and max', 'product-role-rules' ),
-										'tag_min'   => __( 'List - show only min', 'product-role-rules' ),
+										// 'table_max' => __( 'Table - show both min and max range', 'product-role-rules' ),
+										'table' => __( 'Table', 'product-role-rules' ),
+										// 'tag_max'   => __( 'List - show both min and max', 'product-role-rules' ),
+										'list'   => __( 'List', 'product-role-rules' ),
 									);
 
 									foreach( $ads as $val => $label ){
