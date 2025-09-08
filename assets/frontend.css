@@ -1,9 +1,20 @@
 .proler-saving {
     border: 1px solid #ccc;
     border-radius: 3px;
-    padding: 5px 15px;
+    padding: 7px 15px;
     display: inline-block;
     margin-bottom: 15px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.proler-saving::before{
+    font-family: WooCommerce;
+    content: "\e020";
+    content: "\e020" / "";
+    display: inline;
+    color: #3f7c63;
+    float: left;
+    padding-right: 11px;
 }
 li.product .proler-saving {
     display: inline-block;

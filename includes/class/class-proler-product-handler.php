@@ -20,8 +20,9 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		public static function init() {
 			add_filter( 'woocommerce_get_price_html', array( __CLASS__, 'get_price_html' ), 11, 2 );
 
+			add_action( 'woocommerce_before_template_part', array( __CLASS__, 'before_price' ), 11, 4 );
 			add_action( 'woocommerce_after_shop_loop_item_title', array( __CLASS__, 'discount_text_loop' ), 11 );
-			add_action( 'woocommerce_single_product_summary', array( __CLASS__, 'discount_text_single' ), 11 );
+			// add_action( 'woocommerce_single_product_summary', array( __CLASS__, 'discount_text_single' ), 11 );
 
 			add_filter( 'woocommerce_product_is_on_sale', array( __CLASS__, 'is_on_sale' ), 20, 2 );
 			add_filter( 'woocommerce_loop_add_to_cart_link', array( __CLASS__, 'archive_page_cart_btn' ), 10, 2 );
@@ -35,6 +36,24 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		 */
 		public static function get_price_html( $price, $product ) {
 			return Proler_Front_Settings::get_price_html( $price, $product );
+		}
+
+		/**
+		 * Add additional discounts info before price template
+		 *
+		 * @param mixed $template_name Template name.
+		 * @param mixed $template_path Template path.
+		 * @param mixed $located       Template located.
+		 * @param mixed $action_args   Arguments args parameter.
+		 */
+		public static function before_price( $template_name, $template_path, $located, $action_args ){
+			// self::log('template ' . $template_name );
+			if( false === strpos( $template_name, 'single-product/price.php' ) ){
+				// self::log( 'found simple price template' );
+				return;
+			}
+
+			self::discount_text_loop();
 		}
 
 		/**
@@ -59,11 +78,12 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			<div class="proler-saving">
 				<?php
 					echo sprintf(
-						'%1$s %2$s %3$s',
-						__( 'Save upto', 'product-role-rules' ),
+						// translators: %1$s: maximum discount volume, %2$s: discount type, either percent or amount.
+						__( 'Get up to %1$s%2$s discount', 'product-role-rules' ),
 						esc_attr( $discount ),
 						'percent' === $settings['discount_type'] ? '%' : get_woocommerce_currency_symbol()
 					);
+					// __( 'Save up to %1$s%2$s', 'product-role-rules' ),
 				?>
 			</div>
 			<?php
@@ -72,9 +92,9 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		/**
 		 * Discount text for single product page
 		 */
-		public static function discount_text_single(){
-			self::discount_text_loop();
-		}
+		// public static function discount_text_single(){
+		// 	self::discount_text_loop();
+		// }
 
 		/**
 		 * Check to see if this product is on sale
