@@ -20,7 +20,8 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		public static function init() {
 			add_filter( 'woocommerce_get_price_html', array( __CLASS__, 'get_price_html' ), 11, 2 );
 
-			add_action( 'woocommerce_before_template_part', array( __CLASS__, 'before_price' ), 11, 4 );
+			add_action( 'woocommerce_before_template_part', array( __CLASS__, 'before_price' ), 19, 4 );
+
 			add_action( 'woocommerce_after_shop_loop_item_title', array( __CLASS__, 'discount_text_loop' ), 11 );
 			// add_action( 'woocommerce_single_product_summary', array( __CLASS__, 'discount_text_single' ), 11 );
 
@@ -70,9 +71,17 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			$is_hidden = $settings['hide_price'] ?? '';
 			if ( !empty( $is_hidden ) && '1' === $is_hidden ) return;
 
-			$discount   = $settings['discount'] ?? '';
-			$max_volume = $settings['max_volume'] ?? '';
-			$discount   = !empty( $max_volume ) ? $max_volume : ( !empty( $discount ) ? $discount : '' );
+			$discount = $settings['discount'] ?? '';
+			$type     = $settings['discount_type'] ?? '';
+
+			// self::log( 'discount:front ' . $discount . '/ ' . $type );
+			if( isset( $settings['mad'] ) ){ // maximum available discount.
+				$discount = 0 !== $settings['mad']['dis'] ? $settings['mad']['dis'] : $discount;
+				$type     = $settings['mad']['per'] ? 'percent' : 'fixed';
+			}
+			// self::log( 'discount:front after' . $discount . '/ ' . $type );
+			// self::log( $settings );
+
 			if( empty( $discount ) ) return;
 			?>
 			<div class="proler-saving">
@@ -81,9 +90,8 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 						// translators: %1$s: maximum discount volume, %2$s: discount type, either percent or amount.
 						__( 'Get up to %1$s%2$s discount', 'product-role-rules' ),
 						esc_attr( $discount ),
-						'percent' === $settings['discount_type'] ? '%' : get_woocommerce_currency_symbol()
+						'percent' === $type ? '%' : get_woocommerce_currency_symbol()
 					);
-					// __( 'Save up to %1$s%2$s', 'product-role-rules' ),
 				?>
 			</div>
 			<?php

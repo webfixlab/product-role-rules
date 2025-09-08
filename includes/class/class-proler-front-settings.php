@@ -56,7 +56,7 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			$cached_settings[$id][$role] = $saved_settings;
             
 			// set chache for 10 seconds. why? this should be at least an hour.
-			set_transient( 'proler_settings', $cached_settings, 10 );
+			set_transient( 'proler_settings', $cached_settings, 2 );
 
 			return $saved_settings;
 		}
@@ -204,6 +204,10 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 		}
 		
 		public static function apply_settings( $data ){
+			if( empty( $data ) ) {
+				return $data;
+			}
+			
 			// price hidden? apply placeholder price.
 			$is_hidden = $data['hide_price'] ?? '';
 			$is_hidden = !empty( $is_hidden ) && '1' === $is_hidden ? true : false;
