@@ -7,14 +7,12 @@
     font-size: 13px;
     font-weight: 600;
 }
-.proler-saving::before{
-    font-family: WooCommerce;
-    content: "\e020";
-    content: "\e020" / "";
+.proler-saving svg {
+    width: 22px;
     display: inline;
-    color: #3f7c63;
     float: left;
-    padding-right: 11px;
+    margin-right: 8px;
+    fill: #3f7c63;
 }
 li.product .proler-saving {
     display: inline-block;
