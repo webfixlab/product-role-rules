@@ -15,13 +15,23 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 	class Proler_Admin_Settings {
 
 		/**
+		 * If we should update global settings.
+		 * @var string
+		 */
+		private static $page;
+
+		public function __construct(){
+			self::$page = '';
+		}
+
+		/**
 		 * Class init hooks
 		 */
 		public static function init() {
 			add_action( 'admin_init', array( __CLASS__, 'save_plugin_settings' ) );
 
-			add_action( 'save_post', array( __CLASS__, 'save_settings' ), 10, 3 );
-			add_action( 'woocommerce_ajax_save_product_variations', array( __CLASS__, 'save_settings' ), 1 );
+			add_action( 'save_post', array( __CLASS__, 'save_settings' ), 30, 3 );
+			add_action( 'woocommerce_ajax_save_product_variations', array( __CLASS__, 'save_settings' ), 30, 1 );
 		}
 
 		/**
@@ -31,13 +41,16 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
 				return;
 			}
-
+			
 			$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+			self::$page = 'global';
+			// self::$page = $page;
 			self::log( 'page? ' . $page );
+
 			if( 'proler-newrole' === $page ){
 				self::add_new_role();
 			}else{
-				self::log( 'saving settings' );
+				self::log( 'saving settings ' . $page );
 				self::save_settings();
 			}
 		}
@@ -54,8 +67,13 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 		public static function save_settings( $post_id = 0, $post = array(), $update = false ) {
 			global $proler__;
 
-			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
-				self::log( 'saving nonce checking failed, skip' );
+			if ( isset( $_POST['proler_product_settings_nonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_product_settings_nonce'] ) ), 'proler_product_settings' ) ) {
+				// self::log( 'saving nonce checking failed, skip' );
+				// return;
+				self::$page = 'product';
+			}
+			
+			if( empty( self::$page ) ){
 				return;
 			}
 
@@ -201,10 +219,14 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			$data['roles'] = $rdt;
 			// self::log( 'final step, data' );
 			// self::log( $data );
+			self::log('saving settings... post? ' . $post_id . ', global? ' . self::$page);
+			// self::log( $data );
 
 			if ( ! empty( $post_id ) ) {
+				self::log( 'updated product data' );
 				update_post_meta( $post_id, 'proler_data', $data );
-			} else {
+			} else if ( 'global' === self::$page ) {
+				self::log( 'updated global settings' );
 				update_option( 'proler_role_table', $data );
 			}
 		}

@@ -89,7 +89,7 @@ class Proler_Product_Settings {
                         <div class="role-settings-content">
                             <?php self::role_settings_content(); ?>
                         </div>
-                        <?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
+                        <?php wp_nonce_field( 'proler_product_settings', 'proler_product_settings_nonce' ); ?>
                     </div>
                 </div>
             </div>

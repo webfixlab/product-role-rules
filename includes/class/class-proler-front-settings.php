@@ -158,8 +158,11 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 
 			foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ){
 				if( $cart_item['product_id'] === (int) $data['id'] ){
-					$data['quantity']   = $cart_item['quantity'];
+					$data['quantity']   = $cart_item['quantity'];	
 					// $data['cart_price'] = $cart_item['data']->get_price();
+					break;
+				}elseif( isset( $cart_item['variation_id'] ) && $cart_item['variation_id'] === (int) $data['id'] ){
+					$data['quantity']   = $cart_item['quantity'];
 					break;
 				}
 			}
@@ -233,10 +236,7 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			$discount   = empty( $discount ) ? '' : (float) $discount;
 			$if_percent = false === strpos( $type, 'percent' ) ? false : true;
 
-			// self::log( 'before ---------- ' . $data['type'] . ' - ' . $data['id'] . ' -----------' );
-			// self::log( 'min/max price ' . ($data['min_price'] ?? '') . '/' . ($data['max_price'] ?? '' ) );
-			// self::log( 'rp/sp price ' . ($data['regular_price'] ?? '') . '/' . ($data['sale_price'] ?? '' ) );
-			// self::log( 'regular/sale price ' . ($data['regular_price'] ?? '') . '/' . ($data['sale_price'] ?? '' ) );
+			// self::log( $data['id'] . ': ' . $data['title'] . '   --> discount ' . $discount . ', ' . $if_percent );
 
 
 
@@ -259,9 +259,7 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 
 			// self::log( $data );
 			// self::log( 'after ---------- ' . $data['type'] . ' - ' . $data['id'] . ' -----------' );
-			// self::log( 'min/max price ' . ($data['min_price'] ?? '') . '/' . ($data['max_price'] ?? '' ) );
-			// self::log( 'rp/sp price ' . ($data['regular_price'] ?? '') . '/' . ($data['sale_price'] ?? '' ) );
-			// self::log( 'regular/sale price ' . ($data['regular_price'] ?? '') . '/' . ($data['sale_price'] ?? '' ) );
+			// self::log( $data['id'] . ': ' . $data['title'] . '   --> rp/sp ' . $rp . '/' . $sp . '  --  min/max ' . $min . '/' . $max );
 			return $data;
 			// $discount = apply_filters( 'proler_get_discount', $discount, $prices, $data );
 		}
@@ -292,6 +290,8 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			$max = empty( $max ) ? '' : (float) $max;
 			$rp = empty( $rp ) ? '' : (float) $rp;
 			$sp = empty( $sp ) ? '' : (float) $sp;
+			// self::log( $settings );
+			// self::log( $settings['id'] . ': ' . $settings['title'] . '   --> rp/sp ' . $rp . '/' . $sp . '  --  min/max ' . $min . '/' . $max );
 
 			if( !empty( $min ) ){
 				if( $min === $max && !empty( $rp ) ){
