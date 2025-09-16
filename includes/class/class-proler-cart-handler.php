@@ -77,10 +77,15 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 			// $removed_items = false;
 			foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
 				$item_price = Proler_Front_Settings::get_product_price( $cart_item['data'] );
+				
+				// self::log('[free] cart item price ' . $item_price . ' (' . gettype( $item_price ) . ')' );
 				if( -1 === $item_price ){
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
+				}elseif( empty( $item_price ) ){
+					continue;
 				}
+
 				$cart_item['data']->set_price( $item_price );
 			}
 		}
@@ -88,10 +93,14 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		public static function before_minicart(){
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 				$item_price = Proler_Front_Settings::get_product_price( $cart_item['data'] );
+				
 				if( -1 === $item_price ){
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
+				}elseif( empty( $item_price ) ){
+					continue;
 				}
+
 				$cart_item['data']->set_price( $item_price );
 			}
 		}

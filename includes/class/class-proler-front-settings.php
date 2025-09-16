@@ -270,10 +270,14 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			if( 'external' === $product->get_type() ) return $price;
 			
 			$settings = self::get_product_settings( $product );
-			if( !$settings || empty( $settings ) ) return $price;
+			if( !$settings || empty( $settings ) ) {
+				// self::log( '[free] settings: none | [return price]' );
+				return $price;
+			}
 
 			$is_hidden = $settings['hide_price'] ?? '';
 			if( !empty( $is_hidden ) && '1' === $is_hidden ){
+				self::log( 'price is hidden, skip' );
 				self::remove_add_to_cart();
 
 				$txt = $settings['hide_txt'] ?? '';
