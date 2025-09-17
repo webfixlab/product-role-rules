@@ -98,6 +98,7 @@ class Proler_Settings_Page {
             </div>
         </form>
         <?php
+        self::pro_popup();
     }
     public static function get_settings_page_header(){
         global $proler__;
@@ -248,11 +249,11 @@ class Proler_Settings_Page {
             <div class="mpcdp_settings_toggle mpcdp_container">
                 <div class="mpcdp_settings_option visible">
                     <div class="mpcdp_row">
-                        <div class="mpcdp_settings_option_description col-md-6">
+                        <div class="col-md-6">
                             <input type="text" name="proler_admin_new_role" placeholder="<?php echo esc_html__( 'Example: \'B2B Customer\'', 'product-role-rules' ); ?>" >
                             <?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
                         </div>
-                        <div class="mpcdp_settings_option_description col-md-6">
+                        <div class="col-md-6">
                             <div class="mpcdp_settings_submit" id="proler-role-create">
                                 <div class="submit">
                                     <button class="mpcdp_submit_button">
@@ -349,18 +350,18 @@ class Proler_Settings_Page {
             <div class="mpcdp_settings_section_title" style="margin-top: 20px;"><?php echo esc_html( $data['section_title'] ); ?></div>
         <?php endif; ?>
         <div class="mpcdp_row">
-            <div class="mpcdp_settings_option_description col-md-6">
+            <div class="col-md-6">
                 <?php if ( 'activated' !== $proler__['prostate'] ) : ?>
                     <div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
                 <?php endif; ?>
                 <div class="mpcdp_option_label">
                     <?php echo esc_html( $data['field_name'] ); ?>
                 </div>
-                <div class="mpcdp_option_description">
+                <div class="settings-desc-txt">
                     <?php echo esc_html( $data['desc'] ); ?>
                 </div>
             </div>
-            <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+            <div class="col-md-6">
                 <?php self::general_settings_field( $data ); ?>
             </div>
         </div>
@@ -435,6 +436,23 @@ class Proler_Settings_Page {
             </div>
             <div class="support">
                 <p><a href="<?php echo esc_url( $proler__['url']['support'] ); ?>" target="_blank"><?php echo esc_html__( 'Contact us', 'product-role-rules' ); ?></a></p>
+            </div>
+        </div>
+        <?php
+    }
+    public static function pro_popup(){
+        global $proler__;
+        ?>
+        <div class="proler-popup-wrap">
+            <div class="popup-content">
+                <span class="dashicons dashicons-dismiss popup-close"></span>
+                <div class="pro-badge"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
+                <div class="popup-focus">
+                    <?php echo esc_html__( 'Please upgrade to PRO to use', 'product-role-rules' ); ?>
+                    <span class="marker"></span>
+                </div>
+                <p><?php echo esc_html__( 'All premium features just a click away!', 'product-role-rules' ); ?></p>
+                <a href="<?php echo esc_url( $proler__['url']['pro'] ); ?>" class="get-pro-btn" target="_blank"><?php echo esc_html__( 'Get PRO', 'product-role-rules' ); ?></a>
             </div>
         </div>
         <?php

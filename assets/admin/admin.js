@@ -2,6 +2,42 @@
  * uses admin localized variable | proler
  */
 
+;(function($, window, document) {
+    class roleBasedPricing{
+		constructor(){
+            $(document).ready(() => {
+                this.init();
+            });
+        }
+		init(){
+			$('body').on('click input', '.wfl-nopro', function(e) {
+                e.preventDefault();
+                if ($(this).is('select')) {
+                    $(this).blur();
+                }
+
+                const txt = $(this).attr('data-protxt');
+                $('.proler-popup-wrap span.marker').text(txt);
+                $('.proler-popup-wrap').show();
+            });
+			$('body').on('click', '.popup-close', function(){
+				$('.proler-popup-wrap').hide();
+			});
+		}
+	}
+	new roleBasedPricing();
+})(jQuery, window, document);
+
+
+
+
+
+
+
+
+
+
+
 (function ($) {
 	$( document ).ready( function () {
 		$( 'body' ).on( 'click', 'input[name="proler_stype"]', function () {
@@ -160,26 +196,27 @@
 		}
 
 		function show_diable_msg( btn ){
-			var input = btn.closest( '.mpcdp_settings_option_field' ).find( 'input[name="pr_enable"]' );
+			const checkBox = btn.closest('.switch-box-wrap').find('input[type="checkbox"]');
+			const status   = btn.closest('.col-md-6').find('.prdis-msg');
+			console.log('checkbox', checkBox.length, 'status', status.length);
+			
+			if(!status || !checkBox) return;
+			console.log('checkbox checked?', checkBox.is(':checked'), 'status hidden?', status.is(':hidden'));
 
-			if ( typeof input == 'undefined' || input.length == 0 ) {
-				return;
-			}
-
-			btn.closest( '.mpcdp_row' ).find( '.prdis-msg' ).toggle( 'slow' );
+			if(!checkBox.is(':checked') && status.is(':hidden')) status.show();
+			else if(checkBox.is(':checked') && !status.is(':hidden')) status.hide();
 		}
-		function toggle_button( btn ){
+		function switchBoxHandler( btn ){
 			var wrap = btn.closest( '.hurkanSwitch-switch-box' );
 
 			wrap.find( '.hurkanSwitch-switch-item' ).each( function () {
-				if ( $( this ).hasClass( 'active' ) ) {
-					$( this ).removeClass( 'active' );
-				} else {
-					$( this ).addClass( 'active' );
-				}
+				$(this).toggleClass('active');
 			});
 
-			btn.closest( '.mpcdp_settings_option_field' ).find( 'input[type="checkbox"]' ).trigger( 'click' );
+			// find closest wrapper to extract actualy checkbox field.
+			const checkBox = btn.closest( '.proler-option-head' ).find( 'input[type="checkbox"]' );
+			if(checkBox) checkBox.trigger('click');
+			console.log( 'checkbox', checkBox );
 			show_diable_msg( btn );
 		}
 
@@ -212,7 +249,7 @@
 
 
 		$( '.pr-settings' ).on( 'click', '.hurkanSwitch-switch-item', function (e) {
-			toggle_button( $( this ) );
+			switchBoxHandler( $( this ) );
 		});
 
 		$( '.pr-settings' ).on( 'click', '.proler-arrow img', function () {
@@ -287,20 +324,6 @@
 
 			var data = get_settings();
 			set_input_val( data );
-		});
-
-		// disbale hide price text field until hide price toggle button is checked.
-		$( '.pr-settings' ).on( 'click', 'input[name="hide_price"]', function(){
-			var section = $(this).closest( '.mpcdp_settings_section' );
-			var textarea = section.find( 'textarea' );
-
-			if( $(this).is( ':checked' ) ){
-				textarea.closest( '.mpcdp_row' ).find( '.mpcdp_settings_option_description' ).removeClass( 'disabled' );
-				textarea.prop( 'disabled', false );
-			}else{
-				textarea.closest( '.mpcdp_row' ).find( '.mpcdp_settings_option_description' ).addClass( 'disabled' );
-				textarea.prop( 'disabled', true );
-			}
 		});
 
 		var expanded = false;

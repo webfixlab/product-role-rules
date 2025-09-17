@@ -102,11 +102,11 @@ class Proler_Product_Settings {
         <div class="role-settings-head mpcdp_settings_toggle mpcdp_container">
             <div class="mpcdp_settings_option visible">
                 <div class="mpcdp_row">
-                    <div class="mpcdp_settings_option_description col-md-6">
+                    <div class="col-md-6">
                         <div class="mpcdp_option_label"><?php echo esc_html__( 'Role Based Pricing', 'product-role-rules' ); ?></div>
-                        <div class="mpcdp_option_description"><?php echo esc_html__( 'Choose Custom to overwrite the global pricing settings.', 'product-role-rules' ); ?></div>
+                        <div class="settings-desc-txt"><?php echo esc_html__( 'Choose Custom to overwrite the global pricing settings.', 'product-role-rules' ); ?></div>
                     </div>
-                    <div class="mpcdp_settings_option_field mpcdp_settings_option_field_text col-md-6">
+                    <div class="col-md-6">
                         <div class="switch-field">
                             <?php self::settings_type(); ?>
                         </div>
@@ -151,6 +151,7 @@ class Proler_Product_Settings {
             </div>
         </div>
         <?php
+        Proler_Settings_Page::pro_popup();
     }
 }
 

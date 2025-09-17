@@ -53,37 +53,15 @@ if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 		}
 
         public static function pro_info_msg( $page ){
-			global $proler__;
-			$plugin = sprintf(
-				'<a href="%s">%s</a>',
-				esc_url( $proler__['url']['pro'] ),
-				__( 'pro plugin', 'product-role-rules' )
-			);
+			if( 'new-role' !== $page ){
+				return;
+			}
 			?>
 			<div class="proler-pro-info-row">
 				<span class="dashicons dashicons-info-outline"></span>
-				<?php
-					if( 'new-role' === $page ){
-						echo sprintf(
-							// translators: %s: is pro plugin name with url.
-							__( 'Please note: you can add custom roles but to delete those you need the %s.', 'product-role-rules' ),
-							wp_kses_post( $plugin )
-						);
-					}else{
-						echo sprintf(
-							// translators: %s: is pro plugin name with url.
-							__( 'Please note: you can save pro field values but to use those you need the %s.', 'product-role-rules' ),
-							wp_kses_post( $plugin )
-						);
-					}
-				?>
+				<?php echo esc_html__( 'Please note: Role name must start with a letter and allows only letters, numbers, spaces or underscores!', 'product-role-rules' ); ?>
 			</div>
-			<?php if( 'new-role' === $page ) : ?>
-				<div class="proler-pro-info-row">
-					<?php echo esc_html__( 'Please note: Role name must start with a letter and allows only letters, numbers, spaces or underscores!', 'product-role-rules' ); ?>
-				</div>
 			<?php
-			endif;
 		}
 		private function log( $data ) {
 			if ( true === WP_DEBUG ) {
