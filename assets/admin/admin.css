@@ -573,20 +573,30 @@ textarea.proler-widefat {
 .woocommerce_options_panel .pr-settings select{
 	float: none;
 }
+#mpcdp_settings .proler-saved-settings, .proler-pro-info-row  {
+	display: flex;
+	border-radius: 5px;
+	margin-bottom: 25px;
+}
 #mpcdp_settings .proler-saved-settings {
-    margin-bottom: 25px;
     padding: 20px 15px;
-    display: block;
     background: #e8fded;
     font-size: 14px;
     border: 1px solid #00a32a;
-    border-radius: 5px;
 }
-#mpcdp_settings .proler-saved-settings.saved span.dashicons {
+#mpcdp_settings .proler-saved-settings span.dashicons, .proler-pro-info-row span.dashicons {
     padding-right: 10px;
 }
 #mpcdp_settings .proler-saved-settings strong{
 	font-weight: bold;
+}
+.proler-pro-info-row {
+    background: #fff0f1;
+    padding: 20px;
+    border: 1px solid #ebb4b5;
+}
+.proler-pro-info-row span.dashicons {
+	padding-right: 10px;
 }
 span.delete-disrange {
     position: absolute;
@@ -603,90 +613,62 @@ span.proler-delete:hover, span.delete-disrange:hover, .proler-role-list ul li a:
 span.delete-disrange:hover{
 	transform: scale(1.5);
 }
-/* HurkanSwitch start */
-.switch-box-wrap, #mpcdp_settings .hurkanSwitch{
+.switch-box-wrap{
 	display: inline-flex;
 }
 .switch-box-wrap input[type="checkbox"]{
 	display: none;
 }
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box{
+/* Switch Box start */
+.switch-box-wrap > .switch-box{
 	cursor:pointer;
 	overflow:hidden;
-	border:none;
-	padding:0;
-	display:inline-block;
-	width:auto;
 	border-radius:30px;
 }
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item{
-	height: 35px;
+.switch-box-wrap > .switch-box > .switch-point{
 	line-height: 35px;
-	width: 84px;
+	width: 40px;
 	font-size: 12px;
 	opacity: 0;
 	display: none;
-	border-radius: 4px;
 	font-weight: 600;
 	text-transform: uppercase;
 	position: relative;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box
 }
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item:hover{
-	text-decoration: none
-}
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.active{
+.switch-box-wrap > .switch-box > .switch-point.active{
 	opacity: 1;
 	display: block
 }
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.active.hurkanSwitch-switch-item-status-off{
-	padding-right: 16px;
-	padding-left: 32px;
+.switch-box-wrap > .switch-box > .switch-point.active.switch-off{
+	padding-right: 10px;
+	padding-left: 30px;
 	background: #cbcdcf;
 	color: #ffffff;
 	text-align: right
 }
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.active.hurkanSwitch-switch-item-status-on{
+.switch-box-wrap > .switch-box > .switch-point.active.switch-on{
 	padding-right: 32px;
 	padding-left: 12px;
 	background-color: #45494c;
 	color: #fff;
 	text-align: left
 }
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item>.hurkanSwitch-switch-cursor-selector{
+.switch-box-wrap > .switch-box > .switch-point > .switch-pointer{
 	top:5px;
-	height: 25px !important;
+	height: 25px;
 	width: 25px;
 	position:absolute;
-	display:block;
-	content:"";
-	-webkit-box-shadow:0 1px 3px 0 rgba(0,0,0,0.1);
-	box-shadow:0 1px 3px 0 rgba(0,0,0,0.1);
 	border-radius:20px;
-	background:#fff
 }
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.hurkanSwitch-switch-item-status-off>.hurkanSwitch-switch-cursor-selector{
+.switch-box-wrap > .switch-box > .switch-point.switch-off > .switch-pointer{
 	left: 5px;
+	background: #999f8d;
 }
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.hurkanSwitch-switch-item-status-on>.hurkanSwitch-switch-cursor-selector{
-	right: 6px
+.switch-box-wrap > .switch-box > .switch-point.switch-on > .switch-pointer{
+	right: 6px;
+	background: #8fc620;
 }
-#mpcdp_settings .hurkanSwitch>.hurkanSwitch-switch-box>.hurkanSwitch-switch-item.hurkanSwitch-switch-item-color-success{
-	background-color:#45494c !important;
-}
-/* HurkanSwitch end */
-.proler-pro-info-row {
-    background: #fff0f1;
-    padding: 20px;
-    margin-bottom: 25px;
-    border: 1px solid #ebb4b5;
-    border-radius: 5px;
-}
-.proler-pro-info-row span.dashicons {
-    color: #b32d2e;
-	padding-right: 10px;
-}
+/* Switch Box end */
 .mpcdp_container .mpcdp_row.proler-row-title:not(:last-of-type){
 	margin-bottom: 10px;
 }
@@ -715,7 +697,7 @@ span.delete-disrange:hover{
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     width: 500px;
-    background-color: #dbdbdb;
+    background-color: #f2f2f2;
     border-radius: 12px;
     padding: 30px 20px;
 	box-shadow: 0 8px 8px 0 rgba(85,93,102,.5);
@@ -749,7 +731,6 @@ span.delete-disrange:hover{
 .popup-focus span.marker {
 	display: block;
 	color: #8f0000;
-	font-size: 18px;
     font-weight: 500;
 	margin: 10px 0 40px;
 }
@@ -763,10 +744,6 @@ span.delete-disrange:hover{
 	width: 120px;
 	margin: 10px auto 0 auto;
 	cursor: pointer;
-}
-.proler-popup-wrap .get-pro-btn:hover {
-	color: #5a47d5;
-	background: #ffffff;
 }
 @media screen and (max-width: 1600px){
 	#mpcdp_settings{
@@ -786,6 +763,7 @@ span.delete-disrange:hover{
 	}
 	#mpcdp_settings .disrange-item select, #mpcdp_settings .disrange-item input[type="text"]{
 		border-radius: 0;
+		margin-bottom: 2px;
 	}
 	#mpcdp_settings .disrange-item input[type="text"]:last-of-type {
 		border-right: 1px solid #dfdfdf;
@@ -959,16 +937,16 @@ span.delete-disrange:hover{
 	}
 	.pr-settings .proler-option-content .discount-ranges-main .mpcdp_row{
 		display: block;
+		position: relative;
+	}
+	.pr-settings .proler-option-content .mpcdp_row.proler-inline{
+		display: flex;
 	}
 	.mpcdp_container .mpcdp_row.proler-row-title:not(:last-of-type){
 		margin-bottom: 5px;
 	}
 	.pr-settings .proler-option-content .discount-ranges-main .mpcdp_row:not(:last-of-type){
 		margin-bottom: 15px;
-	}
-	.mpcdp_row.disrange-item .delete-disrange {
-		margin-left: 0;
-		line-height: 35px;
 	}
 	.mpcdp_settings_submit button.mpcdp_submit_button, .mpcdp_settings_submit .submit input#submit{
 		border-radius: 3px;
@@ -979,7 +957,8 @@ span.delete-disrange:hover{
         padding: 15px;
     }
 	span.delete-disrange{
-		right: 12px;
+		right: 7px;
+        bottom: 8px;
 	}
 	textarea.proler-widefat{
 		margin-top: 0;
@@ -990,21 +969,17 @@ span.delete-disrange:hover{
 	.mpc-opt-sc-btn{
 		padding: 5px 15px;
 	}
-	.proler-pro-info-row{
-		display: inline-block;
-	}
 	/* Modal */
 	.popup-content {
 		top: 50%;
 		width: 80%;
 	}
-	.proler-focus{
-		font-size: 20px;
-		line-height: 30px;
+	.popup-focus{
+		font-size: 15px;
+		margin-top: 7px;
 	}
-	.proler-focus a {
-		padding: 5px 20px;
-		border-radius: 30px;
-		margin: 15px auto 25px auto;
+	.popup-focus span.marker{
+		font-size: 14px;
+		margin: 4px 0 40px;
 	}
 }

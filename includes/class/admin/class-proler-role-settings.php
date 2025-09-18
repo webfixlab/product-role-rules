@@ -123,17 +123,15 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 			$checked = ! empty( $value ) && ( 'on' === $value || true === $value ) ? 'on' : 'off';
 			?>
 			<div class="switch-box-wrap">
-				<div class="hurkanSwitch hurkanSwitch-switch-plugin-box">
-					<div class="hurkanSwitch-switch-box switch-animated-<?php echo esc_attr( $checked ); ?>">
-						<a class="hurkanSwitch-switch-item <?php echo 'on' === $checked ? 'active' : ''; ?> hurkanSwitch-switch-item-color-success  hurkanSwitch-switch-item-status-on">
-							<span class="lbl"><?php echo esc_html( $off ); ?></span>
-							<span class="hurkanSwitch-switch-cursor-selector"></span>
-						</a>
-						<a class="hurkanSwitch-switch-item <?php echo 'off' === $checked ? 'active' : ''; ?> hurkanSwitch-switch-item-color-  hurkanSwitch-switch-item-status-off">
-							<span class="lbl"><?php echo esc_html( $on ); ?></span>
-							<span class="hurkanSwitch-switch-cursor-selector"></span>
-						</a>
-					</div>
+				<div class="switch-box">
+					<a class="switch-point <?php echo 'on' === $checked ? 'active' : ''; ?> switch-on">
+						<span class="lbl"><?php echo esc_html( $off ); ?></span>
+						<span class="switch-pointer"></span>
+					</a>
+					<a class="switch-point <?php echo 'off' === $checked ? 'active' : ''; ?> switch-off">
+						<span class="lbl"><?php echo esc_html( $on ); ?></span>
+						<span class="switch-pointer"></span>
+					</a>
 				</div>
 				<input
 					type="checkbox"
@@ -232,7 +230,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							</div>
 						</div>
 						<div class="col-md-6">
-							<div class="mpcdp_row">
+							<div class="mpcdp_row proler-inline">
 								<div class="col-md-6">
 									<input type="text" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>">
 								</div>

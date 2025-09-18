@@ -207,9 +207,9 @@
 			else if(checkBox.is(':checked') && !status.is(':hidden')) status.hide();
 		}
 		function switchBoxHandler( btn ){
-			var wrap = btn.closest( '.hurkanSwitch-switch-box' );
+			var wrap = btn.closest( '.switch-box' );
 
-			wrap.find( '.hurkanSwitch-switch-item' ).each( function () {
+			wrap.find( '.switch-point' ).each( function () {
 				$(this).toggleClass('active');
 			});
 
@@ -248,7 +248,7 @@
 
 
 
-		$( '.pr-settings' ).on( 'click', '.hurkanSwitch-switch-item', function (e) {
+		$( '.pr-settings' ).on( 'click', '.switch-point', function (e) {
 			switchBoxHandler( $( this ) );
 		});
 
@@ -310,7 +310,8 @@
 
 		// delete user role.
 		$( '.proler-delete-role' ).on( 'click', function(e){
-			if( ! confirm( proler.delete_role_msg ) ){
+			console.log(proler);
+			if(proler.has_pro && !confirm( proler.delete_role_msg ) ){
 				e.preventDefault();
 			}
 		});

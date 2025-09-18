@@ -98,7 +98,7 @@ class Proler_Settings_Page {
             </div>
         </form>
         <?php
-        self::pro_popup();
+        self::pro_popup( $page_slug );
     }
     public static function get_settings_page_header(){
         global $proler__;
@@ -440,15 +440,16 @@ class Proler_Settings_Page {
         </div>
         <?php
     }
-    public static function pro_popup(){
+    public static function pro_popup( $type ){
         global $proler__;
+        $text = 'newrole' !== $type ? __( 'Please upgrade to PRO to use', 'product-role-rules' ) : __( 'Please upgrade to PRO to delete', 'product-role-rules' );
         ?>
         <div class="proler-popup-wrap">
             <div class="popup-content">
                 <span class="dashicons dashicons-dismiss popup-close"></span>
                 <div class="pro-badge"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
                 <div class="popup-focus">
-                    <?php echo esc_html__( 'Please upgrade to PRO to use', 'product-role-rules' ); ?>
+                    <?php echo esc_html( $text ); ?>
                     <span class="marker"></span>
                 </div>
                 <p><?php echo esc_html__( 'All premium features just a click away!', 'product-role-rules' ); ?></p>

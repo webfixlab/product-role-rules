@@ -151,7 +151,7 @@ class Proler_Product_Settings {
             </div>
         </div>
         <?php
-        Proler_Settings_Page::pro_popup();
+        Proler_Settings_Page::pro_popup( 'product-settings' );
     }
 }
 
