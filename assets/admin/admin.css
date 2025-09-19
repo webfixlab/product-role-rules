@@ -237,7 +237,7 @@ div#proler_product_data_tab #mpcdp_settings{
 	height:50px;
 	width:100%;
 	margin:50px 0;
-	background:#45494c;
+	background: #2271b1;
 }
 #proler-role-create button.mpcdp_submit_button{
 	border-radius: 3px;
@@ -318,9 +318,9 @@ a.proler-delete img {
 .proler-role-list li {
 	display: inline-block;
     margin-right: 10px;
-    padding: 5px 10px;
+    padding: 5px 15px;
     margin-bottom: 13px;
-    border-radius: 3px;
+    border-radius: 25px;
     border: 1px solid #a9a9a9;
     line-height: 22px;
 }
@@ -364,20 +364,16 @@ span.proler-arrow img {
 	text-align: right;
 }
 .settings-desc-txt{
-	font-size: 1em;
+	font-size: 14px;
 	padding: 5px 30px 0 0;
 	color: #b3b0b0;
-	transition:all .3s ease-in-out;
+	font-size: 13px;
+	transition: transform 0.3s ease-in, color 0.3s ease-out;
 	cursor: default;
 }
-.settings-desc-txt a{
-	color:#acb0b6;
-	text-decoration:none;
-	font-style:italic;
-	font-weight:700
-}
-.settings-desc-txt a:hover{
-	color:#45494c;
+.settings-desc-txt:hover {
+	color: #000;
+	transform: translateX(3px);
 }
 .settings-desc-txt.prdis-msg{
 	color: #fff;
@@ -385,7 +381,7 @@ span.proler-arrow img {
 #mpcdp_settings .mpcdp_settings_option_ribbon{
 	display: inline-block;
     border-radius: 15px;
-    background-color: #b93b3b; /* #e89d5b */
+    background-color: #e36363; /* #e89d5b */
     padding: 0 15px;
     font-size: 0.7em;
     letter-spacing: 1px;
@@ -545,10 +541,10 @@ textarea.proler-widefat {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
-	margin-top: 15px;
 }
-.woocommerce_options_panel textarea.proler-widefat{
-	height: auto;
+textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
+	margin-top: 10px;
+	height: 130px;
 }
 .pr-settings .proler-option-content .discount-ranges-main .mpcdp_row.discount-range-demo{
 	display: none;
@@ -627,7 +623,7 @@ span.delete-disrange:hover{
 }
 .switch-box-wrap > .switch-box > .switch-point{
 	line-height: 35px;
-	width: 40px;
+	width: 25px;
 	font-size: 12px;
 	opacity: 0;
 	display: none;
@@ -649,7 +645,7 @@ span.delete-disrange:hover{
 .switch-box-wrap > .switch-box > .switch-point.active.switch-on{
 	padding-right: 32px;
 	padding-left: 12px;
-	background-color: #45494c;
+	background-color: #616467;
 	color: #fff;
 	text-align: left
 }

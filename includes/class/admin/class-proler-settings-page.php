@@ -452,7 +452,7 @@ class Proler_Settings_Page {
                     <?php echo esc_html( $text ); ?>
                     <span class="marker"></span>
                 </div>
-                <p><?php echo esc_html__( 'All premium features just a click away!', 'product-role-rules' ); ?></p>
+                <p><?php echo esc_html__( 'All exclusive features for a year starting $59.00 (USD) only!', 'product-role-rules' ); ?></p>
                 <a href="<?php echo esc_url( $proler__['url']['pro'] ); ?>" class="get-pro-btn" target="_blank"><?php echo esc_html__( 'Get PRO', 'product-role-rules' ); ?></a>
             </div>
         </div>

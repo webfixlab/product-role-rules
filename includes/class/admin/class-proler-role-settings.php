@@ -153,10 +153,10 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 			?>
 			<div class="mpcdp_settings_option proler-option-content" style="display:none;">
 				<div class="mpcdp_settings_section">
-					<div class="mpcdp_settings_section_title" style="margin-top: 20px;"><?php echo esc_html__( 'Price Options', 'product-role-rules' ); ?></div>
+					<div class="mpcdp_settings_section_title" style="margin-top: 20px;"><?php echo esc_html__( 'Hide Price or Show Custom Price', 'product-role-rules' ); ?></div>
 					<div class="mpcdp_row">
 						<div class="col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Price', 'product-role-rules' ); ?></div>
+							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Product Price?', 'product-role-rules' ); ?></div>
 							<div class="settings-desc-txt">
 								<?php echo esc_html__( 'Enable if you want to hide price or show custom text instead of price.', 'product-role-rules' ); ?>
 							</div>
@@ -165,8 +165,8 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							<?php
 								$checked = isset( $rd['hide_price'] ) && '1' === $rd['hide_price'] ? 'on' : 'off';
 								self::switch_box(
-									__( 'Show', 'product-role-rules' ),
-									__( 'Hide', 'product-role-rules' ),
+									__( 'No', 'product-role-rules' ),
+									__( 'Yes', 'product-role-rules' ),
 									$checked,
 									array(
 										'key'      => 'hide_price'
@@ -190,7 +190,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 					</div>
 				</div>
 				<div class="mpcdp_settings_section">
-					<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Purchase Limits', 'product-role-rules' ); ?></div>
+					<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Set minimum or maximum product quantity', 'product-role-rules' ); ?></div>
 					<div class="mpcdp_row">
 						<div class="col-md-6">
 							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
@@ -245,20 +245,20 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 					</div>
 					<div class="mpcdp_row">
 						<div class="col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Show Discount Text', 'product-role-rules' ); ?></div>
+							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Discount Badge?', 'product-role-rules' ); ?></div>
 							<div class="settings-desc-txt">
-								<?php echo esc_html__( 'Displays a "Save up to ..." message for each product.', 'product-role-rules' ); ?>
+								<?php echo esc_html__( 'Hides "Save up to ..." badge or message.', 'product-role-rules' ); ?>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<?php
 								$checked = ! isset( $rd['discount_text'] ) ? 'off' : 'on';
 								self::switch_box(
-									esc_html__( 'Show', 'product-role-rules' ),
-									esc_html__( 'Hide', 'product-role-rules' ),
+									esc_html__( 'No', 'product-role-rules' ),
+									esc_html__( 'Yes', 'product-role-rules' ),
 									$checked,
 									array(
-										'key'      => 'discount_text'
+										'key' => 'discount_text'
 									)
 								);
 							?>
@@ -269,7 +269,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							<?php if ( 'activated' !== $proler__['prostate'] ) : ?>
 								<div class="mpcdp_settings_option_ribbon mpcdp_settings_option_ribbon_new"><?php echo esc_html__( 'PRO', 'product-role-rules' ); ?></div>
 							<?php endif; ?>
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Regular Price', 'product-role-rules' ); ?></div>
+							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Regular Price?', 'product-role-rules' ); ?></div>
 							<div class="settings-desc-txt">
 								<?php echo esc_html__( 'Only show discounted price. Removes regular price and show only sale price.', 'product-role-rules' ); ?>
 							</div>
@@ -279,8 +279,8 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 								$checked = isset( $rd['hide_regular_price'] ) && '1' === $rd['hide_regular_price'] ? 'on' : 'off';
 
 								self::switch_box(
-									esc_html__( 'Hide', 'product-role-rules' ),
-									esc_html__( 'Show', 'product-role-rules' ),
+									esc_html__( 'No', 'product-role-rules' ),
+									esc_html__( 'Yes', 'product-role-rules' ),
 									$checked,
 									array(
 										'key'   => 'hide_regular_price',
@@ -289,7 +289,6 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 									)
 								);
 							?>
-							<input type="checkbox" name="hide_regular_price" class="<?php echo esc_attr( $pro_class ); ?>" <?php echo 'off' === $checked ? '' : 'checked'; ?> style="display:none;" data-protxt="<?php echo esc_html__( 'Hide Regular Price', 'product-role-rules' ); ?>">
 						</div>
 					</div>
 					<div class="mpcdp_row proler-row-title">

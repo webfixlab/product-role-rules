@@ -219,14 +219,14 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			$data['roles'] = $rdt;
 			// self::log( 'final step, data' );
 			// self::log( $data );
-			self::log('saving settings... post? ' . $post_id . ', global? ' . self::$page);
+			// self::log('saving settings... post? ' . $post_id . ', global? ' . self::$page);
 			// self::log( $data );
 
 			if ( ! empty( $post_id ) ) {
-				self::log( 'updated product data' );
+				// self::log( 'updated product data' );
 				update_post_meta( $post_id, 'proler_data', $data );
 			} else if ( 'global' === self::$page ) {
-				self::log( 'updated global settings' );
+				// self::log( 'updated global settings' );
 				update_option( 'proler_role_table', $data );
 			}
 		}
