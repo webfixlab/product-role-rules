@@ -1,22 +1,21 @@
 .proler-saving {
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 7px 15px;
-    display: inline-block;
-    margin-bottom: 20px;
     font-size: 13px;
+    padding: 5px 12px 3px 6px;
+    display: inline-block;
+    margin: 0 auto 20px;
+    border: 1px solid #a1a1a1;
+    border-radius: 25px;
+    color: #222;
+    cursor: default;
+}
+.proler-saving span{
+    color: #fb7a62;
     font-weight: 600;
 }
 .proler-saving svg {
-    width: 22px;
+    fill: #3f7c63;
+    width: 18px;
     display: inline;
     float: left;
-    margin-right: 8px;
-    fill: #3f7c63;
-}
-li.product .proler-saving {
-    display: inline-block;
-    margin: 0 auto;
-    margin-bottom: 1rem;
-    border-color: #6d6d6d;
+    margin-right: 3px;
 }

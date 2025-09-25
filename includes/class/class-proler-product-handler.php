@@ -89,7 +89,7 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 				<?php
 					echo sprintf(
 						// translators: %1$s: maximum discount volume, %2$s: discount type, either percent or amount.
-						__( 'Get up to %1$s%2$s discount', 'product-role-rules' ),
+						__( 'Get up to <span>%1$s%2$s</span> discount', 'product-role-rules' ),
 						esc_attr( $discount ),
 						'percent' === $type ? '%' : get_woocommerce_currency_symbol()
 					);
