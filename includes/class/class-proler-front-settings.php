@@ -36,7 +36,21 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 				}
 			}
 
-			if ( isset( $settings[ $id ][ $role ] ) && !empty( $settings[ $id ][ $role ] ) ) {
+			// check if cart item quantity has changed.
+			$cart_item_quantity = '';
+			if( WC()->cart && isset( $settings[$id][$role] ) && !empty( $settings[$id][$role] ) ){
+				foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ){
+					if( $cart_item['product_id'] === $id ){
+						$cart_item_quantity = $cart_item['quantity'];
+						break;
+					}
+				}
+			}
+			
+			$settings_qty = $settings[$id][$role]['quantity'] ?? '';
+			$if_update    = !empty( $settings_qty ) && $cart_item_quantity !== (int) $settings_qty;
+
+			if ( isset( $settings[ $id ][ $role ] ) && !empty( $settings[ $id ][ $role ] ) && !$if_update ) {
 				return $settings[ $id ][ $role ];
 			}
 			
