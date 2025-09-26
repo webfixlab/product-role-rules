@@ -288,7 +288,7 @@ class Proler_Settings_Page {
         <div class="mpcdp_settings_toggle proler-custom-roles">
             <div class="mpcdp_settings_option visible">
                 <div class="proler-role-list">
-                    <h3><?php echo esc_html__( 'All Custom Roles', 'product-role-rules' ); ?></h3>
+                    <div class="role-list-type"><span class="dashicons dashicons-admin-users"></span><?php echo esc_html__( 'Custom User Roles', 'product-role-rules' ); ?></div>
                     <ul>
                         <?php foreach ( $roles as $role => $name ) : ?>
                             <?php
@@ -310,7 +310,7 @@ class Proler_Settings_Page {
         <div class="mpcdp_settings_toggle ">
             <div class="mpcdp_settings_option visible">
                 <div class="proler-role-list">
-                    <h3><?php echo esc_html__( 'All Default Roles', 'product-role-rules' ); ?></h3>
+                    <div class="role-list-type"><span class="dashicons dashicons-groups"></span><?php echo esc_html__( 'Default User Roles', 'product-role-rules' ); ?></div>
                     <ul>
                         <?php foreach ( $roles as $role => $name ) : ?>
                             <?php

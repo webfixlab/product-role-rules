@@ -1,3 +1,7 @@
+:root{
+	--proler-warning-color: #b32d2e;
+	--proler-warm-highlight: #d54e21;
+}
 .user-role-list ul {
 	background: #fefefe;
 	padding: 15px 20px 9px 15px;
@@ -298,7 +302,10 @@ div#proler_product_data_tab .mpcdp_settings_section_title{
 .proler-option-content{
     background: #f0f0f1;
 }
-#proler-role-create .submit, #proler-role-create button {
+#proler-role-create .submit {
+	margin: 0 0 0 15px;
+}
+#proler-role-create button {
 	margin: 0;
 }
 a.proler-delete {
@@ -315,7 +322,25 @@ a.proler-delete img {
 	border-radius: 10px;
 	background: #f8f8f8;
 }
-.proler-role-list li {
+.proler-role-list .role-list-type {
+    font-size: 14px;
+    font-weight: 600;
+    border-bottom: 1px solid #dbdbdb;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+	line-height: 32px;
+}
+.proler-role-list .role-list-type span {
+    margin-right: 10px;
+    color: var(--proler-warm-highlight);
+    border: 1px solid var(--proler-warm-highlight);
+    border-radius: 20px;
+    padding: 5px;
+}
+.proler-role-list ul {
+	margin-bottom: 0;
+}
+.proler-role-list ul li {
 	display: inline-block;
     margin-right: 10px;
     padding: 5px 15px;
@@ -324,11 +349,17 @@ a.proler-delete img {
     border: 1px solid #a9a9a9;
     line-height: 22px;
 }
-.proler-role-list ul {
-	margin-bottom: 0;
+.proler-role-list ul li a {
+    text-decoration: none;
+	margin-left: 5px;
+	cursor: pointer;
 }
-.proler-role-list h2 {
-	margin-top: 0;
+.proler-role-list ul li:has(a:hover) {
+	color: var(--proler-warning-color);
+	border-color: var(--proler-warning-color);
+}
+.proler-role-list ul li a:hover {
+	color: var(--proler-warning-color);
 }
 span.proler-arrow {
 	cursor: pointer;
@@ -456,7 +487,7 @@ span.proler-arrow img {
 }
 #mpcdp_settings select {
 	padding: 3px 15px;
-	border-radius: 0;
+	border-radius: 5px;
 	border: 1px solid #dfdfdf;
 	line-height: 36px;
 }
@@ -465,8 +496,8 @@ span.proler-arrow img {
     border: 1px solid #dfdfdf;
 }
 #mpcdp_settings select, #mpcdp_settings input {
-	width: 100%;
-	max-width: 100%;
+    width: calc(100% - 3px);
+    max-width: calc(100% - 3px);
 }
 
 /* Switch */
@@ -552,10 +583,6 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 .add-new-disrange{
 	margin-top: 20px;
 }
-.proler-role-list ul li a {
-    text-decoration: none;
-	margin-left: 5px;
-}
 .mpcdp_settings_section .notice {
     margin: 20px 0 0 0;
 }
@@ -602,8 +629,8 @@ span.delete-disrange {
 	line-height: 19px;
 	transition: transform 0.5s;
 }
-span.proler-delete:hover, span.delete-disrange:hover, .proler-role-list ul li a:hover {
-	color: #b32d2e;
+span.proler-delete:hover, span.delete-disrange:hover{
+	color: var(--proler-warning-color);
 	cursor: pointer;
 }
 span.delete-disrange:hover{
@@ -669,7 +696,7 @@ span.delete-disrange:hover{
 	margin-bottom: 10px;
 }
 .proler-time-widget .proler-server-time, .proler-time-widget .proler-schedule-status{
-	color: #b32d2e;
+	color: var(--proler-warning-color);
 	font-weight: bold;
 }
 /* New Look :end */
