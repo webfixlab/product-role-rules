@@ -153,7 +153,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 			?>
 			<div class="mpcdp_settings_option proler-option-content" style="display:none;">
 				<div class="mpcdp_settings_section">
-					<div class="mpcdp_settings_section_title" style="margin-top: 20px;"><?php echo esc_html__( 'Hide Price or Show Custom Price', 'product-role-rules' ); ?></div>
+					<div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Hide Price or Show Custom Price', 'product-role-rules' ); ?></div>
 					<div class="mpcdp_row">
 						<div class="col-md-6">
 							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Product Price?', 'product-role-rules' ); ?></div>

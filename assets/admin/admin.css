@@ -10,11 +10,11 @@
 	font-weight: 600;
 }
 span.proler-delete {
-	position: absolute;
-    top: -13px;
-    right: -8px;
+    position: absolute;
+    top: -11px;
+    right: -9px;
     cursor: pointer;
-    font-size: 25px;
+    font-size: 22px;
 }
 div#proler_product_data_tab .pr-settings-content{
 	margin-top: 20px;
@@ -113,9 +113,6 @@ a.nav-tab {
 	color: #000;
 	cursor: pointer;
 }
-.pr-settings {
-	margin: 1.5em 0;
-}
 /* New Look :start */
 #mpcdp_settings{
 	background:white;
@@ -131,7 +128,8 @@ a.nav-tab {
 	box-shadow:0 10px 60px #e4e4e4
 }
 div#proler_product_data_tab #mpcdp_settings{
-	margin: 20px 0 20px 20px;
+	padding: 9px 12px;
+	margin: 0;
 }
 .mpcdp_settings_option[data-field-id=custom_archive_styles] img{
 	width:100%;
@@ -213,6 +211,16 @@ div#proler_product_data_tab #mpcdp_settings{
 	-webkit-transform:scale(1.4);
 	transform:scale(1.4)
 }
+.mpcdp_settings_sidebar a{
+	text-decoration: none;
+	color: #d1cbce;
+}
+.mpcdp_settings_sidebar .mpcdp_settings_tab_control span.dashicons {
+	padding-right: 10px;
+}
+.mpcdp_settings_sidebar .mpcdp_settings_tab_control.active span.dashicons {
+	color: #45494c;
+}
 .mpcdp_settings_tab_control .tab_icon{
 	margin:0 10px;
 	font-size:1em;
@@ -221,61 +229,36 @@ div#proler_product_data_tab #mpcdp_settings{
 	color:#45494c
 }
 .mpcdp_settings_submit .submit{
-	margin:20px;
-	padding:0
+	margin: 20px;
+	padding: 0;
 }
 .mpcdp_settings_submit button.mpcdp_submit_button, .mpcdp_settings_submit .submit input#submit{
-	display:flex;
-	align-items:center;
-	justify-content:center;
-	cursor:pointer;
-	color:white;
-	text-align:center;
-	border-radius:100px;
-	font-weight:600;
-	border:unset;
-	text-shadow:unset;
-	-webkit-box-shadow:unset;
-	box-shadow:unset;
-	padding:12px 20px;
-	height:50px;
-	width:100%;
-	margin:50px 0;
-	background: #2271b1;
+    display: block;
+    cursor: pointer;
+    color: white;
+    border-radius: 100px;
+    font-weight: 600;
+    border: unset;
+    padding: 10px 20px;
+    width: 100%;
+    background: #2271b1;
 }
 #proler-role-create button.mpcdp_submit_button{
 	border-radius: 3px;
 	font-weight: normal;
-	height: 44px;
 	width: auto;
 }
 .mpcdp_settings_submit button.mpcdp_submit_button:focus{
-	outline:none !important
+	outline: none !important
 }
 .mpcdp_settings_content{
-	padding:0 5% 5%
+	padding: 0 5% 5%;
+}
+div#proler_product_data_tab #mpcdp_settings .mpcdp_settings_content{
+	padding: 0;
 }
 .mpcdp_settings_content .mpcdp_settings_tab.hidden{
 	display:none
-}
-.mpcdp_settings_section_title {
-	border-bottom: 1px solid #60beb1;
-	font-size: 1.4em;
-	line-height: 1;
-	font-weight: 700;
-	margin-top: 60px;
-	margin-bottom: 30px;
-}
-.mpcdp_settings_section_title:after{
-	content:"";
-	display:block;
-	width: 60px;
-	padding-top: 5px;
-	border-bottom:3px solid #60beb1;
-	margin-bottom:-2px
-}
-div#proler_product_data_tab .mpcdp_settings_section_title{
-	margin-top: 40px;
 }
 .mpcdp_settings_section_description{
 	margin: 0 0 25px 0;
@@ -293,14 +276,11 @@ div#proler_product_data_tab .mpcdp_settings_section_title{
 	position:relative;
 	border: 1px solid #ececec;
 }
-.mpcdp_settings_option.proler-option-content {
-	border-top: 0 !important;
+.new-role-wrap, .pr-settings{
+	margin: 25px 0 0;
 }
 .proler-option-head {
     background: #60beb1;
-}
-.proler-option-content{
-    background: #f0f0f1;
 }
 #proler-role-create .submit {
 	margin: 0 0 0 15px;
@@ -332,8 +312,8 @@ a.proler-delete img {
 }
 .proler-role-list .role-list-type span {
     margin-right: 10px;
-    color: var(--proler-warm-highlight);
-    border: 1px solid var(--proler-warm-highlight);
+    color: #2171b1;
+    border: 1px solid #2171b1;
     border-radius: 20px;
     padding: 5px;
 }
@@ -341,18 +321,17 @@ a.proler-delete img {
 	margin-bottom: 0;
 }
 .proler-role-list ul li {
-	display: inline-block;
     margin-right: 10px;
     padding: 5px 15px;
     margin-bottom: 13px;
     border-radius: 25px;
-    border: 1px solid #a9a9a9;
+    border: 1px solid #f8f8f8;
     line-height: 22px;
 }
 .proler-role-list ul li a {
     text-decoration: none;
-	margin-left: 5px;
 	cursor: pointer;
+	/* float: right; */
 }
 .proler-role-list ul li:has(a:hover) {
 	color: var(--proler-warning-color);
@@ -389,7 +368,6 @@ span.proler-arrow img {
 .mpcdp_option_label{
     font-size: 14px;
     color: #1d2327;
-    font-weight: 600;
 }
 .proler-option-head .col-md-6:nth-child(2){
 	text-align: right;
@@ -423,15 +401,6 @@ span.proler-arrow img {
 }
 #proler_product_data_tab #mpcdp_settings .mpcdp_settings_option_ribbon{
 	padding: 3px 15px;
-}
-#mpcdp_settings .mpcdp_menu_styles{
-	margin-top:30px
-}
-#mpcdp_settings .mpcdp_menu_styles .mpcdp_menu_style{
-	position:relative
-}
-#mpcdp_settings .mpcdp_menu_styles .mpcdp_menu_style span{
-	display:block
 }
 #mpcdp_settings .mpcdp_settings_toggle .mpcdp_settings_option span.button,#mpcdp_settings .mpcdp_settings_toggle .mpcdp_settings_option button.button,#mpcdp_settings .mpcdp_settings_toggle .mpcdp_settings_option a.button{
 	height:unset;
@@ -480,11 +449,13 @@ span.proler-arrow img {
 }
 .mpcdp_settings_option .mpcdp_row {
 	align-items: center;
-/*    justify-content: center;*/
 }
-.mpcdp_settings_option.proler-option-head .mpcdp_row {
+.new-role-wrap .mpcdp_settings_toggle:nth-child(2) .mpcdp_row {
+    align-items: baseline;
+}
+/* .mpcdp_settings_option.proler-option-head .mpcdp_row {
 	align-items: baseline;
-}
+} */
 #mpcdp_settings select {
 	padding: 3px 15px;
 	border-radius: 5px;
@@ -543,16 +514,6 @@ span.proler-arrow img {
     margin: 0;
     float: none;
 }
-.mpcdp_settings_sidebar a{
-	text-decoration: none;
-	color: #d1cbce;
-}
-.mpcdp_settings_sidebar .mpcdp_settings_tab_control span.dashicons {
-	padding-right: 10px;
-}
-.mpcdp_settings_sidebar .mpcdp_settings_tab_control.active span.dashicons {
-	color: #45494c;
-}
 .mpc-opt-sc-btn {
 	padding: 10px 20px;
 	border-radius: 30px;
@@ -599,7 +560,7 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 #mpcdp_settings .proler-saved-settings, .proler-pro-info-row  {
 	display: flex;
 	border-radius: 5px;
-	margin-bottom: 25px;
+	margin: 25px 0 0;
 }
 #mpcdp_settings .proler-saved-settings {
     padding: 20px 15px;
@@ -699,6 +660,33 @@ span.delete-disrange:hover{
 	color: var(--proler-warning-color);
 	font-weight: bold;
 }
+.proler-admin-page-title, .mpcdp_settings_section_title{
+    font-size: 14px;
+    border-bottom: 1px solid #60beb1;
+    font-weight: 600;
+    color: #9a9a9a;
+}
+.mpcdp_settings_section_title{
+	margin: 45px 0 15px;
+}
+.proler-admin-page-title::after, .mpcdp_settings_section_title:after{
+	content:"";
+	display:block;
+	width: 60px;
+	padding-top: 5px;
+	border-bottom:3px solid #60beb1;
+	margin-bottom:-2px
+}
+.proler-admin-page-title{
+	color: #4f4f4f;
+	margin: 12px 0 25px;
+}
+.pr-settings .mpcdp_settings_section:first-of-type .mpcdp_settings_section_title:first-child {
+    margin-top: 0;
+}
+/* .pr-settings .mpcdp_settings_section_title:first-of-type {
+    margin-top: 0;
+} */
 /* New Look :end */
 /* The Modal (background) */
 .proler-popup-wrap {
@@ -770,7 +758,10 @@ span.delete-disrange:hover{
 }
 @media screen and (max-width: 1600px){
 	#mpcdp_settings{
-		max-width:95% !important;
+		width: 95%;
+	}
+	div#proler_product_data_tab #mpcdp_settings{
+		width: 100%;
 	}
 	#mpcdp_settings input{
 		padding: 4px 15px;
@@ -798,7 +789,7 @@ span.delete-disrange:hover{
 		line-height: 30px;
 	}
 	#proler-role-create button.mpcdp_submit_button{
-		height: 38px;
+		/* height: 38px; */
 	}
 }
 @media screen and (max-width: 1200px){
@@ -856,6 +847,9 @@ span.delete-disrange:hover{
 	}
 }
 @media screen and (max-width: 767px) {
+	#mpcdp_settings .proler-option-head .mpcdp_row {
+		display: flex;
+	}
 	.mpcdp_settings_section > .mpcdp_row {
 		padding-left: unset;
 	}
@@ -865,23 +859,23 @@ span.delete-disrange:hover{
 	.mpcdp_row .col-md-3{
 		max-width:70px
 	}
-	.mpcdp_submit_button .save-text{
-		display:none
+	.mpcdp_submit_button .save-text, .mpcdp_settings_sidebar .mpcdp_settings_tab_control span.label{
+		display: none;
 	}
 	.mpcdp_submit_button .save-text.save-text-mobile{
 		display:block
 	}
-	.mpcdp_settings_sidebar .mpcdp_settings_tab_control span.label{
-		display:none
-	}
 	.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option{
-		padding:40px 20px
+		padding: 40px 20px;
 	}
 	.settings-desc-txt{
-		padding:0 0 10px
+		padding: 0 0 10px;
 	}
 	.mpcdp_settings_submit .submit{
-		margin:5px !important
+		margin: 5px;
+	}
+	#proler-role-create .submit{
+		margin: 0 0 0 10px;
 	}
 	.col-12, .col-9, .col-6, .col-3, .mpcdp_row .col-md-6 {
 		width: 100%;
@@ -906,10 +900,6 @@ span.delete-disrange:hover{
 		margin: 0;
 		margin-top: 10px;
 		max-width: 97% !important;
-	}
-	.mpcdp_settings_section_title {
-		font-size: 20px;
-		font-weight: normal;
 	}
 	.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option {
 		padding: 10px;
@@ -955,8 +945,11 @@ span.delete-disrange:hover{
 	#mpcdp_settings .proler-saved-settings{
 		font-size: 14px;
 	}
-	.pr-settings .proler-option-content .mpcdp_row{
+	.pr-settings .mpcdp_row, .new-role-wrap .mpcdp_settings_toggle:nth-child(2) .mpcdp_row{
 		display: block;
+	}
+	.new-role-wrap .mpcdp_settings_toggle:nth-child(2) .mpcdp_row .col-md-6:first-child{
+		margin: 0 0 45px;
 	}
 	.pr-settings .proler-option-content .discount-ranges-main .mpcdp_row{
 		display: block;
@@ -971,17 +964,20 @@ span.delete-disrange:hover{
 	.pr-settings .proler-option-content .discount-ranges-main .mpcdp_row:not(:last-of-type){
 		margin-bottom: 15px;
 	}
-	.mpcdp_settings_submit button.mpcdp_submit_button, .mpcdp_settings_submit .submit input#submit{
+	.mpcdp_settings_submit button.mpcdp_submit_button{
 		border-radius: 3px;
 		margin: 15px 0 0;
-		height: 35px;
+		padding: 7px 0;
+	}
+	.new-role-wrap .mpcdp_settings_submit button.mpcdp_submit_button{
+		padding: 7px 15px;
 	}
 	.mpcdp_settings_sidebar .mpcdp_settings_tab_control, .mpcdp_settings_sidebar .mpcdp_settings_tab_control.active {
         padding: 15px;
     }
 	span.delete-disrange{
 		right: 7px;
-        bottom: 8px;
+        bottom: 11px;
 	}
 	textarea.proler-widefat{
 		margin-top: 0;
@@ -1004,5 +1000,14 @@ span.delete-disrange:hover{
 	.popup-focus span.marker{
 		font-size: 14px;
 		margin: 4px 0 40px;
+	}
+	.proler-role-list .role-list-type{
+	    padding-bottom: 8px;
+		margin-bottom: 25px;
+		line-height: 26px;
+	}
+	.proler-role-list .role-list-type span{
+		margin-right: 9px;
+		padding: 1px;
 	}
 }

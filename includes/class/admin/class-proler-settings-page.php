@@ -116,13 +116,9 @@ class Proler_Settings_Page {
     }
     public static function settings_page_navigation(){
         ?>
-        <div class="mpcdp_settings_sidebar" data-sticky-container="" style="position: relative;">
-            <div class="mpcdp_sidebar_tabs">
-                <div class="inner-wrapper-sticky">
-                    <?php self::settings_menu(); ?>
-                    <?php self::settings_submit(); ?>
-                </div>
-            </div>
+        <div class="mpcdp_settings_sidebar" style="position: relative;">
+            <?php self::settings_menu(); ?>
+            <?php self::settings_submit(); ?>
         </div>
         <?php
     }
@@ -201,7 +197,7 @@ class Proler_Settings_Page {
     }
     public static function settings_page_title(){
         ?>
-        <div class="mpcdp_settings_section_title">
+        <div class="proler-admin-page-title">
             <?php
                 if ( 'settings' === self::$page ) {
                     echo esc_html__( 'Global Role Based Settings', 'product-role-rules' );
@@ -269,8 +265,7 @@ class Proler_Settings_Page {
             <?php self::user_role_list(); ?>
         </div>
         <?php
-    }
-    public static function user_role_list() {
+    }    public static function user_role_list() {
         global $proler__;
         global $wp_roles;
 
@@ -347,7 +342,7 @@ class Proler_Settings_Page {
         global $proler__;
         ?>
         <?php if( isset( $data['section_title'] ) && !empty( $data['section_title'] ) ) : ?>
-            <div class="mpcdp_settings_section_title" style="margin-top: 20px;"><?php echo esc_html( $data['section_title'] ); ?></div>
+            <div class="mpcdp_settings_section_title"><?php echo esc_html( $data['section_title'] ); ?></div>
         <?php endif; ?>
         <div class="mpcdp_row">
             <div class="col-md-6">

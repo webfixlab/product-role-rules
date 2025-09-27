@@ -98,7 +98,7 @@ class Proler_Product_Settings {
     }
     public static function get_tab_content_header(){
         ?>
-        <div class="mpcdp_settings_section_title"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></div>
+        <div class="proler-admin-page-title"><?php echo esc_html__( 'Product Role Based Settings', 'product-role-rules' ); ?></div>
         <div class="role-settings-head mpcdp_settings_toggle mpcdp_container">
             <div class="mpcdp_settings_option visible">
                 <div class="mpcdp_row">

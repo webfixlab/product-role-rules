@@ -20,7 +20,16 @@ if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 		public static function settings_saved_notice(){
 			global $proler__;
 
-			// this update nontice is for "Add new role" page only.
+			// check cached object if delete role notice exists.
+			$cache = get_transient( 'proler_admin_cache' );
+			if( false !== $cache && isset( $cache['msg'] ) && !empty( $cache['msg'] ) ){
+				self::update_notice( $cache['msg'], $cache['cls'] );
+
+				delete_transient( 'proler_admin_cache' );
+				return;
+			}
+
+			// add new role notice.
 			if( isset( $proler__['user_role_msg'] ) && !empty( $proler__['user_role_msg'] ) ){
 				self::update_notice( $proler__['user_role_msg']['msg'], $proler__['user_role_msg']['cls'] );
 				return;
