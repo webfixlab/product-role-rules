@@ -265,7 +265,8 @@ class Proler_Settings_Page {
             <?php self::user_role_list(); ?>
         </div>
         <?php
-    }    public static function user_role_list() {
+    }
+    public static function user_role_list() {
         global $proler__;
         global $wp_roles;
 

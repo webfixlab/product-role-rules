@@ -312,28 +312,31 @@ a.proler-delete img {
 }
 .proler-role-list .role-list-type span {
     margin-right: 10px;
-    color: #2171b1;
-    border: 1px solid #2171b1;
+    color: #ababab;
+    border: 1px solid #c9c9c9;
     border-radius: 20px;
     padding: 5px;
+    background: #fff;
 }
 .proler-role-list ul {
 	margin-bottom: 0;
 }
 .proler-role-list ul li {
-    margin-right: 10px;
-    padding: 5px 15px;
-    margin-bottom: 13px;
+	padding:5px 10px 5px 15px;
     border-radius: 25px;
     border: 1px solid #f8f8f8;
     line-height: 22px;
+    margin: 0 0 5px;
+	transition: color .3s ease-in, border-color .3s ease-in;
 }
 .proler-role-list ul li a {
     text-decoration: none;
 	cursor: pointer;
-	/* float: right; */
+	float: right;
+	color: #adadad;
 }
 .proler-role-list ul li:has(a:hover) {
+	padding:5px 10px 5px 15px ;
 	color: var(--proler-warning-color);
 	border-color: var(--proler-warning-color);
 }
@@ -787,9 +790,6 @@ span.delete-disrange:hover{
 	}
 	#mpcdp_settings select{
 		line-height: 30px;
-	}
-	#proler-role-create button.mpcdp_submit_button{
-		/* height: 38px; */
 	}
 }
 @media screen and (max-width: 1200px){
