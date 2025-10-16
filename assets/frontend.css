@@ -1,21 +1,27 @@
+.proler-save-wrap{
+    display: block;
+    /* text-align: center; */
+    width: 100%;
+}
 .proler-saving {
     font-size: 13px;
-    padding: 3px 12px 3px 6px;
+    padding: 3px 10px;
     display: inline-block;
-    margin: 0 auto 20px;
-    border: 1px solid #a1a1a1;
+    margin: 5px auto 20px;
+    border: 1px solid;
     border-radius: 25px;
-    color: #222;
     cursor: default;
+    line-height: 18px;
 }
 .proler-saving span{
-    color: #fb7a62;
     font-weight: 600;
 }
-.proler-saving svg {
-    fill: #3f7c63;
-    width: 18px;
-    display: inline;
-    float: left;
-    margin-right: 3px;
+.woocommerce-shop .proler-save-wrap, .archive.woocommerce-page .proler-save-wrap{
+    text-align: center;
+}
+.woocommerce-shop .proler-saving, .archive.woocommerce-page .proler-saving{
+    margin: 5px 0 0;
+}
+.wp-theme-storefront.woocommerce-shop .proler-saving, .wp-theme-storefront.archive.woocommerce-page .proler-saving{
+    margin: 0 0 16px;
 }

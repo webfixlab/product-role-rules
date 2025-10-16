@@ -20,8 +20,19 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		public static function init() {
 			add_filter( 'woocommerce_get_price_html', array( __CLASS__, 'get_price_html' ), 11, 2 );
 
-			add_action( 'woocommerce_before_template_part', array( __CLASS__, 'before_price' ), 19, 4 );
-
+			// if ( function_exists( 'wc_get_theme_support' ) && current_theme_supports( 'block-templates' ) ) {
+			// 	// Block theme
+			// 	// add_filter( 'render_block_woocommerce/product-price', [ __CLASS__, 'inject_tiers_into_price' ], 10, 2 );
+			// 	add_filter( 'render_block_woocommerce/product-price', array( __CLASS__, 'block_price_template' ), 19, 2 );
+			// } else {
+			// 	// Classic theme
+			// 	// add_action( 'woocommerce_before_template_part', array( __CLASS__, 'before_price' ), 19, 4 );
+			// 	add_action( 'woocommerce_before_template_part', [ __CLASS__, 'before_price' ], 20, 4 );
+			// }
+			
+			add_filter( 'render_block_woocommerce/product-price', array( __CLASS__, 'block_price_template' ), 19, 2 );
+			add_action( 'woocommerce_before_template_part', [ __CLASS__, 'before_price' ], 19, 4 );
+			
 			add_action( 'woocommerce_after_shop_loop_item_title', array( __CLASS__, 'discount_text_loop' ), 11 );
 			// add_action( 'woocommerce_single_product_summary', array( __CLASS__, 'discount_text_single' ), 11 );
 
@@ -54,7 +65,18 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 				return;
 			}
 
+			// self::log('[old hook:fired]');
 			self::discount_text_loop();
+		}
+
+		public static function block_price_template( $content, $block ){
+			// self::log('[new block hook:fired]');
+
+			ob_start();
+			self::discount_text_loop();
+			$content .= ob_get_clean();
+
+			return $content;
 		}
 
 		/**
@@ -84,16 +106,17 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 
 			if( empty( $discount ) ) return;
 			?>
-			<div class="proler-saving">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.5 9.757-5.278 4.354 1.649 7.389L12 17.278 6.129 21.5l1.649-7.389L2.5 9.757l6.333-.924L12 2.5l3.167 6.333z"/></svg>
-				<?php
-					echo sprintf(
-						// translators: %1$s: maximum discount volume, %2$s: discount type, either percent or amount.
-						__( 'Get up to <span>%1$s%2$s</span> discount', 'product-role-rules' ),
-						esc_attr( $discount ),
-						'percent' === $type ? '%' : get_woocommerce_currency_symbol()
-					);
-				?>
+			<div class="proler-save-wrap">
+				<div class="proler-saving">
+					<?php
+						echo sprintf(
+							// translators: %1$s: maximum discount volume, %2$s: discount type, either percent or amount.
+							__( 'Get up to <span>%1$s%2$s</span> discount', 'product-role-rules' ),
+							esc_attr( $discount ),
+							'percent' === $type ? '%' : get_woocommerce_currency_symbol()
+						);
+					?>
+				</div>
 			</div>
 			<?php
 		}

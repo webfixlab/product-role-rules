@@ -91,7 +91,7 @@ a.nav-tab {
     color: #ffffff;
     cursor: pointer;
     border-radius: 25px;
-    padding: 10px 30px;
+    padding: 15px 30px;
 	text-decoration: none;
 }
 .proler-sidebar .sidebar_top a:hover{
@@ -239,11 +239,12 @@ div#proler_product_data_tab #mpcdp_settings{
     border-radius: 100px;
     font-weight: 600;
     border: unset;
-    padding: 10px 20px;
+    padding: 20px;
     width: 100%;
     background: #2271b1;
 }
 #proler-role-create button.mpcdp_submit_button{
+	padding: 12px 20px;
 	border-radius: 3px;
 	font-weight: normal;
 	width: auto;
@@ -307,16 +308,15 @@ a.proler-delete img {
     font-weight: 600;
     border-bottom: 1px solid #dbdbdb;
     padding-bottom: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 	line-height: 32px;
 }
 .proler-role-list .role-list-type span {
     margin-right: 10px;
-    color: #ababab;
-    border: 1px solid #c9c9c9;
+    color: #116cb4;
+    border: 1px solid #767676;
     border-radius: 20px;
     padding: 5px;
-    background: #fff;
 }
 .proler-role-list ul {
 	margin-bottom: 0;
@@ -682,7 +682,7 @@ span.delete-disrange:hover{
 }
 .proler-admin-page-title{
 	color: #4f4f4f;
-	margin: 12px 0 25px;
+	margin: 25px 0 25px;
 }
 .pr-settings .mpcdp_settings_section:first-of-type .mpcdp_settings_section_title:first-child {
     margin-top: 0;
@@ -969,7 +969,7 @@ span.delete-disrange:hover{
 		margin: 15px 0 0;
 		padding: 7px 0;
 	}
-	.new-role-wrap .mpcdp_settings_submit button.mpcdp_submit_button{
+	#proler-role-create button.mpcdp_submit_button{
 		padding: 7px 15px;
 	}
 	.mpcdp_settings_sidebar .mpcdp_settings_tab_control, .mpcdp_settings_sidebar .mpcdp_settings_tab_control.active {

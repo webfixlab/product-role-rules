@@ -229,6 +229,7 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			$is_hidden = $data['hide_price'] ?? '';
 			$is_hidden = !empty( $is_hidden ) && '1' === $is_hidden ? true : false;
 			$data['hide_price'] = $is_hidden;
+
 			if ( $is_hidden ){
 				// self::remove_add_to_cart();
 				$txt = $data['hide_txt'] ?? '';
@@ -249,10 +250,7 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			
 			$discount   = empty( $discount ) ? '' : (float) $discount;
 			$if_percent = false === strpos( $type, 'percent' ) ? false : true;
-
 			// self::log( $data['id'] . ': ' . $data['title'] . '   --> discount ' . $discount . ', ' . $if_percent );
-
-
 
 			$min = $data['min_price'] ?? '';
 			$max = $data['max_price'] ?? '';
@@ -265,12 +263,12 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			$sp = $data['sale_price'] ?? '';
 			$rp = empty( $rp ) ? '' : (float) $rp;
 			$sp = empty( $sp ) ? '' : (float) $sp;
+			// self::log( 'rp/sp ' . $rp . '/'. $sp . ' | min/max ' . $min . '/'. $max );
 			// self::log( gettype( $rp )  . ' ' . $rp . ', ' . gettype( $sp ) . ' ' . $sp );
 			if( empty( $sp ) && !empty( $rp ) ) $data['regular_price'] = $if_percent ? ( $rp - ( $rp * $discount ) / 100 ) : $rp - $discount;
 			elseif( !empty( $sp ) ) $data['sale_price'] = $if_percent ? ( $sp - ( $sp * $discount ) / 100 ) : $sp - $discount;
 
-
-
+			// self::log('[free:discounted]');
 			// self::log( $data );
 			// self::log( 'after ---------- ' . $data['type'] . ' - ' . $data['id'] . ' -----------' );
 			// self::log( $data['id'] . ': ' . $data['title'] . '   --> rp/sp ' . $rp . '/' . $sp . '  --  min/max ' . $min . '/' . $max );
@@ -285,13 +283,13 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			
 			$settings = self::get_product_settings( $product );
 			if( !$settings || empty( $settings ) ) {
-				// self::log( '[free] settings: none | [return price]' );
+				self::log( '[free] settings: none | [return price]' );
 				return $price;
 			}
 
 			$is_hidden = $settings['hide_price'] ?? '';
 			if( !empty( $is_hidden ) && '1' === $is_hidden ){
-				self::log( 'price is hidden, skip' );
+				self::log( '[free] settings: price hidden.' );
 				self::remove_add_to_cart();
 
 				$txt = $settings['hide_txt'] ?? '';
@@ -309,7 +307,7 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			$rp = empty( $rp ) ? '' : (float) $rp;
 			$sp = empty( $sp ) ? '' : (float) $sp;
 			// self::log( $settings );
-			// self::log( $settings['id'] . ': ' . $settings['title'] . '   --> rp/sp ' . $rp . '/' . $sp . '  --  min/max ' . $min . '/' . $max );
+			// self::log( '[free:price] '. $settings['id'] . ': ' . $settings['title'] . '   --> rp/sp ' . $rp . '/' . $sp . '  --  min/max ' . $min . '/' . $max );
 
 			if( !empty( $min ) ){
 				if( $min === $max && !empty( $rp ) ){
