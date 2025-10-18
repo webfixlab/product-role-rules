@@ -198,10 +198,8 @@
 		function show_diable_msg( btn ){
 			const checkBox = btn.closest('.switch-box-wrap').find('input[type="checkbox"]');
 			const status   = btn.closest('.col-md-6').find('.prdis-msg');
-			console.log('checkbox', checkBox.length, 'status', status.length);
 			
 			if(!status || !checkBox) return;
-			console.log('checkbox checked?', checkBox.is(':checked'), 'status hidden?', status.is(':hidden'));
 
 			if(!checkBox.is(':checked') && status.is(':hidden')) status.show();
 			else if(checkBox.is(':checked') && !status.is(':hidden')) status.hide();
@@ -214,9 +212,9 @@
 			});
 
 			// find closest wrapper to extract actualy checkbox field.
-			const checkBox = btn.closest( '.proler-option-head' ).find( 'input[type="checkbox"]' );
+			const checkBox = btn.closest( '.switch-box-wrap' ).find( 'input[type="checkbox"]' );
 			if(checkBox) checkBox.trigger('click');
-			console.log( 'checkbox', checkBox );
+			// console.log( 'checkbox', checkBox );
 			show_diable_msg( btn );
 		}
 

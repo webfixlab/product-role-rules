@@ -3,6 +3,9 @@
     /* text-align: center; */
     width: 100%;
 }
+.wp-theme-twentytwentyfive ul li .proler-save-wrap{
+    text-align: center;
+}
 .proler-saving {
     font-size: 13px;
     padding: 3px 10px;
@@ -22,6 +25,9 @@
 .woocommerce-shop .proler-saving, .archive.woocommerce-page .proler-saving{
     margin: 5px 0 0;
 }
-.wp-theme-storefront.woocommerce-shop .proler-saving, .wp-theme-storefront.archive.woocommerce-page .proler-saving{
+.wp-theme-storefront.woocommerce-shop .proler-saving, .wp-theme-storefront.archive.woocommerce-page .proler-saving, .wp-theme-hello-elementor.woocommerce-shop .proler-saving, .wp-theme-hello-elementor.archive.woocommerce-page .proler-saving{
     margin: 0 0 16px;
+}
+.wp-theme-twentytwentyfive.woocommerce-page .proler-saving{
+    margin: 0;
 }

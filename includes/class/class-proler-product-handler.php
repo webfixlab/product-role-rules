@@ -33,7 +33,7 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			add_filter( 'render_block_woocommerce/product-price', array( __CLASS__, 'block_price_template' ), 19, 2 );
 			add_action( 'woocommerce_before_template_part', [ __CLASS__, 'before_price' ], 19, 4 );
 			
-			add_action( 'woocommerce_after_shop_loop_item_title', array( __CLASS__, 'discount_text_loop' ), 11 );
+			// add_action( 'woocommerce_after_shop_loop_item_title', array( __CLASS__, 'discount_text_loop' ), 11 );
 			// add_action( 'woocommerce_single_product_summary', array( __CLASS__, 'discount_text_single' ), 11 );
 
 			add_filter( 'woocommerce_product_is_on_sale', array( __CLASS__, 'is_on_sale' ), 20, 2 );
@@ -92,6 +92,8 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 
 			$is_hidden = $settings['hide_price'] ?? '';
 			if ( !empty( $is_hidden ) && '1' === $is_hidden ) return;
+
+			// 
 
 			$discount = $settings['discount'] ?? '';
 			$type     = $settings['discount_type'] ?? '';

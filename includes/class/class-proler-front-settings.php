@@ -288,8 +288,10 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			}
 
 			$is_hidden = $settings['hide_price'] ?? '';
-			if( !empty( $is_hidden ) && '1' === $is_hidden ){
-				self::log( '[free] settings: price hidden.' );
+			// self::log( $settings );
+			// self::log('[free:price] hidden? ' . $is_hidden . ' | ' . gettype( $is_hidden ) );
+			if( !empty( $is_hidden ) &&  ( $is_hidden || '1' === $is_hidden ) ){
+				// self::log( '[free] settings: price hidden.' );
 				self::remove_add_to_cart();
 
 				$txt = $settings['hide_txt'] ?? '';

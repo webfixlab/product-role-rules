@@ -136,6 +136,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 				<input
 					type="checkbox"
 					name="<?php echo esc_attr( $field['key'] ); ?>"
+					value="1"
 					class="<?php echo isset( $field['class'] ) ? esc_attr( $field['class'] ) : ''; ?>"
 					data-protxt="<?php echo isset( $field['label'] ) ? esc_html( $field['label'] ) : ''; ?>"
 					<?php echo 'on' === $checked ? 'checked' : ''; ?>>
@@ -245,9 +246,9 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 					</div>
 					<div class="mpcdp_row">
 						<div class="col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Discount Badge?', 'product-role-rules' ); ?></div>
+							<div class="mpcdp_option_label"><?php echo esc_html__( 'Hide Discount Text?', 'product-role-rules' ); ?></div>
 							<div class="settings-desc-txt">
-								<?php echo esc_html__( 'Hides "Save up to ..." badge or message.', 'product-role-rules' ); ?>
+								<?php echo esc_html__( 'Hides "Get up to ... discount" text message.', 'product-role-rules' ); ?>
 							</div>
 						</div>
 						<div class="col-md-6">
@@ -328,7 +329,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							</div>
 						</div>
 						<div class="col-md-6">
-							<select name="additional_discount_display" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Options', 'product-role-rules' ); ?>">
+							<select name="additional_discount_display" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Tier View', 'product-role-rules' ); ?>">
 								<?php
 									$ads = array(
 										// 'table_max' => __( 'Table - show both min and max range', 'product-role-rules' ),
