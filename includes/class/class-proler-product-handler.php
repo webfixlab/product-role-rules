@@ -90,10 +90,11 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			$settings = Proler_Front_Settings::get_product_settings( $product );
 			if ( empty( $settings ) ) return;
 
-			$is_hidden = $settings['hide_price'] ?? '';
-			if ( !empty( $is_hidden ) && '1' === $is_hidden ) return;
+			$hide_price = $settings['hide_price'] ?? '';
+			if ( !empty( $hide_price ) && ( $hide_price || '1' === $hide_price ) ) return;
 
-			// 
+			$is_disabled = $settings['discount_text'] ?? '';
+			if( !empty( $is_disabled ) && ( $is_disabled || '1' === $is_disabled ) ) return;
 
 			$discount = $settings['discount'] ?? '';
 			$type     = $settings['discount_type'] ?? '';
