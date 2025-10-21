@@ -31,3 +31,8 @@
 .wp-theme-twentytwentyfive.woocommerce-page .proler-saving{
     margin: 0;
 }
+@media screen and (max-width: 676px){
+    .wp-theme-twentytwentyfive.woocommerce-page .proler-saving{
+        margin: 0 0 20px;
+    }
+}

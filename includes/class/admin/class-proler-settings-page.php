@@ -438,7 +438,7 @@ class Proler_Settings_Page {
     }
     public static function pro_popup( $type ){
         global $proler__;
-        $text = 'newrole' !== $type ? __( 'Please upgrade to PRO to use', 'product-role-rules' ) : __( 'Please upgrade to PRO to delete', 'product-role-rules' );
+        $text = 'newrole' !== $type ? __( 'Unlock all exclusive features with', 'product-role-rules' ) : __( 'Please upgrade to PRO to delete', 'product-role-rules' );
         ?>
         <div class="proler-popup-wrap">
             <div class="popup-content">
@@ -448,7 +448,7 @@ class Proler_Settings_Page {
                     <?php echo esc_html( $text ); ?>
                     <span class="marker"></span>
                 </div>
-                <p><?php echo esc_html__( 'All exclusive features for a year starting $59.00 (USD) only!', 'product-role-rules' ); ?></p>
+                <p><?php echo esc_html__( 'Only at $59.00 (USD)!', 'product-role-rules' ); ?></p>
                 <a href="<?php echo esc_url( $proler__['url']['pro'] ); ?>" class="get-pro-btn" target="_blank"><?php echo esc_html__( 'Get PRO', 'product-role-rules' ); ?></a>
             </div>
         </div>
