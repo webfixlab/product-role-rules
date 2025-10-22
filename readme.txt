@@ -2,8 +2,8 @@
 Contributors: aikya, smshahriar, webfixlab
 Tags: role based pricing, dynamic pricing, wholesale pricing, prices by user role, hide price, woocommerce
 Requires at least: 4.9
-Tested up to: 6.8.2
-Stable tag: 4.1.1
+Tested up to: 6.8.3
+Stable tag: 4.2.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -64,10 +64,10 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 
 == Screenshots ==
 
-1. Dynamic discount based one role
-2. Custom price instead of price
+1. Discount option for products
+2. Custom text instead of price
 3. Discount on shop and archive pages
-4. Admin settings
-5. Admin settings of each product
+4. Global discount settings
+5. Product based discount settings
 6. Discount and purchase limit notice
 7. Manage custom user roles

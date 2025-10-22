@@ -33,11 +33,14 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			add_filter( 'render_block_woocommerce/product-price', array( __CLASS__, 'block_price_template' ), 19, 2 );
 			add_action( 'woocommerce_before_template_part', [ __CLASS__, 'before_price' ], 19, 4 );
 			
-			// add_action( 'woocommerce_after_shop_loop_item_title', array( __CLASS__, 'discount_text_loop' ), 11 );
-			// add_action( 'woocommerce_single_product_summary', array( __CLASS__, 'discount_text_single' ), 11 );
-
+			add_filter( 'render_block_woocommerce/product-button', array( __CLASS__, 'block_loop_add_to_cart' ), 10, 2 );
+			if( !function_exists( 'wc_get_theme_support' ) || !current_theme_supports( 'block-templates' ) ){
+				add_action( 'woocommerce_after_shop_loop_item_title', array( __CLASS__, 'discount_text_loop' ), 11 );
+			}
+			
 			add_filter( 'woocommerce_product_is_on_sale', array( __CLASS__, 'is_on_sale' ), 20, 2 );
 			add_filter( 'woocommerce_loop_add_to_cart_link', array( __CLASS__, 'archive_page_cart_btn' ), 10, 2 );
+			
 		}
 
 		/**
@@ -79,6 +82,22 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			return $content;
 		}
 
+		public static function block_loop_add_to_cart( $content, $block ) {
+			global $product;
+
+			if( 'external' === $product->get_type() ) return;
+
+			$settings = Proler_Front_Settings::get_product_settings( $product );
+			if ( empty( $settings ) ) return;
+
+			$hide_price = $settings['hide_price'] ?? '';
+			if ( !empty( $hide_price ) && ( $hide_price || '1' === $hide_price ) ){
+				return '';
+			}
+
+			return $content;
+		}
+
 		/**
 		 * Display discount text on shop and archive pages after price
 		 */
@@ -91,7 +110,10 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			if ( empty( $settings ) ) return;
 
 			$hide_price = $settings['hide_price'] ?? '';
-			if ( !empty( $hide_price ) && ( $hide_price || '1' === $hide_price ) ) return;
+			if ( !empty( $hide_price ) && ( $hide_price || '1' === $hide_price ) ){
+				remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+				return;
+			}
 
 			$is_disabled = $settings['discount_text'] ?? '';
 			if( !empty( $is_disabled ) && ( $is_disabled || '1' === $is_disabled ) ) return;
