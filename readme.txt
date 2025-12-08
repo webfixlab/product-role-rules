@@ -12,19 +12,20 @@ EASY to use and super FAST WooCommerce product role based pricing solution to ad
 
 == Description ==
 
-EASY to use and super FAST WooCommerce product role based pricing solution to add different prices for different roles. Great for accessories, restaurant or any WooCommerce shops, great for increase conversions.
+Easiest way to provide discounts to your customers. Manage all role based discounts from one place. EASY to use and super FAST WooCommerce product role based pricing solution to add different prices for different roles. Great for accessories, restaurant or any WooCommerce shops, great for increase conversions.
 
 Role Based Pricing is a truly lightweight and simple yet powerful plugin without any unnecessary features, no huss fuss or no low page speed score!
 
 **FEATURES**
 
-* New! Improved custom themes and plugins support
+* NEW! **Block themes support**
+* Custom themes and plugins supported
 * Dynamic pricing for different user roles and non-registered visitors
-* Filter products by category and type.
+* Filter discount by product category and type
 * Simple, variable and grouped products support
-* Hide price and add placeholder text
+* Hide price or display curstom text instead of price
+* Automatic add to cart button hide if the price is hidden
 * Add new user roles
-* Disable role based pricing temporarily
 
 **SEE THE DEMO**
 
@@ -32,11 +33,12 @@ https://www.youtube.com/watch?v=xytsfBndYoA
 
 **PRO**
 * NEW! Flash sale notice based on schedule
-* Discount tiers and it's views.
-* Schedule support.
-* Cart quantity message for product page.
-* Dynamically remove items from the cart if price is hidden.
-* Maximum and minimum quantity support - **[Get PRO](https://webfixlab.com/plugins/role-based-pricing-woocommerce/)**
+* NEW! Improved discount tiers view
+* **Purchase limit** - set minimum and maximum cart quantity limit
+* **Discount tiers** - set ranges of discount based on quantity and product total
+* **Schedule based discount** - set discount based on time
+* Cart quantity limit warning notice
+* Dynamically remove items from the cart if price is hidden - **[Get PRO](https://webfixlab.com/plugins/role-based-pricing-woocommerce/)**
 
 == Installation ==
 
@@ -67,7 +69,6 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 1. Discount option for products
 2. Custom text instead of price
 3. Discount on shop and archive pages
-4. Global discount settings
-5. Product based discount settings
-6. Discount and purchase limit notice
-7. Manage custom user roles
+4. Discount settings
+5. Manage custom roles
+6. Discount tiers and purchase limits (Pro)

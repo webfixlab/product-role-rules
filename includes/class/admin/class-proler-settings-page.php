@@ -384,11 +384,6 @@ class Proler_Settings_Page {
         }
     }
 
-
-
-
-
-
     public static function settings_page_sidebar(){
         global $proler__;
 

@@ -28,16 +28,6 @@
 	new roleBasedPricing();
 })(jQuery, window, document);
 
-
-
-
-
-
-
-
-
-
-
 (function ($) {
 	$( document ).ready( function () {
 		$( 'body' ).on( 'click', 'input[name="proler_stype"]', function () {
@@ -129,11 +119,10 @@
 				data[ 'pr_enable' ] = true;
 			}
 
-			var category = '';
-			if ( row.find( 'select[name="category"]' ).val() && row.find( 'select[name="category"]' ).val().length > 0 ) {
-				category = validate_input( row.find( 'select[name="category"]' ).val() );
+			let catWrap = row.find('select[name="category[]"]');
+			if(catWrap){
+				data['category'] = catWrap.val();
 			}
-			data['category'] = category;
 
 			var product_type = '';
 			if ( row.find( 'select[name="product_type"]' ).val() && row.find( 'select[name="product_type"]' ).val().length > 0 ) {
@@ -214,7 +203,6 @@
 			// find closest wrapper to extract actualy checkbox field.
 			const checkBox = btn.closest( '.switch-box-wrap' ).find( 'input[type="checkbox"]' );
 			if(checkBox) checkBox.trigger('click');
-			// console.log( 'checkbox', checkBox );
 			show_diable_msg( btn );
 		}
 
@@ -243,9 +231,7 @@
 			});
 			return allOK;
 		}
-
-
-
+		
 		$( '.pr-settings' ).on( 'click', '.switch-point', function (e) {
 			switchBoxHandler( $( this ) );
 		});
@@ -308,7 +294,6 @@
 
 		// delete user role.
 		$( '.proler-delete-role' ).on( 'click', function(e){
-			console.log(proler);
 			if(proler.has_pro && !confirm( proler.delete_role_msg ) ){
 				e.preventDefault();
 			}
@@ -316,7 +301,6 @@
 
 		// single product update/save button clicked event
 		$( 'input[type="submit"],button.mpcdp_submit_button' ).on( 'click', function (e) {
-			// e.preventDefault();
 			if( checkRanges() === false ){
 				e.preventDefault();
 			}

@@ -29,9 +29,9 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 		}
 		
 		public function init(){
-			$this->includes();
-
 			load_plugin_textdomain( 'product-role-rules', false, plugin_basename( dirname( PROLER ) ) . '/languages' );
+			
+			$this->includes();
 			
 			do_action( 'proler_admin_change_pro_state' );
 			
@@ -255,8 +255,6 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 
 			$screen     = get_current_screen();
 			$current_id = urldecode( $screen->id ); // current screen id.
-			// $this->log( 'current screen id ' . $current_id );
-			// $this->log( $proler__['screen'] );
 
 			if( in_array( $current_id, $proler__['screen'], true ) ) return true;
 
@@ -269,15 +267,6 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			}
 
 			return $partial_match;
-		}
-		private function log( $data ) {
-			if ( true === WP_DEBUG ) {
-				if ( is_array( $data ) || is_object( $data ) ) {
-					error_log( print_r( $data, true ) );
-				} else {
-					error_log( $data );
-				}
-			}
 		}
 	}
 }

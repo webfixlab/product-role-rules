@@ -72,13 +72,29 @@ if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 			</div>
 			<?php
 		}
-		private function log( $data ) {
-			if ( true === WP_DEBUG ) {
-				if ( is_array( $data ) || is_object( $data ) ) {
-					error_log( print_r( $data, true ) );
-				} else {
-					error_log( $data );
-				}
+
+		public static function display_terms( $taxonomy, $data, $slug ){
+			$args = array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			);
+			
+			$cats = get_terms( $args );
+			if( empty( $cats ) ){
+				return;
+			}
+			
+			$values = isset( $data[ $slug ] ) && !empty( $data[ $slug ] ) ? array_map( function( $val ){ return (int) $val; }, $data[ $slug ] ) : array();
+
+			foreach ( $cats as $cat ) {
+				echo sprintf(
+					'<option value="%s" %s>%s</option>',
+					esc_attr( $cat->term_id ),
+					!empty( $values ) && in_array( $cat->term_id, $values, true ) ? 'selected' : '',
+					esc_attr( $cat->name ),
+				);
 			}
 		}
 	}

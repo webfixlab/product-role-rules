@@ -2,6 +2,9 @@
 	--proler-warning-color: #b32d2e;
 	--proler-warm-highlight: #d54e21;
 }
+.notice.notice-warning, .notice.notice-error{
+	display: none;
+}
 .user-role-list ul {
 	background: #fefefe;
 	padding: 15px 20px 9px 15px;
@@ -91,7 +94,7 @@ a.nav-tab {
     color: #ffffff;
     cursor: pointer;
     border-radius: 25px;
-    padding: 15px 30px;
+    padding: 10px 25px;
 	text-decoration: none;
 }
 .proler-sidebar .sidebar_top a:hover{
@@ -239,7 +242,7 @@ div#proler_product_data_tab #mpcdp_settings{
     border-radius: 100px;
     font-weight: 600;
     border: unset;
-    padding: 20px;
+    padding: 10px 20px;
     width: 100%;
     background: #2271b1;
 }
@@ -275,13 +278,12 @@ div#proler_product_data_tab #mpcdp_settings .mpcdp_settings_content{
 .mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option{
 	padding: 20px;
 	position:relative;
-	border: 1px solid #ececec;
 }
 .new-role-wrap, .pr-settings{
 	margin: 25px 0 0;
 }
 .proler-option-head {
-    background: #60beb1;
+    background: #dbdbdb;
 }
 #proler-role-create .submit {
 	margin: 0 0 0 15px;
@@ -665,9 +667,9 @@ span.delete-disrange:hover{
 }
 .proler-admin-page-title, .mpcdp_settings_section_title{
     font-size: 14px;
-    border-bottom: 1px solid #60beb1;
+    border-bottom: 1px solid #afafaf;
     font-weight: 600;
-    color: #9a9a9a;
+    color: #7f7f7f;
 }
 .mpcdp_settings_section_title{
 	margin: 45px 0 15px;
@@ -677,7 +679,7 @@ span.delete-disrange:hover{
 	display:block;
 	width: 60px;
 	padding-top: 5px;
-	border-bottom:3px solid #60beb1;
+	border-bottom: 3px solid #737373;
 	margin-bottom:-2px
 }
 .proler-admin-page-title{
@@ -791,6 +793,12 @@ span.delete-disrange:hover{
 	#mpcdp_settings select{
 		line-height: 30px;
 	}
+	.mpcdp_submit_button .save-text{
+		display: none;
+	}
+	.mpcdp_submit_button .save-text.save-text-mobile{
+		display:block
+	}
 }
 @media screen and (max-width: 1200px){
 	#right-side{
@@ -847,6 +855,9 @@ span.delete-disrange:hover{
 	}
 }
 @media screen and (max-width: 767px) {
+	.mpcdp_settings_sidebar .mpcdp_settings_tab_control span.label{
+		display: none;
+	}
 	#mpcdp_settings .proler-option-head .mpcdp_row {
 		display: flex;
 	}
@@ -858,12 +869,6 @@ span.delete-disrange:hover{
 	}
 	.mpcdp_row .col-md-3{
 		max-width:70px
-	}
-	.mpcdp_submit_button .save-text, .mpcdp_settings_sidebar .mpcdp_settings_tab_control span.label{
-		display: none;
-	}
-	.mpcdp_submit_button .save-text.save-text-mobile{
-		display:block
 	}
 	.mpcdp_settings_section .mpcdp_settings_toggle .mpcdp_settings_option{
 		padding: 40px 20px;

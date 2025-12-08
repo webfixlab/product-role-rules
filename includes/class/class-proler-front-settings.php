@@ -27,13 +27,10 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			// New approach using transients | caching.
 			$settings = get_transient( 'proler_settings' );
 			$settings = !$settings ? [] : $settings;
-			if ( ! isset( $settings['global'] ) ) {
+			if ( ! isset( $settings['global'] ) || empty( $settings['global'] ) ) {
 				// set global settings.
-				$global_data = get_option( 'proler_role_table' );
-
-				if ( ! empty( $global_data ) ) {
-					$settings['global'] = self::extract_role_settings( $global_data['roles'] );
-				}
+				$global_data = get_option( 'proler_role_table');
+				$settings['global'] = isset( $global_data['roles'] ) ? self::extract_role_settings( $global_data['roles'] ) : [];
 			}
 
 			// check if cart item quantity has changed.
@@ -55,7 +52,6 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			}
 			
 			$saved_settings = self::extract_product_settings( $id, $product, $settings['global'] );
-			// self::log( $saved_settings );
 			if( !empty( $saved_settings ) ){
 				$saved_settings = self::get_product_details( $saved_settings, $id, $product );
 			}
@@ -64,7 +60,6 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 
             // add - apply_settings filter hook to modify it so that it won't be necessary to call those again.
 			$saved_settings = self::apply_settings( $saved_settings );
-			// self::log( $saved_settings );
 
 			$cached_settings = [];
 			$cached_settings[$id][$role] = $saved_settings;
@@ -112,17 +107,22 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			return $settings;
 		}
 		public static function if_in_cat( $settings, $product ){
-			$cat = $settings['category'] ?? '';
-			if( empty( $cat ) ) return true;
+			$cats = $settings['category'] ?? [];
+			if( empty( $cats ) ) return true;
 
 			$product_cats = $product->get_category_ids();
 			if( empty( $product_cats ) ) return true;
 
-			$cat      = (int) $cat;
-			$childs   = get_term_children( $cat, 'product_cat' );
-			$childs[] = $cat;
+			foreach( $cats as $cat ){
+				$cat = (int) $cat;
+				if( in_array(  $cat, $product_cats, true ) ) return true;
 
-			return count( array_intersect( $childs, $product_cats ) ) > 0;
+				$childs = get_term_children( $cat, 'product_cat' );
+				$childs = empty( $childs ) ? [ $cat ] : $childs;
+				if( count( array_intersect( $childs, $product_cats ) ) > 0) return true;
+			}
+
+			return false;
 		}
 		public static function get_product_details( $data, $id, $product ){
 			$data = array_merge( $data, array(
@@ -131,7 +131,6 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 				'price_suffix' => $product->get_price_suffix(),
 				'title'        => $product->get_title(),
 				'url'          => $product->get_permalink(),
-				// 'cats'         => $product->get_category_ids()
 			) );
 
 			if ( $product->is_type( 'variable' ) ) {
@@ -173,7 +172,6 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ){
 				if( $cart_item['product_id'] === (int) $data['id'] ){
 					$data['quantity']   = $cart_item['quantity'];	
-					// $data['cart_price'] = $cart_item['data']->get_price();
 					break;
 				}elseif( isset( $cart_item['variation_id'] ) && $cart_item['variation_id'] === (int) $data['id'] ){
 					$data['quantity']   = $cart_item['quantity'];
@@ -231,10 +229,8 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			$data['hide_price'] = $is_hidden;
 
 			if ( $is_hidden ){
-				// self::remove_add_to_cart();
 				$txt = $data['hide_txt'] ?? '';
 				$data['hide_txt'] = empty( $txt ) ? __( 'Price hidden', 'product-role-rules' ) : $txt;
-				// return $data;
 			}
 
 			// apply discount to all prices including min-max price, regular-sale price etc.
@@ -246,16 +242,15 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			if( empty( $discount ) || empty( $type ) ){
 				return $data;
 			}
-			// self::log( 'discount ... ' . $discount . ', ' . $type );
 			
 			$discount   = empty( $discount ) ? '' : (float) $discount;
 			$if_percent = false === strpos( $type, 'percent' ) ? false : true;
-			// self::log( $data['id'] . ': ' . $data['title'] . '   --> discount ' . $discount . ', ' . $if_percent );
 
 			$min = $data['min_price'] ?? '';
 			$max = $data['max_price'] ?? '';
 			$min = empty( $min ) ? '' : (float) $min;
 			$max = empty( $max ) ? '' : (float) $max;
+
 			if( !empty( $min ) ) $data['min_price'] = $if_percent ? ( $min - ( $min * $discount ) / 100 ) : $min - $discount;
 			if( !empty( $max ) ) $data['max_price'] = $if_percent ? ( $max - ( $max * $discount ) / 100 ) : $max - $discount;
 			
@@ -263,17 +258,11 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			$sp = $data['sale_price'] ?? '';
 			$rp = empty( $rp ) ? '' : (float) $rp;
 			$sp = empty( $sp ) ? '' : (float) $sp;
-			// self::log( 'rp/sp ' . $rp . '/'. $sp . ' | min/max ' . $min . '/'. $max );
-			// self::log( gettype( $rp )  . ' ' . $rp . ', ' . gettype( $sp ) . ' ' . $sp );
+
 			if( empty( $sp ) && !empty( $rp ) ) $data['regular_price'] = $if_percent ? ( $rp - ( $rp * $discount ) / 100 ) : $rp - $discount;
 			elseif( !empty( $sp ) ) $data['sale_price'] = $if_percent ? ( $sp - ( $sp * $discount ) / 100 ) : $sp - $discount;
 
-			// self::log('[free:discounted]');
-			// self::log( $data );
-			// self::log( 'after ---------- ' . $data['type'] . ' - ' . $data['id'] . ' -----------' );
-			// self::log( $data['id'] . ': ' . $data['title'] . '   --> rp/sp ' . $rp . '/' . $sp . '  --  min/max ' . $min . '/' . $max );
 			return $data;
-			// $discount = apply_filters( 'proler_get_discount', $discount, $prices, $data );
 		}
 
 
@@ -283,15 +272,11 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			
 			$settings = self::get_product_settings( $product );
 			if( !$settings || empty( $settings ) ) {
-				self::log( '[free] settings: none | [return price]' );
 				return $price;
 			}
 
 			$is_hidden = $settings['hide_price'] ?? '';
-			// self::log( $settings );
-			// self::log('[free:price] hidden? ' . $is_hidden . ' | ' . gettype( $is_hidden ) );
 			if( !empty( $is_hidden ) &&  ( $is_hidden || '1' === $is_hidden ) ){
-				// self::log( '[free] settings: price hidden.' );
 				self::remove_add_to_cart();
 
 				$txt = $settings['hide_txt'] ?? '';
@@ -308,8 +293,6 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			$max = empty( $max ) ? '' : (float) $max;
 			$rp = empty( $rp ) ? '' : (float) $rp;
 			$sp = empty( $sp ) ? '' : (float) $sp;
-			// self::log( $settings );
-			// self::log( '[free:price] '. $settings['id'] . ': ' . $settings['title'] . '   --> rp/sp ' . $rp . '/' . $sp . '  --  min/max ' . $min . '/' . $max );
 
 			if( !empty( $min ) ){
 				if( $min === $max && !empty( $rp ) ){
@@ -357,15 +340,6 @@ if ( ! class_exists( 'Proler_Front_Settings' ) ) {
 			remove_action( 'woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30 );
 			remove_action( 'woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30 );
 			remove_action( 'woocommerce_external_add_to_cart', 'woocommerce_external_add_to_cart', 30 );
-		}
-		private static function log( $data ) {
-			if ( true === WP_DEBUG ) {
-				if ( is_array( $data ) || is_object( $data ) ) {
-					error_log( print_r( $data, true ) );
-				} else {
-					error_log( $data );
-				}
-			}
 		}
 	}
 }

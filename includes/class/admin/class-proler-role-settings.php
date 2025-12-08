@@ -356,35 +356,15 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 					<?php if ( 'option_page' === $proler__['which_page'] ) : ?>
 					<div class="mpcdp_row">
 						<div class="col-md-6">
-							<div class="mpcdp_option_label"><?php echo esc_html__( 'Category', 'product-role-rules' ); ?></div>
+							<div class="mpcdp_option_label"><?php echo esc_html__( 'Categories', 'product-role-rules' ); ?></div>
 							<div class="settings-desc-txt">
-								<?php echo esc_html__( 'Choose on which category this rule will apply.', 'product-role-rules' ); ?>
+								<?php echo esc_html__( 'Choose on which categories this rule will apply. Press Command or Ctrl key and select multiple categories.', 'product-role-rules' ); ?>
 							</div>
 						</div>
 						<div class="col-md-6">
-							<select name="category">
-								<option value=""><?php echo esc_html__( 'Choose a category', 'product-role-rules' ); ?></option>
-								<?php
-									$args = array(
-										'taxonomy'   => 'product_cat',
-										'hide_empty' => false,
-										'orderby'    => 'name',
-										'order'      => 'ASC',
-									);
-
-									$cats = get_terms( $args );
-
-									if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
-										foreach ( $cats as $cat ) {
-											printf(
-												'<option value="%s" %s>%s</option>',
-												esc_attr( $cat->term_id ),
-												isset( $rd['category'] ) && $cat->term_id === (int) $rd['category'] ? esc_attr( 'selected' ) : '',
-												esc_html( $cat->name )
-											);
-										}
-									}
-								?>
+							<select name="category[]" multiple>
+								<option value=""><?php echo esc_html__( 'Choose categories', 'product-role-rules' ); ?></option>
+								<?php Proler_Admin_Settings_Helper::display_terms( 'product_cat', $rd, 'category' ); ?>
 							</select>
 						</div>
 					</div>
@@ -520,15 +500,5 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 			$datetime->setTimezone( wp_timezone() );
 			return $datetime->format( 'Y-m-d H:i:s' );
         }
-
-		private static function log( $data ) {
-			if ( true === WP_DEBUG ) {
-				if ( is_array( $data ) || is_object( $data ) ) {
-					error_log( print_r( $data, true ) );
-				} else {
-					error_log( $data );
-				}
-			}
-		}
 	}
 }

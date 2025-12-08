@@ -44,13 +44,10 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			
 			$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 			self::$page = 'global';
-			// self::$page = $page;
-			self::log( 'page? ' . $page );
 
 			if( 'proler-newrole' === $page ){
 				self::add_new_role();
 			}else{
-				self::log( 'saving settings ' . $page );
 				self::save_settings();
 			}
 		}
@@ -68,8 +65,6 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			global $proler__;
 
 			if ( isset( $_POST['proler_product_settings_nonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_product_settings_nonce'] ) ), 'proler_product_settings' ) ) {
-				// self::log( 'saving nonce checking failed, skip' );
-				// return;
 				self::$page = 'product';
 			}
 			
@@ -81,7 +76,6 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			foreach( $proler__['general_settings'] as $field ){
 				$key = $field['key'];
 				if( isset( $_POST[ $key ] ) ){
-					self::log( 'saving... ' . $key . ' : ' . $_POST[ $key ] );
 					$value = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
 					update_option( $key, $value );
 				}
@@ -89,12 +83,10 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 
 			// check if this is role related scope or not, if not leave this place.
 			if ( ! isset( $_POST['proler_data'] ) ) {
-				self::log( 'no product data, skip' );
 				return;
 			}
 
 			if ( isset( $post->post_type ) && 'product' !== $post->post_type ) {
-				self::log( 'not product page, skip' );
 				return;
 			}
 
@@ -112,8 +104,6 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 				} else {
 					update_option( 'proler_role_table', $data );
 				}
-				self::log( 'no role data, skip' );
-				// self::log( $data );
 				return;
 			}
 
@@ -160,7 +150,7 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 				}
 
 				if ( isset( $rd['category'] ) ) {
-					$rdt[ $role ]['category'] = self::input_sanitize( $rd['category'] );
+					$rdt[ $role ]['category'] = array_map( 'sanitize_text_field', $rd['category'] );
 				}
 
 				if ( isset( $rd['schedule'] ) ) {
@@ -217,16 +207,10 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			}
 
 			$data['roles'] = $rdt;
-			// self::log( 'final step, data' );
-			// self::log( $data );
-			// self::log('saving settings... post? ' . $post_id . ', global? ' . self::$page);
-			// self::log( $data );
 
 			if ( ! empty( $post_id ) ) {
-				// self::log( 'updated product data' );
 				update_post_meta( $post_id, 'proler_data', $data );
 			} else if ( 'global' === self::$page ) {
-				// self::log( 'updated global settings' );
 				update_option( 'proler_role_table', $data );
 			}
 		}
@@ -318,16 +302,6 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			$val = sanitize_text_field( $val );
 
 			return $val;
-		}
-
-		private static function log( $data ) {
-			if ( true === WP_DEBUG ) {
-				if ( is_array( $data ) || is_object( $data ) ) {
-					error_log( print_r( $data, true ) );
-				} else {
-					error_log( $data );
-				}
-			}
 		}
 	}
 }

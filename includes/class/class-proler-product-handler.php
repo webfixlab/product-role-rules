@@ -20,16 +20,6 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		public static function init() {
 			add_filter( 'woocommerce_get_price_html', array( __CLASS__, 'get_price_html' ), 11, 2 );
 
-			// if ( function_exists( 'wc_get_theme_support' ) && current_theme_supports( 'block-templates' ) ) {
-			// 	// Block theme
-			// 	// add_filter( 'render_block_woocommerce/product-price', [ __CLASS__, 'inject_tiers_into_price' ], 10, 2 );
-			// 	add_filter( 'render_block_woocommerce/product-price', array( __CLASS__, 'block_price_template' ), 19, 2 );
-			// } else {
-			// 	// Classic theme
-			// 	// add_action( 'woocommerce_before_template_part', array( __CLASS__, 'before_price' ), 19, 4 );
-			// 	add_action( 'woocommerce_before_template_part', [ __CLASS__, 'before_price' ], 20, 4 );
-			// }
-			
 			add_filter( 'render_block_woocommerce/product-price', array( __CLASS__, 'block_price_template' ), 19, 2 );
 			add_action( 'woocommerce_before_template_part', [ __CLASS__, 'before_price' ], 19, 4 );
 			
@@ -62,19 +52,14 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		 * @param mixed $action_args   Arguments args parameter.
 		 */
 		public static function before_price( $template_name, $template_path, $located, $action_args ){
-			// self::log('template ' . $template_name );
 			if( false === strpos( $template_name, 'single-product/price.php' ) ){
-				// self::log( 'found simple price template' );
 				return;
 			}
 
-			// self::log('[old hook:fired]');
 			self::discount_text_loop();
 		}
 
 		public static function block_price_template( $content, $block ){
-			// self::log('[new block hook:fired]');
-
 			ob_start();
 			self::discount_text_loop();
 			$content .= ob_get_clean();
@@ -121,13 +106,10 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			$discount = $settings['discount'] ?? '';
 			$type     = $settings['discount_type'] ?? '';
 
-			// self::log( 'discount:front ' . $discount . '/ ' . $type );
 			if( isset( $settings['mad'] ) ){ // maximum available discount.
 				$discount = 0 !== $settings['mad']['dis'] ? $settings['mad']['dis'] : $discount;
 				$type     = $settings['mad']['per'] ? 'percent' : 'fixed';
 			}
-			// self::log( 'discount:front after' . $discount . '/ ' . $type );
-			// self::log( $settings );
 
 			if( empty( $discount ) ) return;
 			?>
@@ -145,13 +127,6 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			</div>
 			<?php
 		}
-
-		/**
-		 * Discount text for single product page
-		 */
-		// public static function discount_text_single(){
-		// 	self::discount_text_loop();
-		// }
 
 		/**
 		 * Check to see if this product is on sale
@@ -189,18 +164,6 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 
 			$hide_price = $settings['hide_price'] ?? '';
 			return !empty( $hide_price ) && '1' === $hide_price ? '' : $button;
-		}
-
-
-
-		private static function log( $data ) {
-			if ( true === WP_DEBUG ) {
-				if ( is_array( $data ) || is_object( $data ) ) {
-					error_log( print_r( $data, true ) );
-				} else {
-					error_log( $data );
-				}
-			}
 		}
 	}
 }
