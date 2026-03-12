@@ -86,7 +86,9 @@ if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 				return;
 			}
 			
-			$values = isset( $data[ $slug ] ) && !empty( $data[ $slug ] ) ? array_map( function( $val ){ return (int) $val; }, $data[ $slug ] ) : array();
+			$values = isset( $data[ $slug ] ) ? $data[ $slug ] : [];
+			$values = !empty( $values ) && !is_array( $values ) ? [ $values ] : [];
+			$values = !empty( $values ) && is_array( $values ) ? array_map( function( $val ){ return (int) $val; }, $values ) : array();
 
 			foreach ( $cats as $cat ) {
 				echo sprintf(

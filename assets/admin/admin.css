@@ -428,25 +428,31 @@ span.proler-arrow img {
 .mpcdp_container .mpcdp_row:not(:last-of-type){
 	margin-bottom: 20px
 }
+#left-side, #middle-content, #right-side, .mpcdp_row .col-md-3, .mpcdp_row .col-md-6, .mpcdp_row .col-md-12{
+	padding: 0;
+	flex-basis: auto;
+}
 .mpcdp_row .col-md-12{
-	width:100%
+	width: 100%;
 }
 .mpcdp_row .col-md-9{
-	width: 100%
+	width: 100%;
 }
 .mpcdp_row .col-md-6{
-	width:50%
+	width: 50%;
 }
 .mpcdp_row .col-md-3{
-	width:25%;
+	width: 25%;
 }
 #left-side {
 	width: 15%;
+	min-width: 15%;
 }
 #middle-content {
 	width: 65%;
+	min-width: 65%;
 }
-#right-side {
+#right-side{
 	width: 20%;
 }
 #mpcdp_settings .mpcdp_settings_toggle .mpcdp_settings_option #mpcdp_import_file{
@@ -806,9 +812,11 @@ span.delete-disrange:hover{
 	}
 	#left-side{
 		width: 15%;
+		min-width: 15%;
 	}
 	#middle-content{
 		width: 85%;
+		min-width: 85%;
 	}
 	.mpcdp_settings_sidebar .mpcdp_settings_tab_control{
 		font-size: 13px;
@@ -933,6 +941,9 @@ span.delete-disrange:hover{
         padding: 3px 7px;
         min-height: 30px;
         border-radius: 3px;
+	}
+	#mpcdp_settings .disrange-item select, #mpcdp_settings .disrange-item input[type="text"]{
+		margin: 0;
 	}
 	#mpcdp_settings input[type="datetime-local"] {
 		margin-bottom: 10px;

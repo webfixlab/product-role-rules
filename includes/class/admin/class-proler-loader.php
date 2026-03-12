@@ -82,10 +82,12 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 
 			// settings function.
 			include PROLER_PATH . 'includes/class/admin/class-proler-settings-page.php';
-			include PROLER_PATH . 'includes/class/admin/class-proler-product-settings.php';
+			include PROLER_PATH . 'includes/class/admin/class-proler-admin-product-settings.php';
 			include PROLER_PATH . 'includes/class/admin/class-proler-admin-settings.php';
 
-			include PROLER_PATH . 'includes/class/class-proler-front-settings.php';
+			include PROLER_PATH . 'includes/class/class-proler-product-settings.php';
+			include PROLER_PATH . 'includes/class/class-proler-price-handler.php';
+
 			include PROLER_PATH . 'includes/class/class-proler-product-handler.php';
 			include PROLER_PATH . 'includes/class/class-proler-cart-handler.php';
 		}

@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Admin Settings Page Class.
  */
-class Proler_Product_Settings {
+class Proler_Admin_Product_Settings {
 
     /**
      * Get role based settings for appropriate scope
@@ -20,13 +20,6 @@ class Proler_Product_Settings {
      * @var array
      */
     private static $data;
-
-    /**
-     * Current settings page slug
-     *
-     * @var string.
-     */
-    private static $page;
 
     public static function init(){
         // woocommerce product data tab, tab and menu.
@@ -155,4 +148,4 @@ class Proler_Product_Settings {
     }
 }
 
-Proler_Product_Settings::init();
+Proler_Admin_Product_Settings::init();

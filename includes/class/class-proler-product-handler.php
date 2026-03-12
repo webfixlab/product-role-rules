@@ -40,7 +40,11 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		 * @param object $product product object.
 		 */
 		public static function get_price_html( $price, $product ) {
-			return Proler_Front_Settings::get_price_html( $price, $product );
+			$pd = Proler_Price_Handler::get_price_html( $product ); // price data.
+			if( isset( $pd['hide'] ) && $pd['hide'] ){
+				return $pd['price'];
+			}
+			return empty( $pd['price'] ) ? $price : $pd['price'];
 		}
 
 		/**
@@ -72,7 +76,7 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 
 			if( 'external' === $product->get_type() ) return;
 
-			$settings = Proler_Front_Settings::get_product_settings( $product );
+			$settings = Proler_Product_Settings::get_settings( $product );
 			if ( empty( $settings ) ) return;
 
 			$hide_price = $settings['hide_price'] ?? '';
@@ -91,24 +95,24 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 
 			if( 'external' === $product->get_type() ) return;
 
-			$settings = Proler_Front_Settings::get_product_settings( $product );
-			if ( empty( $settings ) ) return;
+			$rs = Proler_Product_Settings::get_settings( $product ); // role settings.
+			if ( empty( $rs ) ) return;
 
-			$hide_price = $settings['hide_price'] ?? '';
+			$hide_price = $rs['hide_price'] ?? '';
 			if ( !empty( $hide_price ) && ( $hide_price || '1' === $hide_price ) ){
 				remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 				return;
 			}
 
-			$is_disabled = $settings['discount_text'] ?? '';
+			$is_disabled = $rs['discount_text'] ?? '';
 			if( !empty( $is_disabled ) && ( $is_disabled || '1' === $is_disabled ) ) return;
 
-			$discount = $settings['discount'] ?? '';
-			$type     = $settings['discount_type'] ?? '';
+			$discount = $rs['discount'] ?? '';
+			$type     = $rs['discount_type'] ?? '';
 
-			if( isset( $settings['mad'] ) ){ // maximum available discount.
-				$discount = 0 !== $settings['mad']['dis'] ? $settings['mad']['dis'] : $discount;
-				$type     = $settings['mad']['per'] ? 'percent' : 'fixed';
+			if( isset( $rs['mad'] ) ){ // maximum available discount.
+				$discount = 0 !== $rs['mad']['dis'] ? $rs['mad']['dis'] : $discount;
+				$type     = false !== strpos( $rs['mad']['type'], 'percent' ) ? 'percent' : 'fixed';
 			}
 
 			if( empty( $discount ) ) return;
@@ -137,7 +141,7 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		public static function is_on_sale( $on_sale, $product ) {
 			if( 'external' === $product->get_type() ) return $on_sale;
 			
-			$settings = Proler_Front_Settings::get_product_settings( $product );
+			$settings = Proler_Product_Settings::get_settings( $product );
 			if ( empty( $settings ) || ! isset( $settings ) ) {
 				return $on_sale;
 			}
@@ -157,7 +161,7 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		 * @param object $product product object.
 		 */
 		public static function archive_page_cart_btn( $button, $product ) {
-			$settings = Proler_Front_Settings::get_product_settings( $product );
+			$settings = Proler_Product_Settings::get_settings( $product );
 			if ( empty( $settings ) || ! isset( $settings ) ) {
 				return $button;
 			}

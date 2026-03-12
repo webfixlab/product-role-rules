@@ -2,8 +2,8 @@
 Contributors: aikya, smshahriar, webfixlab
 Tags: role based pricing, dynamic pricing, wholesale pricing, prices by user role, hide price, woocommerce
 Requires at least: 4.9
-Tested up to: 6.8.3
-Stable tag: 4.2.0
+Tested up to: 6.9.1
+Stable tag: 5.0.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -18,25 +18,30 @@ Role Based Pricing is a truly lightweight and simple yet powerful plugin without
 
 **FEATURES**
 
-* NEW! **Block themes support**
-* Custom themes and plugins supported
+* NEW! Discounts by multiple categories
 * Dynamic pricing for different user roles and non-registered visitors
-* Filter discount by product category and type
+* Global and product specific settings available (except variations)
+* Discount by product type
 * Simple, variable and grouped products support
 * Hide price or display curstom text instead of price
 * Automatic add to cart button hide if the price is hidden
 * Add new user roles
+* **Block themes support**
+* Custom themes like Avada, Astra, Bricks, Divi supported
+* Translation ready: you can translate the plugin using Loco Translate, TranslatePress plugins
 
 **SEE THE DEMO**
 
 https://www.youtube.com/watch?v=xytsfBndYoA
 
 **PRO**
-* NEW! Flash sale notice based on schedule
-* NEW! Improved discount tiers view
-* **Purchase limit** - set minimum and maximum cart quantity limit
-* **Discount tiers** - set ranges of discount based on quantity and product total
-* **Schedule based discount** - set discount based on time
+* **Purchase limit** - set **minimum and maximum quantity** limit
+* **Discount tiers** - discount range based on quantity and product total
+* **Schedule based discount** - set discount for a specific time
+* Delete custom user roles
+* Additional settings to control cart
+* Flash sale notice based on schedule
+* Improved discount tiers view
 * Cart quantity limit warning notice
 * Dynamically remove items from the cart if price is hidden - **[Get PRO](https://webfixlab.com/plugins/role-based-pricing-woocommerce/)**
 
@@ -72,3 +77,25 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 4. Discount settings
 5. Manage custom roles
 6. Discount tiers and purchase limits (Pro)
+
+== Changelog ==
+
+= 8.0.0 2026-02-18 =
+
+**Product Role Rules**
+
+* Update - New price class added
+* Update - Price functions on both product and cart handler
+* Fix - Discounted variable price not working correctly
+
+= 4.0.0 2026-02-18 =
+
+**Product Role Rules Premium**
+
+* Update - AJAX quantity limit notice added
+* Update - New quantity limit class added
+* Update - New sale notice class added
+* Fix    - Discount tiers apply to all products
+* Update - Reduced discount tier table and list width
+* Update - Removed discount tier bullet SVG icon
+* Update - Only showing minimum value of a discount tier

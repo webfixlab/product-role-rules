@@ -40,7 +40,21 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
 		public static function cart_item_price( $price_html, $cart_item, $cart_item_key ) {
-			return Proler_Front_Settings::get_price_html( $price_html, $cart_item['data'] );
+			$pd = Proler_Price_Handler::get_price_html( $cart_item['data'] ); // price data.
+			if( isset( $pd['hide'] ) && $pd['hide'] ){
+				self::remove_add_to_cart(); // price is hidden.
+				return $pd['price'];
+			}
+			return empty( $pd['price'] ) ? $price_html : $pd['price'];
+		}
+		/**
+		 * Remove add to cart button from product page
+		 */
+		public static function remove_add_to_cart(){
+			remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
+			remove_action( 'woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30 );
+			remove_action( 'woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30 );
+			remove_action( 'woocommerce_external_add_to_cart', 'woocommerce_external_add_to_cart', 30 );
 		}
 
 		/**
@@ -55,7 +69,17 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
 		 */
 		public static function cart_item_subtotal( $subtotal, $cart_item, $cart_item_key ) {
-			return Proler_Front_Settings::get_cart_item_total_price_html( $subtotal, $cart_item, $cart_item_key );
+			$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
+			if( $pd['hide'] ){
+				return $pd['prices'];
+			}
+
+			if( empty( $pd['prices'] ) ){
+				return $subtotal;
+			}
+
+			$item_price = !empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
+			return wc_price( $item_price * $cart_item['quantity'] );
 		}
 
 		/**
@@ -76,30 +100,30 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 
 			// $removed_items = false;
 			foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
-				$item_price = Proler_Front_Settings::get_product_price( $cart_item['data'] );
-				
-				if( -1 === $item_price ){
+				$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
+				if( $pd['hide'] ){
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
-				}elseif( empty( $item_price ) ){
+				}elseif( empty( $pd['prices'] ) ){
 					continue;
 				}
 
+				$item_price = !empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
 				$cart_item['data']->set_price( $item_price );
 			}
 		}
 
 		public static function before_minicart(){
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-				$item_price = Proler_Front_Settings::get_product_price( $cart_item['data'] );
-				
-				if( -1 === $item_price ){
+				$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
+				if( $pd['hide'] ){
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
-				}elseif( empty( $item_price ) ){
+				}elseif( empty( $pd['prices'] ) ){
 					continue;
 				}
 
+				$item_price = !empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
 				$cart_item['data']->set_price( $item_price );
 			}
 		}
