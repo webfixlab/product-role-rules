@@ -14,26 +14,32 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 	 */
 	class Proler_Role_Settings {
 
-        /**
-         * Get role based settings for appropriate scope
-         *
-         * @var array
-         */
-        private static $data;
+		/**
+		 * Get role based settings for appropriate scope
+		 *
+		 * @var array
+		 */
+		private static $data;
 
-        public static function set_data(){
-            global $post;
+		/**
+		 * Prepare sata to process role settings class
+		 */
+		public static function set_data() {
+			global $post;
 
-            self::$data = isset( $post->ID ) && !empty( $post->ID ) ? get_post_meta( $post->ID, 'proler_data', true ) : get_option( 'proler_role_table' );
-        }
-        
-        public static function saved_role_settings() {
-            self::set_data();
+			self::$data = isset( $post->ID ) && ! empty( $post->ID ) ? get_post_meta( $post->ID, 'proler_data', true ) : get_option( 'proler_role_table' );
+		}
+
+		/**
+		 * Display all saved role setting
+		 */
+		public static function saved_role_settings() {
+			self::set_data();
 
 			if ( empty( self::$data ) || ! isset( self::$data['roles'] ) ) {
 				return;
 			}
-			
+
 			foreach ( self::$data['roles'] as $role => $rd ) {
 				?>
 				<div class="mpcdp_settings_toggle pr-item">
@@ -42,11 +48,25 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 				<?php
 			}
 		}
-        public static function role_settings_item( $role = '', $rd = [] ){
-            self::role_settings_head( $role, $rd );
-            self::role_settings_details( $rd );
-        }
-        public static function role_settings_head( $role = '', $rd = array() ) {
+
+		/**
+		 * Display role sttings item
+		 *
+		 * @param string $role User role.
+		 * @param array  $rd   Role settings data.
+		 */
+		public static function role_settings_item( $role = '', $rd = array() ) {
+			self::role_settings_head( $role, $rd );
+			self::role_settings_details( $rd );
+		}
+
+		/**
+		 * Display role sttings header
+		 *
+		 * @param string $role User role.
+		 * @param array  $rd   Role settings data.
+		 */
+		public static function role_settings_head( $role = '', $rd = array() ) {
 			$checked = isset( $rd['pr_enable'] ) && '1' === $rd['pr_enable'] ? 'on' : 'off';
 			if ( empty( $rd ) ) {
 				$checked = 'on';
@@ -66,7 +86,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 								esc_html__( 'On', 'product-role-rules' ),
 								$checked,
 								array(
-									'key'      => 'pr_enable'
+									'key' => 'pr_enable',
 								)
 							);
 						?>
@@ -87,7 +107,13 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 			</div>
 			<?php
 		}
-        public static function role_settings_overview( $rd ) {
+
+		/**
+		 * Display role sttings summery overview
+		 *
+		 * @param array $rd Role settings data.
+		 */
+		public static function role_settings_overview( $rd ) {
 			if ( ! isset( $rd['pr_enable'] ) || ( isset( $rd['pr_enable'] ) && '1' !== $rd['pr_enable'] ) ) {
 				return ''; // if no settings exists or it's disabled, skip.
 			}
@@ -98,28 +124,45 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 
 			return '';
 		}
-        public static function roles_select( $selected ) {
+
+		/**
+		 * Display all roles dropdown
+		 *
+		 * @param string $selected Selected role.
+		 */
+		public static function roles_select( $selected ) {
 			global $wp_roles;
 
-			$roles = $wp_roles->get_names();
+			$roles            = $wp_roles->get_names();
 			$roles['visitor'] = __( 'Unregistered user', 'product-role-rules' );
 			asort( $roles ); // sort the roles in title ascending order.
-            ?>
-            <select name="proler_roles" class="proler-roles">
-                <option value=""><?php echo esc_html__( 'Choose a role', 'product-role-rules' ); ?></option>
-                <?php
-                    foreach( $roles as $role => $name ) {
-                        echo sprintf( '<option value="%s" %s>%s</option>',
-                            esc_attr( $role ),
-                            !empty( $selected ) && $role === $selected ? 'selected' : '',
-                            esc_html( $name )
-                        );
-                    }
-                ?>
-            </select>
-            <?php
+			?>
+			<select name="proler_roles" class="proler-roles">
+				<option value=""><?php echo esc_html__( 'Choose a role', 'product-role-rules' ); ?></option>
+				<?php
+				foreach ( $roles as $role => $name ) {
+					printf(
+						'<option value="%s" %s>%s</option>',
+						esc_attr( $role ),
+						! empty( $selected ) && $role === $selected ? 'selected' : '',
+						esc_html( $name )
+					);
+				}
+				?>
+			</select>
+			<?php
 		}
-        public static function switch_box( $on, $off, $value, $field ) {
+
+		/**
+		 * Display checkbox switch box
+		 *
+		 * @param string $on    Switch on text.
+		 * @param string $off   Switch off text.
+		 * @param string $value Saved value.
+		 * @param array  $field Field data.
+		 * @return void
+		 */
+		public static function switch_box( $on, $off, $value, $field ) {
 			$checked = ! empty( $value ) && ( 'on' === $value || true === $value ) ? 'on' : 'off';
 			?>
 			<div class="switch-box-wrap">
@@ -142,10 +185,14 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 					<?php echo 'on' === $checked ? 'checked' : ''; ?>>
 			</div>
 			<?php
-
 		}
 
-        public static function role_settings_details( $rd = array() ) {
+		/**
+		 * Display role sttings details
+		 *
+		 * @param array $rd Role settings data.
+		 */
+		public static function role_settings_details( $rd = array() ) {
 			global $proler__;
 
 			$discount_type = isset( $rd['discount_type'] ) ? $rd['discount_type'] : '';
@@ -170,7 +217,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 									__( 'Yes', 'product-role-rules' ),
 									$checked,
 									array(
-										'key'      => 'hide_price'
+										'key' => 'hide_price',
 									)
 								);
 							?>
@@ -259,7 +306,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 									esc_html__( 'Yes', 'product-role-rules' ),
 									$checked,
 									array(
-										'key' => 'discount_text'
+										'key' => 'discount_text',
 									)
 								);
 							?>
@@ -286,7 +333,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 									array(
 										'key'   => 'hide_regular_price',
 										'class' => $pro_class,
-										'label' => __( 'Hide Regular Price', 'product-role-rules' )
+										'label' => __( 'Hide Regular Price', 'product-role-rules' ),
 									)
 								);
 							?>
@@ -306,7 +353,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 					<div class="mpcdp_row discount-ranges-main">
 						<div class="col-md-12">
 							<div class="discount-range-wrap">
-								<?php self::saved_discount_ranges( $rd['ranges'] ?? [] ); ?>
+								<?php self::saved_discount_ranges( $rd['ranges'] ?? array() ); ?>
 							</div>
 							<div class="mpcdp_row discount-range-demo">
 								<?php self::discount_range_row(); ?>
@@ -332,13 +379,11 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							<select name="additional_discount_display" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo esc_html__( 'Discount Tier View', 'product-role-rules' ); ?>">
 								<?php
 									$ads = array(
-										// 'table_max' => __( 'Table - show both min and max range', 'product-role-rules' ),
 										'table' => __( 'Table', 'product-role-rules' ),
-										// 'tag_max'   => __( 'List - show both min and max', 'product-role-rules' ),
-										'list'   => __( 'List', 'product-role-rules' ),
+										'list'  => __( 'List', 'product-role-rules' ),
 									);
 
-									foreach( $ads as $val => $label ){
+									foreach ( $ads as $val => $label ) {
 										printf(
 											'<option value="%s" %s>%s</option>',
 											esc_attr( $val ),
@@ -346,7 +391,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 											esc_html( $label )
 										);
 									}
-								?>
+									?>
 							</select>
 						</div>
 					</div>
@@ -383,10 +428,10 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 									$options = array(
 										'none'     => __( 'Choose a type', 'product-role-rules' ),
 										'simple'   => __( 'Simple', 'product-role-rules' ),
-										'variable' => __( 'Variable', 'product-role-rules' )
+										'variable' => __( 'Variable', 'product-role-rules' ),
 									);
 
-									foreach( $options as $val => $label ){
+									foreach ( $options as $val => $label ) {
 										printf(
 											'<option value="%s" %s>%s</option>',
 											'none' === $val ? '' : esc_attr( $val ),
@@ -394,15 +439,15 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 											esc_html( $label )
 										);
 									}
-								?>
+									?>
 							</select>
 						</div>
 					</div>
 					<?php endif; ?>
 					<?php
-						$now = current_time( 'mysql' );
+						$now    = current_time( 'mysql' );
 						$now_dt = new \DateTime( $now );
-						$now = $now_dt->format( 'Y-m-d h:i A' );
+						$now    = $now_dt->format( 'Y-m-d h:i A' );
 
 						$date_from = $rd['schedule']['start'] ?? '';
 						$date_to   = $rd['schedule']['end'] ?? '';
@@ -414,11 +459,16 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							<?php endif; ?>
 							<div class="mpcdp_option_label"><?php echo esc_html__( 'Schedule', 'product-role-rules' ); ?></div>
 							<div class="settings-desc-txt proler-time-widget">
-								<?php echo sprintf(
-									// translators: %1$s is the current time.
-									__( 'Set the time frame when this rule will be active. Current time: <span class="proler-server-time">%1$s</span>', 'product-role-rules' ),
-									esc_html( $now )
-								); ?>
+								<?php
+								echo wp_kses_post(
+									sprintf(
+										// translators: %1$s is the current time.
+										__( 'Set the time frame when this rule will be active. Current time: <span class="proler-server-time">%1$s</span>', 'product-role-rules' ),
+										esc_html( $now )
+									)
+								);
+								?>
+								?>
 								<?php do_action( 'proler_schedule_info', $date_from, $date_to ); ?>
 							</div>
 						</div>
@@ -428,7 +478,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							<?php
 								printf(
 									'<input type="datetime-local" name="schedule_start" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									self::get_server_time( $date_from ),
+									esc_html( self::get_server_time( $date_from ) ),
 									esc_html__( 'Starting Date and Time', 'product-role-rules' ),
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule Start', 'product-role-rules' )
@@ -439,7 +489,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							<?php
 								printf(
 									'<input type="datetime-local" name="schedule_end" value="%s" placeholder="%s" class="%s" data-protxt="%s">',
-									self::get_server_time( $date_to ),
+									esc_html( self::get_server_time( $date_to ) ),
 									esc_html__( 'Ending Date and Time', 'product-role-rules' ),
 									esc_attr( $pro_class ),
 									esc_html__( 'Schedule End', 'product-role-rules' )
@@ -451,16 +501,28 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 			</div>
 			<?php
 		}
-        public static function saved_discount_ranges( $data ){
-            if ( !isset( $data ) || empty( $data ) ) {
-                return;
-            }
 
-            foreach ( $data as $item ) {
-                self::discount_range_row( $item );
-            }
-        }
-        public static function discount_range_row( $data = array() ) {
+		/**
+		 * Display all discount ranges
+		 *
+		 * @param array $data Saved discount ranges rows data.
+		 */
+		public static function saved_discount_ranges( $data ) {
+			if ( ! isset( $data ) || empty( $data ) ) {
+				return;
+			}
+
+			foreach ( $data as $item ) {
+				self::discount_range_row( $item );
+			}
+		}
+
+		/**
+		 * Display discount ranges row items
+		 *
+		 * @param array $data Disounct range row data.
+		 */
+		public static function discount_range_row( $data = array() ) {
 			global $proler__;
 
 			$pro_class = isset( $proler__['has_pro'] ) && ! $proler__['has_pro'] ? 'wfl-nopro' : '';
@@ -493,12 +555,21 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 			</div>
 			<?php
 		}
-        public static function get_server_time( $date ){
-			if( empty( $date ) ) return '';
+
+		/**
+		 * Get servre time from given one
+		 *
+		 * @param string $date DateTime string.
+		 * @return string
+		 */
+		public static function get_server_time( $date ) {
+			if ( empty( $date ) ) {
+				return '';
+			}
 
 			$datetime = new \DateTime( $date, new \DateTimeZone( 'UTC' ) );
 			$datetime->setTimezone( wp_timezone() );
 			return $datetime->format( 'Y-m-d H:i:s' );
-        }
+		}
 	}
 }

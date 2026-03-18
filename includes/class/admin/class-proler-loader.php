@@ -17,7 +17,7 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 		/**
 		 * Plugin loader hooks
 		 */
-		public function init_hooks(){
+		public function init_hooks() {
 			if ( ! $this->has_woocommerce() ) {
 				return;
 			}
@@ -27,23 +27,29 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			add_action( 'init', array( $this, 'init' ) );
 			add_action( 'before_woocommerce_init', array( $this, 'enable_wc_hpos' ) );
 		}
-		
-		public function init(){
+
+		/**
+		 * Initialize plugin loader
+		 */
+		public function init() {
 			load_plugin_textdomain( 'product-role-rules', false, plugin_basename( dirname( PROLER ) ) . '/languages' );
-			
+
 			$this->includes();
-			
+
 			do_action( 'proler_admin_change_pro_state' );
-			
+
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 			add_action( 'admin_head', array( $this, 'admin_menu_style' ) );
-			
+
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue' ) ); // load admin scripts.
 			add_action( 'wp_enqueue_scripts', array( $this, 'front_enqueue' ) ); // load frontend scripts.
 		}
 
+		/**
+		 * Check if plugin requirements are met
+		 */
 		private function has_woocommerce() {
-			if ( !function_exists( 'is_plugin_active' ) ) {
+			if ( ! function_exists( 'is_plugin_active' ) ) {
 				include_once ABSPATH . 'wp-admin/includes/plugin.php';
 			}
 
@@ -53,17 +59,19 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			$has_base_plugin = is_plugin_active( $base_plugin );
 			$has_plugin      = is_plugin_active( $plugin );
 
-			if( !$has_plugin ) return false;
+			if ( ! $has_plugin ) {
+				return false;
+			}
 
 			// Deactive MPC if it's active while WooCommerce isn't.
-			if ( $has_plugin && !$has_base_plugin ) {
+			if ( $has_plugin && ! $has_base_plugin ) {
 				deactivate_plugins( $plugin );
 				add_action( 'admin_notices', array( 'Proler_Notice', 'wc_missing_notice' ) );
 			}
 
 			return $has_plugin && $has_base_plugin;
 		}
-		
+
 		/**
 		 * WC high speed order-storage hook
 		 */
@@ -73,7 +81,10 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			}
 		}
 
-		private function includes(){
+		/**
+		 * Include plugin files
+		 */
+		private function includes() {
 			include PROLER_PATH . 'includes/core-data.php';
 
 			// helper functions and templates.
@@ -187,13 +198,13 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 
 			wp_localize_script( 'proler-admin-script', 'proler', $this->get_admin_local_data() );
 		}
-		
+
 		/**
 		 * Get admin localized data
 		 *
 		 * @return array
 		 */
-		public function get_admin_local_data(){
+		public function get_admin_local_data() {
 			global $proler__;
 
 			$local_data = array(
@@ -216,7 +227,7 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 		 */
 		public function front_enqueue() {
 			global $post;
-			if( empty( $post ) || ! isset( $post->ID ) ){
+			if ( empty( $post ) || ! isset( $post->ID ) ) {
 				return;
 			}
 
@@ -228,7 +239,7 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			wp_enqueue_script( 'proler-frontend-script' );
 
 			// localize frontend data.
-            wp_localize_script( 'proler-frontend-script', 'proler', $this->get_frontend_local_data() );
+			wp_localize_script( 'proler-frontend-script', 'proler', $this->get_frontend_local_data() );
 		}
 
 		/**
@@ -236,12 +247,12 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_frontend_local_data(){
+		public function get_frontend_local_data() {
 			global $post;
-			
+
 			$data = array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
-				'product' => $post->ID
+				'product' => $post->ID,
 			);
 
 			return $data;
@@ -258,7 +269,9 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			$screen     = get_current_screen();
 			$current_id = urldecode( $screen->id ); // current screen id.
 
-			if( in_array( $current_id, $proler__['screen'], true ) ) return true;
+			if ( in_array( $current_id, $proler__['screen'], true ) ) {
+				return true;
+			}
 
 			$partial_match = true;
 			foreach ( $proler__['screen'] as $screen_id ) {

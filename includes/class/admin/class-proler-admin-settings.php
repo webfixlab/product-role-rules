@@ -16,13 +16,10 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 
 		/**
 		 * If we should update global settings.
+		 *
 		 * @var string
 		 */
-		private static $page;
-
-		public function __construct(){
-			self::$page = '';
-		}
+		private static $page = '';
 
 		/**
 		 * Class init hooks
@@ -41,13 +38,13 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
 				return;
 			}
-			
-			$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+
+			$page       = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 			self::$page = 'global';
 
-			if( 'proler-newrole' === $page ){
+			if ( 'proler-newrole' === $page ) {
 				self::add_new_role();
-			}else{
+			} else {
 				self::save_settings();
 			}
 		}
@@ -67,15 +64,15 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			if ( isset( $_POST['proler_product_settings_nonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_product_settings_nonce'] ) ), 'proler_product_settings' ) ) {
 				self::$page = 'product';
 			}
-			
-			if( empty( self::$page ) ){
+
+			if ( empty( self::$page ) ) {
 				return;
 			}
 
 			// General settings data.
-			foreach( $proler__['general_settings'] as $field ){
+			foreach ( $proler__['general_settings'] as $field ) {
 				$key = $field['key'];
-				if( isset( $_POST[ $key ] ) ){
+				if ( isset( $_POST[ $key ] ) ) {
 					$value = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
 					update_option( $key, $value );
 				}
@@ -155,13 +152,13 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 
 				if ( isset( $rd['schedule'] ) ) {
 					$rdt[ $role ]['schedule'] = array();
-					if ( isset( $rd['schedule']['start'] ) && !empty($rd['schedule']['start']) ) {
+					if ( isset( $rd['schedule']['start'] ) && ! empty( $rd['schedule']['start'] ) ) {
 						// Convert time to UTC referenced by wp timezone.
 						$datetime = new \DateTime( self::input_sanitize( $rd['schedule']['start'] ), wp_timezone() );
 						$datetime->setTimezone( new \DateTimeZone( 'UTC' ) );
 						$rdt[ $role ]['schedule']['start'] = $datetime->format( 'Y-m-d H:i:s' );
 					}
-					if ( isset( $rd['schedule']['end'] ) && !empty($rd['schedule']['end']) ) {
+					if ( isset( $rd['schedule']['end'] ) && ! empty( $rd['schedule']['end'] ) ) {
 						$datetime = new \DateTime( self::input_sanitize( $rd['schedule']['end'] ), wp_timezone() );
 						$datetime->setTimezone( new \DateTimeZone( 'UTC' ) );
 						$rdt[ $role ]['schedule']['end'] = $datetime->format( 'Y-m-d H:i:s' );
@@ -210,7 +207,7 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 
 			if ( ! empty( $post_id ) ) {
 				update_post_meta( $post_id, 'proler_data', $data );
-			} else if ( 'global' === self::$page ) {
+			} elseif ( 'global' === self::$page ) {
 				update_option( 'proler_role_table', $data );
 			}
 		}
@@ -245,7 +242,7 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			}
 
 			// all available user roles.
-			$all_roles = array_keys( wp_roles()->roles );
+			$all_roles   = array_keys( wp_roles()->roles );
 			$all_roles[] = 'visitor';
 
 			$str = '<strong>' . esc_html( $new_role ) . '</strong>';
@@ -271,7 +268,7 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 
 				$proler__['user_role_msg'] = array(
 					'cls' => 'saved',
-					'msg' => $msg
+					'msg' => $msg,
 				);
 
 				return;
@@ -287,7 +284,7 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 
 			$proler__['user_role_msg'] = array(
 				'cls' => 'warning',
-				'msg' => $msg
+				'msg' => $msg,
 			);
 		}
 

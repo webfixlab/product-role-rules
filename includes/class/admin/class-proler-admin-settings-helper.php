@@ -13,16 +13,16 @@ if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 	 * Role based settings admin class
 	 */
 	class Proler_Admin_Settings_Helper {
-        
-        /**
+
+		/**
 		 * Display settings saved notice
 		 */
-		public static function settings_saved_notice(){
+		public static function settings_saved_notice() {
 			global $proler__;
 
 			// check cached object if delete role notice exists.
 			$cache = get_transient( 'proler_admin_cache' );
-			if( false !== $cache && isset( $cache['msg'] ) && !empty( $cache['msg'] ) ){
+			if ( false !== $cache && isset( $cache['msg'] ) && ! empty( $cache['msg'] ) ) {
 				self::update_notice( $cache['msg'], $cache['cls'] );
 
 				delete_transient( 'proler_admin_cache' );
@@ -30,7 +30,7 @@ if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 			}
 
 			// add new role notice.
-			if( isset( $proler__['user_role_msg'] ) && !empty( $proler__['user_role_msg'] ) ){
+			if ( isset( $proler__['user_role_msg'] ) && ! empty( $proler__['user_role_msg'] ) ) {
 				self::update_notice( $proler__['user_role_msg']['msg'], $proler__['user_role_msg']['cls'] );
 				return;
 			}
@@ -47,22 +47,27 @@ if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 		}
 
 		/**
-		 * Summary of update_notice
-		 * @param mixed $msg
-		 * @param mixed $icon
-		 * @return void
+		 * Display settings update notice
+		 *
+		 * @param string $msg  Notice message.
+		 * @param string $icon Notice icon.
 		 */
-		public static function update_notice( $msg, $icon ){
+		public static function update_notice( $msg, $icon ) {
 			?>
-			<div class="proler-saved-settings <?php echo esc_attr( $icon ); ?>">
+			<div class="proler-saved-settings">
 				<span class="dashicons dashicons-<?php echo esc_attr( $icon ); ?>"></span>
 				<?php echo wp_kses_post( $msg ); ?>
 			</div>
 			<?php
 		}
 
-        public static function pro_info_msg( $page ){
-			if( 'new-role' !== $page ){
+		/**
+		 * Display pro info message
+		 *
+		 * @param string $page_slug Page slug.
+		 */
+		public static function pro_info_msg( $page_slug ) {
+			if ( 'new-role' !== $page_slug ) {
 				return;
 			}
 			?>
@@ -73,28 +78,40 @@ if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 			<?php
 		}
 
-		public static function display_terms( $taxonomy, $data, $slug ){
+		/**
+		 * Display taxonomy terms from given data
+		 *
+		 * @param string $taxonomy Given taxonomy name.
+		 * @param array  $data     All terms data.
+		 * @param string $slug     Slug to navigate terms data.
+		 */
+		public static function display_terms( $taxonomy, $data, $slug ) {
 			$args = array(
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => false,
 				'orderby'    => 'name',
 				'order'      => 'ASC',
 			);
-			
+
 			$cats = get_terms( $args );
-			if( empty( $cats ) ){
+			if ( empty( $cats ) ) {
 				return;
 			}
-			
-			$values = isset( $data[ $slug ] ) ? $data[ $slug ] : [];
-			$values = !empty( $values ) && !is_array( $values ) ? [ $values ] : [];
-			$values = !empty( $values ) && is_array( $values ) ? array_map( function( $val ){ return (int) $val; }, $values ) : array();
+
+			$values = isset( $data[ $slug ] ) ? $data[ $slug ] : array();
+			$values = ! empty( $values ) && ! is_array( $values ) ? array( $values ) : array();
+			$values = ! empty( $values ) && is_array( $values ) ? array_map(
+				function ( $val ) {
+					return (int) $val;
+				},
+				$values
+			) : array();
 
 			foreach ( $cats as $cat ) {
-				echo sprintf(
+				printf(
 					'<option value="%s" %s>%s</option>',
 					esc_attr( $cat->term_id ),
-					!empty( $values ) && in_array( $cat->term_id, $values, true ) ? 'selected' : '',
+					! empty( $values ) && in_array( $cat->term_id, $values, true ) ? 'selected' : '',
 					esc_attr( $cat->name ),
 				);
 			}
