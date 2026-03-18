@@ -23,7 +23,7 @@ $proler__ = array(
 	),
 	'url'        => array(
 		'free'    => 'https://wordpress.org/plugins/product-role-rules/',
-		'review'  => 'https://wordpress.org/support/plugin/product-role-rules/reviews/?rate=5#new-post',
+		'review'  => 'https://wordpress.org/support/plugin/product-role-rules/reviews/',
 		'support' => 'https://webfixlab.com/contact/',
 		'pro'     => 'https://webfixlab.com/plugins/role-based-pricing-woocommerce/',
 		'wc'      => 'https://wordpress.org/plugins/woocommerce/',

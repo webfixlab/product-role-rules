@@ -13,8 +13,6 @@ if ( ! class_exists( 'Proler_Price_Handler' ) ) {
 
         public static function get_price_html( $product ) {
             $pd = self::get_price_amount( $product );
-			// error_log( 'price html' );
-			// error_log( print_r( $pd, true ) );
 
             return array(
                 'hide'  => $pd['hide'],
@@ -122,9 +120,6 @@ if ( ! class_exists( 'Proler_Price_Handler' ) ) {
 			}
 
 			return !empty( $prices['min'] ) && $prices['min'] === $prices['max'] ? wc_format_sale_price( $prices['max'], $prices['min'] ) : wc_price( $prices['max'] );
-		}
-		private static function price_cache(){
-			// 
 		}
 	}
 }

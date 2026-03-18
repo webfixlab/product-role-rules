@@ -29,7 +29,6 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
 			$cs = !$cs ? [] : $cs;
 
             if( isset( $cs[ $id ] ) && isset( $cs[ $id ][ $role ] ) ) {
-                // error_log( '[' . $role . ':' . $id . ':cached]' );
                 return $cs[ $id ][ $role ];
             }
 
@@ -63,8 +62,6 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
                 $cs[ $id ] = [];
             }
             $cs[ $id ][ $role ] = $rs;
-            // error_log( '[' . $role . ':' . $id . ':update]' );
-            // error_log( print_r( $rs, true ) );
             set_transient( 'proler_settings', $cs, MINUTE_IN_SECONDS );
 
 			return $rs;

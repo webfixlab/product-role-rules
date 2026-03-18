@@ -2,7 +2,7 @@
 Contributors: aikya, smshahriar, webfixlab
 Tags: role based pricing, dynamic pricing, wholesale pricing, prices by user role, hide price, woocommerce
 Requires at least: 4.9
-Tested up to: 6.9.1
+Tested up to: 6.9.4
 Stable tag: 5.0.0
 Requires PHP: 7.0
 License: GPLv2 or later
@@ -80,7 +80,7 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 
 == Changelog ==
 
-= 8.0.0 2026-02-18 =
+= 5.0.0 2026-03-18 =
 
 **Product Role Rules**
 
@@ -88,7 +88,7 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 * Update - Price functions on both product and cart handler
 * Fix - Discounted variable price not working correctly
 
-= 4.0.0 2026-02-18 =
+= 4.0.0 2026-03-18 =
 
 **Product Role Rules Premium**
 
