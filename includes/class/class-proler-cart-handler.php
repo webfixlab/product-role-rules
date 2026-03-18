@@ -41,7 +41,7 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		 */
 		public static function cart_item_price( $price_html, $cart_item, $cart_item_key ) {
 			$pd = Proler_Price_Handler::get_price_html( $cart_item['data'] ); // price data.
-			if( isset( $pd['hide'] ) && $pd['hide'] ){
+			if ( isset( $pd['hide'] ) && $pd['hide'] ) {
 				self::remove_add_to_cart(); // price is hidden.
 				return $pd['price'];
 			}
@@ -50,7 +50,7 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		/**
 		 * Remove add to cart button from product page
 		 */
-		public static function remove_add_to_cart(){
+		public static function remove_add_to_cart() {
 			remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
 			remove_action( 'woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30 );
 			remove_action( 'woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30 );
@@ -60,7 +60,7 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		/**
 		 * Modifies the cart total price HTML.
 		 *
-		 * @param string $price_html    HTML of the cart item price.
+		 * @param string $subtotal      HTML of the cart item price.
 		 * @param mixed  $cart_item     Cart item data.
 		 * @param string $cart_item_key Cart item key.
 		 *
@@ -70,15 +70,15 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		 */
 		public static function cart_item_subtotal( $subtotal, $cart_item, $cart_item_key ) {
 			$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
-			if( $pd['hide'] ){
+			if ( $pd['hide'] ) {
 				return $pd['prices'];
 			}
 
-			if( empty( $pd['prices'] ) ){
+			if ( empty( $pd['prices'] ) ) {
 				return $subtotal;
 			}
 
-			$item_price = !empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
+			$item_price = ! empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
 			return wc_price( $item_price * $cart_item['quantity'] );
 		}
 
@@ -98,51 +98,58 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 				return;
 			}
 
-			// $removed_items = false;
 			foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
 				$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
-				if( $pd['hide'] ){
+				if ( $pd['hide'] ) {
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
-				}elseif( empty( $pd['prices'] ) ){
+				} elseif ( empty( $pd['prices'] ) ) {
 					continue;
 				}
 
-				$item_price = !empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
+				$item_price = ! empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
 				$cart_item['data']->set_price( $item_price );
 			}
 		}
 
-		public static function before_minicart(){
+		/**
+		 * Update product price and update minicart
+		 */
+		public static function before_minicart() {
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 				$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
-				if( $pd['hide'] ){
+				if ( $pd['hide'] ) {
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
-				}elseif( empty( $pd['prices'] ) ){
+				} elseif ( empty( $pd['prices'] ) ) {
 					continue;
 				}
 
-				$item_price = !empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
+				$item_price = ! empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
 				$cart_item['data']->set_price( $item_price );
 			}
 		}
 
-		public static function proler_minicart(){
+		/**
+		 * Update price and return minicart for AJAX minicart request
+		 */
+		public static function proler_minicart() {
 			ob_start();
 			WC()->cart->calculate_totals();
 			woocommerce_mini_cart();
 			$mini_cart = ob_get_clean();
 
-			return wp_send_json( array(
-				'fragments' => apply_filters(
-					'woocommerce_add_to_cart_fragments',
-					array(
-						'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
-					)
-				),
-				'cart_hash' => WC()->cart->get_cart_hash(),
-			) );
+			return wp_send_json(
+				array(
+					'fragments' => apply_filters(
+						'woocommerce_add_to_cart_fragments',
+						array(
+							'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+						)
+					),
+					'cart_hash' => WC()->cart->get_cart_hash(),
+				)
+			);
 		}
 	}
 }
