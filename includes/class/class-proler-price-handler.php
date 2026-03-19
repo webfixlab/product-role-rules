@@ -21,11 +21,11 @@ if ( ! class_exists( 'Proler_Price_Handler' ) ) {
 		 * @return array
 		 */
 		public static function get_price_html( $product ) {
-			$pd = self::get_price_amount( $product );
+			$pd = self::get_price_amount( $product ); // price data.
 
 			return array(
 				'hide'  => $pd['hide'],
-				'price' => $pd['hide'] ? $pd['prices'] : self::price_html( $pd['prices'] ),
+				'price' => $pd['hide'] ? $pd['prices'] : self::price_html( $pd['prices'], $pd['settings'] ),
 			);
 		}
 
@@ -40,16 +40,18 @@ if ( ! class_exists( 'Proler_Price_Handler' ) ) {
 
 			if ( 'external' === $product->get_type() ) {
 				return array(
-					'hide'   => false,
-					'prices' => '',
+					'hide'     => false,
+					'settings' => array(),
+					'prices'   => '',
 				);
 			}
 
 			$rs = Proler_Product_Settings::get_settings( $product ); // role settings.
 			if ( ! $rs || empty( $rs ) ) {
 				return array(
-					'hide'   => false,
-					'prices' => '',
+					'hide'     => false,
+					'settings' => $rs,
+					'prices'   => '',
 				);
 			}
 
@@ -57,8 +59,9 @@ if ( ! class_exists( 'Proler_Price_Handler' ) ) {
 			if ( ! empty( $is_hidden ) && ( $is_hidden || '1' === $is_hidden ) ) {
 				$txt = $rs['hide_txt'] ?? __( 'Price hidden', 'product-role-rules' );
 				return array(
-					'hide'   => true,
-					'prices' => $txt,
+					'hide'     => true,
+					'settings' => $rs,
+					'prices'   => $txt,
 				);
 			}
 
@@ -69,8 +72,9 @@ if ( ! class_exists( 'Proler_Price_Handler' ) ) {
 			$prices = self::add_discount( $prices, $rs );
 
 			return array(
-				'hide'   => false,
-				'prices' => $prices,
+				'hide'     => false,
+				'settings' => $rs,
+				'prices'   => $prices,
 			);
 		}
 
@@ -150,17 +154,23 @@ if ( ! class_exists( 'Proler_Price_Handler' ) ) {
 		 * Get product price html from discounted prices.
 		 *
 		 * @param array $prices Product prices.
+		 * @param array $rs     Role settings.
 		 * @return string
 		 */
-		private static function price_html( $prices ) {
+		private static function price_html( $prices, $rs ) {
 			if ( empty( $prices ) ) {
 				return '';
 			}
+
 			if ( $prices['has_range'] ) {
 				return empty( $prices['min'] ) || $prices['min'] === $prices['max'] ? wc_price( $prices['max'] ) : wc_price( $prices['min'] ) . ' - ' . wc_price( $prices['max'] );
 			}
 
-			return ! empty( $prices['min'] ) && $prices['min'] === $prices['max'] ? wc_format_sale_price( $prices['max'], $prices['min'] ) : wc_price( $prices['max'] );
+			$hide_regular = $rs['hide_regular_price'] ?? '';
+
+			return empty( $prices['min'] ) || $prices['min'] === $prices['max'] ? wc_price( $prices['max'] ) : (
+				'1' === $hide_regular || $hide_regular ? wc_price( $prices['min'] ) : wc_format_sale_price( $prices['max'], $prices['min'] )
+			);
 		}
 	}
 }
