@@ -468,7 +468,6 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 									)
 								);
 								?>
-								?>
 								<?php do_action( 'proler_schedule_info', $date_from, $date_to ); ?>
 							</div>
 						</div>

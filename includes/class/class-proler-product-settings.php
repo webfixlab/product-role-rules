@@ -65,7 +65,7 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
 				$cs[ $id ] = array();
 			}
 			$cs[ $id ][ $role ] = $rs;
-			set_transient( 'proler_settings', $cs, MINUTE_IN_SECONDS );
+			set_transient( 'proler_settings', $cs, 3 );
 
 			return $rs;
 		}
