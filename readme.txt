@@ -86,12 +86,14 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 
 * Update - New price class added
 * Update - Price functions on both product and cart handler
-* Fix - Discounted variable price not working correctly
+* Fix    - Discounted variable price not working correctly
 
 = 4.0.0 2026-03-18 =
 
 **Product Role Rules Premium**
 
+* Update - New loader spinner added to process cart actions.
+* Fix    - Cart item remove event not triggering issue.
 * Update - AJAX quantity limit notice added
 * Update - New quantity limit class added
 * Update - New sale notice class added
