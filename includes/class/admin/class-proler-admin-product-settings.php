@@ -135,6 +135,7 @@ class Proler_Admin_Product_Settings {
 		);
 
 		$saved_type = ! empty( self::$data ) && isset( self::$data['proler_stype'] ) ? self::$data['proler_stype'] : 'default';
+
 		foreach ( $types as $slug => $label ) {
 			$checked = $slug === $saved_type ? 'checked' : '';
 			?>

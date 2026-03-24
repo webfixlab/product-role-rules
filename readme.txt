@@ -92,7 +92,7 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 
 **Product Role Rules Premium**
 
-* Update - New loader spinner added to process cart actions.
+* Update - New loading spinner added to process cart actions.
 * Fix    - Cart item remove event not triggering issue.
 * Update - AJAX quantity limit notice added
 * Update - New quantity limit class added

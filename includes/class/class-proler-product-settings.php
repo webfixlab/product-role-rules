@@ -23,7 +23,7 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
 			if ( ! is_object( $product ) ) {
 				return array();
 			}
-
+			
 			$id   = $product->is_type( 'variation' ) ? $product->get_parent_id() : $product->get_id();
 			$role = self::user_roles()[0];
 
@@ -37,7 +37,7 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
 
 			// get settings.
 			$rs = self::product_settings( $id, $role );
-			if ( empty( $rs ) || -1 !== $rs ) { // empty or not disabled.
+			if ( empty( $rs ) || ( ! is_array( $rs ) && -1 !== $rs ) ) { // empty or not disabled.
 				$rs = self::global_settings( $role );
 			}
 
@@ -62,7 +62,9 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
 
 			// update cache.
 			if ( ! isset( $cs[ $id ] ) ) {
-				$cs[ $id ] = array();
+				$cs[ $id ] = array(
+					$role => array()
+				);
 			}
 			$cs[ $id ][ $role ] = $rs;
 			set_transient( 'proler_settings', $cs, 2 );
@@ -94,17 +96,18 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
 		 */
 		private static function product_settings( $id, $role ) {
 			$ps = get_post_meta( $id, 'proler_data', true );
+
 			if ( empty( $ps ) ) {
 				return array();
 			}
 
-			$stype = $ps['proler_style'] ?? ''; // settings type.
+			$stype = $ps['proler_stype'] ?? ''; // settings type.
 			if ( 'disabled' === $stype ) { // settings disabled.
 				return -1;
 			} elseif ( 'proler-based' !== $stype ) { // set to use global settings.
 				return array();
 			}
-
+			
 			// role specific product settings.
 			return isset( $ps['roles'] ) && isset( $ps['roles'][ $role ] ) && ! empty( $ps['roles'][ $role ] ) ? $ps['roles'][ $role ] : array();
 		}

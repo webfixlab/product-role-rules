@@ -84,14 +84,13 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 				return;
 			}
 
-			error_log( '[settings]' . $data );
-
 			if( 0 === $post_id ){
 				update_option( 'proler_role_table', json_decode( $data, true ) ); // Is it necessary? Couldn't I use this when retrieving it?
 				return;
 			}
 
-			if ( isset( $post->post_type ) && 'product' !== $post->post_type ) {
+			if ( isset( $post->post_type ) && 'product' === $post->post_type ) {
+				error_log( '[saved product settings to ' . $post_id . ']' );
 				update_post_meta( $post_id, 'proler_data', json_decode( $data, true ) ); // Is it necessary? Couldn't I use this when retrieving it?
 			}
 		}

@@ -272,6 +272,7 @@
 			$( 'input[name="proler_data"]' ).val(
 				JSON.stringify(
 					{
+						proler_stype: this.$tab,
 						roles: this.$settings
 					}
 				)
