@@ -211,7 +211,7 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 
 			$local_data = array(
 				'ajaxurl'         => admin_url( 'admin-ajax.php' ),
-				'has_pro'         => $proler__['has_pro'],
+				'has_pro'         => isset( $proler__['has_pro'] ) ? $proler__['has_pro'] : false,
 				'nonce'           => wp_create_nonce( 'ajax-nonce' ),
 				'cat_nonce'       => wp_create_nonce( 'category_nonce' ),
 				'settings_page'   => admin_url( 'admin.php?page=proler-settings' ),

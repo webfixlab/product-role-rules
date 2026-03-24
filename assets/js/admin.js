@@ -2,319 +2,284 @@
  * uses admin localized variable | proler
  */
 
-;(function($, window, document) {
+(function($, window, document) {
     class roleBasedPricing{
 		constructor(){
-            $(document).ready(() => {
-                this.init();
-            });
+			this.$tab         = ''; // product tab.
+			this.$settings    = {}; // all role based settigns.
+			this.$role        = ''; // current role.
+			this.$roleSection = ''; // current role section wrapper.
+			this.$fields      = { // all settings fields.
+				pr_enable:                   'checkbox',
+				hide_price :                 'checkbox',
+				hide_txt :                   'textarea',
+				discount:                    'text',
+				discount_type:               'select',
+				discount_text :              'checkbox',
+				min_qty:                     'text',
+				max_qty:                     'text',
+				category:                    'selectbox',
+				hide_regular_price:          'checkbox',
+				product_type:                'select',
+				ranges:                      '',
+				additional_discount_display: 'select',
+				schedule:                    '',
+			};
+            $( document ).ready(
+				() =>
+				{
+					this.eventTriggers();
+					this.init();
+					console.log(proler);
+				}
+			);
         }
 		init(){
-			$('body').on('click input', '.wfl-nopro', function(e) {
-                e.preventDefault();
-                if ($(this).is('select')) {
-                    $(this).blur();
-                }
+			// initialize a blank discount range.
+			$( '.discount-ranges-main' ).each(
+				( _, el ) =>
+				{
+					const discountRanges = $( el ).find( '.discount-range-wrap .mpcdp_row' );
+					if( ! discountRanges || 0 === discountRanges.length ){
+						$( el ).find( '.add-new-disrange' ).trigger( 'click' );
+					}
+				}
+			);
 
-                const txt = $(this).attr('data-protxt');
-                $('.proler-popup-wrap span.marker').text(txt);
-                $('.proler-popup-wrap').show();
-            });
-			$('body').on('click', '.popup-close', function(){
-				$('.proler-popup-wrap').hide();
-			});
+			// initialize product tab section content.
+			const productOptionTab = $( 'input[name="proler_stype"]' );
+			if( productOptionTab && 'undefined' !== productOptionTab ){
+				const tab = $( 'input[name="proler_stype"]:checked' ).val();
+				$( '.role-settings-content' ).toggle( 'proler-based' === tab );
+			}
+
+			// initialize a blank role options section.
+			const roleOptions = $( '.pr-settings' ).find( '.pr-item' );
+			if( ! roleOptions || 0 === roleOptions.length ) {
+				$( '.mpc-opt-sc-btn.add-new' ).trigger( 'click' );
+			}
+
+			// expand first role settings section.
+			$( $( '.pr-settings' ).find( '.pr-item' )[0] ).find( '.proler-arrow img' ).trigger( 'click' );
+		}
+		eventTriggers(){
+			// content.
+			$( document ).on(
+				'click',
+				'input[name="proler_stype"]',
+				e => this.navigateTabContent( $( e.currentTarget ).val() )
+			);
+			$( '.pr-settings' ).on(
+				'click',
+				'.proler-arrow img',
+				( e ) => this.collapseContent( $( e.currentTarget ) )
+			);
+			$( '.mpc-opt-sc-btn.add-new' ).on(
+				'click',
+				() => this.addNewRoleSection()
+			);
+			$( '.pr-settings' ).on(
+				'click',
+				'.proler-delete',
+				( e ) => this.removeRoleSection( $( e.currentTarget ) )
+			);
+			$( 'body' ).on(
+				'click',
+				'.add-new-disrange',
+				( e ) => $( e.currentTarget ).closest( '.discount-ranges-main' ).find( '.discount-range-wrap' ).append( $( '.discount-range-demo' ).html() )
+			);
+
+			// fields.
+			$( '.pr-settings' ).on(
+				'click',
+				'.switch-point',
+				e => this.switchBoxHandler( $( e.currentTarget ) )
+			);
+
+			// form submit.
+			$( 'input[type="submit"],button.mpcdp_submit_button' ).on( // single product update/save button clicked event.
+				'click',
+				( e ) =>
+				{
+					if ( ! this.isFormSubmitReady() ){
+						e.preventDefault();
+					}
+				}
+			);
+
+			// others.
+			$( 'body' ).on(
+				'click input',
+				'.wfl-nopro',
+				( e ) =>
+				{
+					e.preventDefault();
+					this.popupHandler( $( e.currentTarget ) )
+				}
+            );
+			$( 'body' ).on(
+				'click',
+				'.popup-close',
+				e => $( '.proler-popup-wrap' ).hide()
+			);
+			$( '.proler-delete-role' ).on( // delete user role.
+				'click',
+				( e ) =>
+				{
+					e.preventDefault(); // delete.
+					if ( proler.has_pro && ! confirm( proler.delete_role_msg ) ) {
+						e.preventDefault();
+					}
+				}
+			);
+		}
+		navigateTabContent(tab){
+			$( '.role-settings-content' ).toggle( 'proler-based' === tab );
+		}
+		collapseContent( item ){
+			const optionContent = item.closest( '.pr-item' ).find( '.proler-option-content' );
+			item.attr( 'src', optionContent.is( ':visible' ) ? proler.right_arrow : proler.down_arrow );
+			optionContent.toggle( 'slow' );
+		}
+		addNewRoleSection(){
+			const html = $( '.demo-item' ).html();
+			$( '.pr-settings' ).append( `<div class="mpcdp_settings_toggle pr-item">${html}</div>` );
+		}
+		removeRoleSection( item ){
+			const sectionWrap = item.closest( '.pr-item' );
+			sectionWrap.hide(
+				'slow',
+				() => sectionWrap.remove()
+			);
+		}
+
+		isFormSubmitReady(){
+			this.$settings = {}; // empty settings state.
+
+			if( 'undefined' !== typeof $( 'input[name="proler_stype"]' ) ){
+				this.$tab = $( 'input[name="proler_stype"]:checked' ).val();
+			}
+
+			$( '.pr-settings .pr-item' ).each(
+				( _, el ) => this.setRoleSettings( $( el ) )
+			);
+
+			console.log('[settings]', this.$settings);
+			this.setSettingsFieldValue();
+			return ! $.isEmptyObject( this.$settings );
+		}
+		setRoleSettings( roleSection ){
+			this.$role = roleSection.find( 'select.proler-roles option:selected' ).val();
+			if ( ! this.$role || 0 === this.$role.length ) {
+				return;
+			}
+
+			this.$roleSection = roleSection;
+			
+			Object.keys( this.$fields ).forEach(
+				key => this.setFieldValue( key )
+			);
+		}
+		setFieldValue( key ){
+			if ( ! this.$settings[ this.$role ] ) {
+				this.$settings[ this.$role ] = {};
+			}
+			
+			if( 'ranges' === key ) {
+				this.getDiscountTiers();
+				return;
+			} else if ( 'schedule' === key ) {
+				this.getSchedule();
+				return;
+			}
+
+			const type = this.$fields[ key ];
+
+			let value = null;
+			if( 'selectbox' === type ) {
+				value = this.$roleSection.find( `select[name="${key}[]"]` ).val();
+			} else if( 'checkbox' === type ) {
+				value = this.$roleSection.find( `input[name="${key}"]` ).is( ':checked' );
+			} else if ( 'select' === type ) {
+				value = this.$roleSection.find( `select[name="${key}"] option:selected` ).val();
+			} else if ( 'text' === type ) {
+				value = this.$roleSection.find( `input[name="${key}"]` ).val();
+			}
+
+			if ( 'undefined' !== typeof value ) {
+				this.$settings[ this.$role ][ key ] = value;
+			}
+		}
+		getSchedule(){
+			if ( ! this.$settings[ this.$role ][ 'schedule' ] ) {
+				this.$settings[ this.$role ][ 'schedule' ] = {};
+			}
+
+			const start = this.$roleSection.find( 'input[name="schedule_start"]' ).val();
+			const end   = this.$roleSection.find( 'input[name="schedule_end"]' ).val();
+
+			if ( 'undefined' !== typeof start ) {
+				this.$settings[ this.$role ]['schedule_start'] = start;
+			}
+			if ( 'undefined' !== typeof end ) {
+				this.$settings[ this.$role ]['schedule_end'] = end;
+			}
+		}
+		getDiscountTiers(){
+			this.$roleSection.find( '.discount-range-wrap .disrange-item' ).each(
+				( _, el ) => this.addTierItem( $( el ) )
+			);
+		}
+		addTierItem( el ){
+			const min = el.find( 'input[name="min_value"]' ).val();
+			const max = el.find( 'input[name="max_value"]' ).val();
+			if ( ( ! min || 0 === min.length ) && ( !max || 0 === max.length ) ){
+				return;
+			}
+			
+			if ( ! this.$settings[ this.$role ]['ranges'] ) {
+				this.$settings[ this.$role ]['ranges'] = [];
+			}
+			this.$settings[ this.$role ]['ranges'].push(
+				{
+					discount_type: el.find( 'select[name="discount_type"] option:selected' ).val(),
+					min: min,
+					max: max,
+					discount: el.find( 'input[name="discount_value"]' ).val()
+				}
+			);
+		}
+		setSettingsFieldValue(){
+			if ( $.isEmptyObject( this.$settings ) ) {
+				return true;
+			}
+			$( 'input[name="proler_data"]' ).val( JSON.stringify(
+				{
+					roles: this.$settings
+				}
+			).replaceAll( '\"', '\"' ) );
+		}
+
+		switchBoxHandler( btn ){
+			btn.closest( '.switch-box' ).find( '.switch-point' ).each(
+				( _, el ) => $( el ).toggleClass( 'active' )
+			);
+
+			const checkBox = btn.closest( '.switch-box-wrap' ).find( 'input[type="checkbox"]' );
+			if ( checkBox && checkBox.length > 0 ) {
+				checkBox.trigger( 'click' );
+				btn.closest( '.col-md-6' ).find( '.prdis-msg' ).toggle( ! checkBox.is( ':checked' ) );
+			}
+		}
+
+		popupHandler( item ){
+			if ( item.is( 'select' ) ) {
+				item.blur();
+			}
+
+			$( '.proler-popup-wrap span.marker').text( item.attr( 'data-protxt' ) );
+			$( '.proler-popup-wrap').show();
 		}
 	}
 	new roleBasedPricing();
 })(jQuery, window, document);
-
-(function ($) {
-	$( document ).ready( function () {
-		$( 'body' ).on( 'click', 'input[name="proler_stype"]', function () {
-			var v = $( this ).val();
-
-			if ( v == 'default' ) {
-				$( '.role-settings-content' ).hide( 'slow' );
-			} else if ( v == 'proler-based' ) {
-				$( '.role-settings-content' ).show( 'slow' );
-			} else {
-				$( '.role-settings-content' ).hide( 'slow' );
-			}
-		});
-
-		// convert json to string - for using as input field value
-		function json_populate_input( field, data ){
-			var s = JSON.stringify( data );
-			s     = s.replaceAll( '\"', '\"' );
-			$( 'input[name="' + field + '"]' ).val( s );
-		}
-		function validate_input( val ){
-			val = val.replaceAll( '\'', ':*snglqt*:' ).replaceAll( '\"', ':*dblqt*:' );
-			return val;
-		}
-		function get_range_data( row ){
-			var data = [];
-			row.find( '.discount-range-wrap .disrange-item' ).each(function(){
-				var row = $(this);
-				var range  = {};
-				if ( row.find( 'select[name="discount_type"]' ).val().length > 0 ) {
-					range['discount_type'] = validate_input( row.find( 'select[name="discount_type"]' ).val() );
-				}
-				if ( row.find( 'input[name="min_value"]' ).val().length > 0 ) {
-					range['min'] = validate_input( row.find( 'input[name="min_value"]' ).val() );
-				}
-				if ( row.find( 'input[name="max_value"]' ).val().length > 0 ) {
-					range['max'] = validate_input( row.find( 'input[name="max_value"]' ).val() );
-				}
-				if ( row.find( 'input[name="discount_value"]' ).val().length > 0 ) {
-					range['discount'] = validate_input( row.find( 'input[name="discount_value"]' ).val() );
-				}
-				if( range['min'] || range['max'] ){
-					data.push( range );
-				}
-			});
-
-			return data;
-		}
-		function get_role_settings( row ){
-			var data = {};
-
-			if ( row.find( 'input[name="discount_text"]' ).is( ':checked' ) ) {
-				data[ 'discount_text' ] = true;
-			}
-
-			if ( row.find( 'input[name="hide_price"]' ).is( ':checked' ) ) {
-				data[ 'hide_price' ] = true;
-			}
-
-			if ( row.find( 'textarea[name="hide_txt"]' ).val().length > 0 ) {
-				data[ 'hide_txt'] = encodeURIComponent( row.find( 'textarea[name="hide_txt"]' ).val() );
-			}
-
-			var discount = '';
-			if ( row.find( 'input[name="discount"]' ).val().length > 0 ) {
-				discount = validate_input( row.find( 'input[name="discount"]' ).val() );
-			}
-			data['discount'] = discount;
-
-			var discount_type = '';
-			if ( row.find( 'select[name="discount_type"]' ).val().length > 0 ) {
-				discount_type = validate_input( row.find( 'select[name="discount_type"]' ).val() );
-			}
-			data['discount_type'] = discount_type;
-
-			var min_qty = '';
-			if ( row.find( 'input[name="min_qty"]' ).val().length > 0 && proler.has_pro == true ) {
-				min_qty = validate_input( row.find( 'input[name="min_qty"]' ).val() );
-			}
-			data['min_qty'] = min_qty;
-
-			var max_qty = '';
-			if ( row.find( 'input[name="max_qty"]' ).val().length > 0 && proler.has_pro == true ) {
-				max_qty = validate_input( row.find( 'input[name="max_qty"]' ).val() );
-			}
-			data['max_qty'] = max_qty;
-
-			if ( row.find( 'input[name="pr_enable"]' ).is( ':checked' ) ) {
-				data[ 'pr_enable' ] = true;
-			}
-
-			let catWrap = row.find('select[name="category[]"]');
-			if(catWrap){
-				data['category'] = catWrap.val();
-			}
-
-			var product_type = '';
-			if ( row.find( 'select[name="product_type"]' ).val() && row.find( 'select[name="product_type"]' ).val().length > 0 ) {
-				product_type = validate_input( row.find( 'select[name="product_type"]' ).val() );
-			}
-			data['product_type'] = product_type;
-			
-			const start = row.find('input[name="schedule_start"]').val();
-			const end   = row.find('input[name="schedule_end"]').val();
-			if(start.length > 0 || end.length > 0){
-				data['schedule'] = {};
-			}
-			if(start.length > 0){
-				data['schedule']['start'] = validate_input(start);
-			}
-			if(end.length > 0){
-				data['schedule']['end'] = validate_input(end);
-			}
-			
-			data['hide_regular_price'] = false;
-			if ( row.find( 'input[name="hide_regular_price"]' ).is( ':checked' ) ) {
-				data[ 'hide_regular_price' ] = true;
-			}
-
-			data['ranges'] = get_range_data( row );
-
-			var additional_discount_display = '';
-			if ( row.find( 'select[name="additional_discount_display"]' ).val().length > 0 ) {
-				additional_discount_display = validate_input( row.find( 'select[name="additional_discount_display"]' ).val() );
-			}
-			data['additional_discount_display'] = additional_discount_display;
-
-			return data;
-		}
-		function get_settings(){
-			var data = {};
-
-			if ( typeof $( 'input[name="proler_stype"]:checked' ).val() != 'undefined' ) {
-				data['proler_stype'] = $( 'input[name="proler_stype"]:checked' ).val();
-			}
-
-			data['roles'] = {};
-
-			// per role data
-			$( '.pr-settings' ).find( '.pr-item' ).each( function () {
-				var role = $( this ).find( '.proler-roles' ).val();
-				if ( role.length > 0 ) {
-					data['roles'][role] = get_role_settings( $( this ) );
-				}
-			});
-
-			return data;
-		}
-		function set_input_val( data ){
-			if ( typeof data == 'object' && ! $.isEmptyObject( data ) ) {
-				json_populate_input( 'proler_data', data );
-			} else {
-				$( 'input[name="proler_data"]' ).val( '' );
-			}
-		}
-
-		function show_diable_msg( btn ){
-			const checkBox = btn.closest('.switch-box-wrap').find('input[type="checkbox"]');
-			const status   = btn.closest('.col-md-6').find('.prdis-msg');
-			
-			if(!status || !checkBox) return;
-
-			if(!checkBox.is(':checked') && status.is(':hidden')) status.show();
-			else if(checkBox.is(':checked') && !status.is(':hidden')) status.hide();
-		}
-		function switchBoxHandler( btn ){
-			var wrap = btn.closest( '.switch-box' );
-
-			wrap.find( '.switch-point' ).each( function () {
-				$(this).toggleClass('active');
-			});
-
-			// find closest wrapper to extract actualy checkbox field.
-			const checkBox = btn.closest( '.switch-box-wrap' ).find( 'input[type="checkbox"]' );
-			if(checkBox) checkBox.trigger('click');
-			show_diable_msg( btn );
-		}
-
-
-		function checkRanges(){
-			var allOK = true;
-			$( '.pr-settings' ).find( '.pr-item' ).each( function () {
-				var role = $( this ).find( '.proler-roles' ).val();
-				if ( role.length > 0 ) {
-					var row = $(this);
-					row.find( '.disrange-item' ).each(function(){
-						var min = $(this).find( 'input[name="min_value"]' ).val();
-						var max = $(this).find( 'input[name="max_value"]' ).val();
-						min = min ? parseFloat( min ) : '';
-						max = max ? parseFloat( max ) : '';
-						if( min && max && min > max ){
-							allOK = false;
-							$([document.documentElement, document.body]).animate({
-								scrollTop: $( '.discount-ranges-main' ).offset().top - 100
-							}, 2000);
-
-							alert( 'Range error: Minimum value cannot be more than maximum.' );
-						}
-					});
-				}
-			});
-			return allOK;
-		}
-		
-		$( '.pr-settings' ).on( 'click', '.switch-point', function (e) {
-			switchBoxHandler( $( this ) );
-		});
-
-		$( '.pr-settings' ).on( 'click', '.proler-arrow img', function () {
-			var item = $( this ).closest( '.pr-item' );
-
-			if ( item.find( '.proler-option-content' ).is( ':visible' ) ) {
-				$( this ).attr( 'src', proler.right_arrow );
-			} else {
-				$( this ).attr( 'src', proler.down_arrow );
-			}
-
-			item.find( '.proler-option-content' ).toggle( 'slow' );
-		});
-
-		$( '.pr-settings' ).on( 'click', '.proler-delete', function () {
-			$( this ).closest( '.pr-item' ).hide( 'slow', function () {
-				$( this ).closest( '.pr-item' ).remove();
-			});
-		});
-
-		$( '.mpc-opt-sc-btn.add-new' ).on( 'click', function () {
-			$( '.pr-settings' ).append( '<div class="mpcdp_settings_toggle pr-item">' + $( '.demo-item' ).html() + '</div>' );
-		});
-
-		// init - frontend on load.
-		if ( typeof $( '.pr-settings' ).find( '.pr-item' ) == 'undefined' || $( '.pr-settings' ).find( '.pr-item' ).length == 0 ) {
-			$( '.mpc-opt-sc-btn.add-new' ).trigger( 'click' );
-		}
-
-		$( 'body' ).on( 'click', '.add-new-disrange', function(){
-			var wrap = $(this).closest( '.discount-ranges-main' );
-			wrap.find( '.discount-range-wrap' ).append( $( '.discount-range-demo' ).html() );
-		});
-
-		// init - frontend on load.
-		$( '.discount-ranges-main' ).each(function(){
-			var discount_ranges = $(this).find( '.discount-range-wrap .mpcdp_row' );
-
-			if ( discount_ranges.length === 0 ) {
-				$(this).find( '.add-new-disrange' ).trigger( 'click' );
-			}
-		});
-
-		$( 'body' ).on( 'click', '.delete-disrange', function(){
-			$(this).closest( '.disrange-item' ).hide( 'slow', function(){
-				$(this).remove();
-			});
-		});
-
-		// init - admin product edit page.
-		if ( typeof $( 'input[name="proler_stype"]:checked' ).val() != 'undefined' ) {
-			var val = $( 'input[name="proler_stype"]:checked' ).val();
-
-			if ( val != 'proler-based' && $( '.role-settings-content' ).is( ':visible' ) ) {
-				$( '.role-settings-content' ).hide();
-			}
-		}
-
-		// delete user role.
-		$( '.proler-delete-role' ).on( 'click', function(e){
-			if(proler.has_pro && !confirm( proler.delete_role_msg ) ){
-				e.preventDefault();
-			}
-		});
-
-		// single product update/save button clicked event
-		$( 'input[type="submit"],button.mpcdp_submit_button' ).on( 'click', function (e) {
-			if( checkRanges() === false ){
-				e.preventDefault();
-			}
-
-			var data = get_settings();
-			set_input_val( data );
-		});
-
-		var expanded = false;
-		$( 'body' ).find( '.pr-item' ).each(function(){
-			if( expanded === false && $(this).find( '.proler-option-content' ).is( ':hidden' ) ){
-				$(this).find( '.proler-arrow img' ).trigger( 'click' );
-				expanded = true;
-			}
-		});
-	});
-})( jQuery );

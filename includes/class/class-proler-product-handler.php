@@ -130,7 +130,7 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			}
 
 			$is_disabled = $rs['discount_text'] ?? '';
-			if ( ! empty( $is_disabled ) && ( $is_disabled || '1' === $is_disabled ) ) {
+			if ( empty( $is_disabled ) || ! $is_disabled || '1' !== $is_disabled ) {
 				return;
 			}
 
