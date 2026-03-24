@@ -7,14 +7,16 @@
     text-align: center;
 }
 .proler-saving {
-    font-size: 13px;
-    padding: 3px 10px;
+    font-size: 16px;
+    padding: 10px 20px;
     display: inline-block;
     margin: 5px auto 20px;
     border: 1px solid;
     border-radius: 25px;
     cursor: default;
-    line-height: 18px;
+    line-height: 20px;
+    background: #7ca54a;
+    color: #fff;
 }
 .proler-saving span{
     font-weight: 600;

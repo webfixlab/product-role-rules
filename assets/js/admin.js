@@ -235,10 +235,10 @@
 			const end   = this.$roleSection.find( 'input[name="schedule_end"]' ).val();
 
 			if ( 'undefined' !== typeof start ) {
-				this.$settings[ this.$role ]['schedule_start'] = start;
+				this.$settings[ this.$role ]['schedule']['start'] = start;
 			}
 			if ( 'undefined' !== typeof end ) {
-				this.$settings[ this.$role ]['schedule_end'] = end;
+				this.$settings[ this.$role ]['schedule']['end'] = end;
 			}
 		}
 		getDiscountTiers(){
