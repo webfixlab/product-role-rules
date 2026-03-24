@@ -141,10 +141,23 @@ if ( ! class_exists( 'Proler_Price_Handler' ) ) {
 			$if_percent = false === strpos( $type, 'percent' ) ? false : true;
 
 			if ( ! empty( $prices['min'] ) ) {
-				$prices['min'] = $if_percent ? ( $prices['min'] - ( $prices['min'] * $discount ) / 100 ) : $prices['min'] - $discount;
+				$min = (float) $prices['min'];
+				$min = $if_percent ? ( $min - ( $min * $discount ) / 100 ) : $min - $discount;
+				$prices['min'] = max( 0, $min );
 			}
-			if ( ! empty( $prices['max'] ) ) {
-				$prices['max'] = $if_percent ? ( $prices['max'] - ( $prices['max'] * $discount ) / 100 ) : $prices['max'] - $discount;
+
+			// change this only when it's for price range.
+			if ( ! empty( $prices['max'] ) && $prices['has_range'] ) {
+				$max = (float) $prices['max'];
+				$max = $if_percent ? ( $max - ( $max * $discount ) / 100 ) : $max - $discount;
+				$prices['max'] = max( 0, $max );
+			}
+
+			// when only one price found and we have discount, apply it and move to min price.
+			if( empty( $prices['min'] ) ){
+				$max = (float) $prices['max'];
+				$max = $if_percent ? ( $max - ( $max * $discount ) / 100 ) : $max - $discount;
+				$prices['min'] = max( 0, $max );
 			}
 
 			return $prices;
