@@ -42,7 +42,7 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
 			}
 
 			// is disabled role settings.
-			if ( isset( $rs['pr_enabled'] ) && '1' !== $rs['pr_enabled'] ) {
+			if ( isset( $rs['pr_enabled'] ) && ( '1' !== $rs['pr_enabled'] || $rs['pr_enabled'] ) ) {
 				$rs = array();
 			}
 

@@ -56,7 +56,7 @@ if ( ! class_exists( 'Proler_Price_Handler' ) ) {
 			}
 
 			$is_hidden = $rs['hide_price'] ?? '';
-			if ( ! empty( $is_hidden ) && ( $is_hidden || '1' === $is_hidden ) ) {
+			if ( $is_hidden || '1' === $is_hidden ) {
 				$txt = $rs['hide_txt'] ?? __( 'Price hidden', 'product-role-rules' );
 				return array(
 					'hide'     => true,

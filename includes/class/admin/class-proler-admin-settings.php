@@ -72,143 +72,27 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 			// General settings data.
 			foreach ( $proler__['general_settings'] as $field ) {
 				$key = $field['key'];
-				if ( isset( $_POST[ $key ] ) ) {
-					$value = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
-					update_option( $key, $value );
+				if ( ! isset( $_POST[ $key ] ) ) {
+					continue;
 				}
+
+				update_option( $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
+			}
+			
+			$data = isset( $_POST['proler_data'] ) ? sanitize_text_field( wp_unslash( $_POST['proler_data'] ) ) : '';
+			if( empty( $data ) ){
+				return;
 			}
 
-			// check if this is role related scope or not, if not leave this place.
-			if ( ! isset( $_POST['proler_data'] ) ) {
+			error_log( '[settings]' . $data );
+
+			if( 0 === $post_id ){
+				update_option( 'proler_role_table', json_decode( $data, true ) ); // Is it necessary? Couldn't I use this when retrieving it?
 				return;
 			}
 
 			if ( isset( $post->post_type ) && 'product' !== $post->post_type ) {
-				return;
-			}
-
-			$d    = wp_kses_post( wp_unslash( $_POST['proler_data'] ) );
-			$d    = str_replace( '\\', '', $d );
-			$data = json_decode( $d, true );
-
-			if ( isset( $data['proler_stype'] ) ) {
-				$data['proler_stype'] = sanitize_text_field( $data['proler_stype'] );
-			}
-
-			if ( ! isset( $data['roles'] ) ) {
-				if ( 0 !== $post_id ) {
-					update_post_meta( $post_id, 'proler_data', $data );
-				} else {
-					update_option( 'proler_role_table', $data );
-				}
-				return;
-			}
-
-			$rdt = array();
-
-			foreach ( $data['roles'] as $role => $rd ) {
-				$role         = self::input_sanitize( $role );
-				$rdt[ $role ] = array();
-
-				// hide this price?
-				if ( isset( $rd['hide_price'] ) ) {
-					$rdt[ $role ]['hide_price'] = sanitize_key( $rd['hide_price'] );
-				}
-
-				if ( isset( $rd['discount_text'] ) ) {
-					$rdt[ $role ]['discount_text'] = sanitize_key( $rd['discount_text'] );
-				}
-
-				// if price is hidden, show this message instead of the blank price.
-				if ( isset( $rd['hide_txt'] ) ) {
-					$val = html_entity_decode( urldecode( $rd['hide_txt'] ) );
-					$val = str_replace( ':*dblqt*:', '"', $val );
-					$val = str_replace( ':*snglqt*:', '\'', $val );
-
-					$rdt[ $role ]['hide_txt'] = $val;
-				}
-
-				if ( isset( $rd['pr_enable'] ) ) {
-					$rdt[ $role ]['pr_enable'] = sanitize_key( $rd['pr_enable'] );
-				}
-
-				if ( isset( $rd['discount'] ) ) {
-					$rdt[ $role ]['discount'] = self::input_sanitize( $rd['discount'] );
-				}
-				if ( isset( $rd['discount_type'] ) ) {
-					$rdt[ $role ]['discount_type'] = self::input_sanitize( $rd['discount_type'] );
-				}
-
-				if ( isset( $rd['min_qty'] ) ) {
-					$rdt[ $role ]['min_qty'] = self::input_sanitize( $rd['min_qty'] );
-				}
-				if ( isset( $rd['max_qty'] ) ) {
-					$rdt[ $role ]['max_qty'] = self::input_sanitize( $rd['max_qty'] );
-				}
-
-				if ( isset( $rd['category'] ) ) {
-					$rdt[ $role ]['category'] = array_map( 'sanitize_text_field', $rd['category'] );
-				}
-
-				if ( isset( $rd['schedule'] ) ) {
-					$rdt[ $role ]['schedule'] = array();
-					if ( isset( $rd['schedule']['start'] ) && ! empty( $rd['schedule']['start'] ) ) {
-						// Convert time to UTC referenced by wp timezone.
-						$datetime = new \DateTime( self::input_sanitize( $rd['schedule']['start'] ), wp_timezone() );
-						$datetime->setTimezone( new \DateTimeZone( 'UTC' ) );
-						$rdt[ $role ]['schedule']['start'] = $datetime->format( 'Y-m-d H:i:s' );
-					}
-					if ( isset( $rd['schedule']['end'] ) && ! empty( $rd['schedule']['end'] ) ) {
-						$datetime = new \DateTime( self::input_sanitize( $rd['schedule']['end'] ), wp_timezone() );
-						$datetime->setTimezone( new \DateTimeZone( 'UTC' ) );
-						$rdt[ $role ]['schedule']['end'] = $datetime->format( 'Y-m-d H:i:s' );
-					}
-				}
-
-				if ( isset( $rd['product_type'] ) ) {
-					$rdt[ $role ]['product_type'] = self::input_sanitize( $rd['product_type'] );
-				}
-
-				if ( isset( $rd['hide_regular_price'] ) ) {
-					$rdt[ $role ]['hide_regular_price'] = sanitize_key( $rd['hide_regular_price'] );
-				}
-
-				if ( isset( $rd['ranges'] ) ) {
-					$rdt[ $role ]['ranges'] = array();
-
-					foreach ( $rd['ranges'] as $item ) {
-						$tmp = array();
-
-						if ( ! isset( $item['discount_type'] ) ) {
-							continue;
-						}
-
-						$tmp['discount_type'] = $item['discount_type'];
-						if ( isset( $item['min'] ) ) {
-							$tmp['min'] = $item['min'];
-						}
-						if ( isset( $item['max'] ) ) {
-							$tmp['max'] = $item['max'];
-						}
-						if ( isset( $item['discount'] ) ) {
-							$tmp['discount'] = $item['discount'];
-						}
-
-						$rdt[ $role ]['ranges'][] = $tmp;
-					}
-				}
-
-				if ( isset( $rd['additional_discount_display'] ) ) {
-					$rdt[ $role ]['additional_discount_display'] = self::input_sanitize( $rd['additional_discount_display'] );
-				}
-			}
-
-			$data['roles'] = $rdt;
-
-			if ( ! empty( $post_id ) ) {
-				update_post_meta( $post_id, 'proler_data', $data );
-			} elseif ( 'global' === self::$page ) {
-				update_option( 'proler_role_table', $data );
+				update_post_meta( $post_id, 'proler_data', json_decode( $data, true ) ); // Is it necessary? Couldn't I use this when retrieving it?
 			}
 		}
 
@@ -286,19 +170,6 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 				'cls' => 'warning',
 				'msg' => $msg,
 			);
-		}
-
-		/**
-		 * Custom input sanitization
-		 *
-		 * @param string $val input value to sanitize.
-		 */
-		public static function input_sanitize( $val ) {
-			$val = str_replace( ':*dblqt*:', '"', $val );
-			$val = str_replace( ':*snglqt*:', '\'', $val );
-			$val = sanitize_text_field( $val );
-
-			return $val;
 		}
 	}
 }

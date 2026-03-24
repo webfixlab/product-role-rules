@@ -1,9 +1,13 @@
 /**
- * uses admin localized variable | proler
+ * Admin JavaScript
+ *
+ * @package    Wordpress
+ * @subpackage Product Role Rules
+ * @since      5.0
  */
 
-(function($, window, document) {
-    class roleBasedPricing{
+(function ($, window, document) {
+	class roleBasedPricing{
 		constructor(){
 			this.$tab         = ''; // product tab.
 			this.$settings    = {}; // all role based settigns.
@@ -25,22 +29,21 @@
 				additional_discount_display: 'select',
 				schedule:                    '',
 			};
-            $( document ).ready(
+			$( document ).ready(
 				() =>
 				{
 					this.eventTriggers();
 					this.init();
-					console.log(proler);
 				}
 			);
-        }
+		}
 		init(){
 			// initialize a blank discount range.
 			$( '.discount-ranges-main' ).each(
 				( _, el ) =>
 				{
 					const discountRanges = $( el ).find( '.discount-range-wrap .mpcdp_row' );
-					if( ! discountRanges || 0 === discountRanges.length ){
+					if ( ! discountRanges || 0 === discountRanges.length ) {
 						$( el ).find( '.add-new-disrange' ).trigger( 'click' );
 					}
 				}
@@ -48,14 +51,14 @@
 
 			// initialize product tab section content.
 			const productOptionTab = $( 'input[name="proler_stype"]' );
-			if( productOptionTab && 'undefined' !== productOptionTab ){
+			if ( productOptionTab && 'undefined' !== productOptionTab ) {
 				const tab = $( 'input[name="proler_stype"]:checked' ).val();
 				$( '.role-settings-content' ).toggle( 'proler-based' === tab );
 			}
 
 			// initialize a blank role options section.
 			const roleOptions = $( '.pr-settings' ).find( '.pr-item' );
-			if( ! roleOptions || 0 === roleOptions.length ) {
+			if ( ! roleOptions || 0 === roleOptions.length ) {
 				$( '.mpc-opt-sc-btn.add-new' ).trigger( 'click' );
 			}
 
@@ -101,7 +104,7 @@
 				'click',
 				( e ) =>
 				{
-					if ( ! this.isFormSubmitReady() ){
+					if ( ! this.isFormSubmitReady() ) {
 						e.preventDefault();
 					}
 				}
@@ -116,7 +119,7 @@
 					e.preventDefault();
 					this.popupHandler( $( e.currentTarget ) )
 				}
-            );
+			);
 			$( 'body' ).on(
 				'click',
 				'.popup-close',
@@ -143,7 +146,7 @@
 		}
 		addNewRoleSection(){
 			const html = $( '.demo-item' ).html();
-			$( '.pr-settings' ).append( `<div class="mpcdp_settings_toggle pr-item">${html}</div>` );
+			$( '.pr-settings' ).append( `<div class="mpcdp_settings_toggle pr-item">${html}</div>` ); // phpcs:ignore.
 		}
 		removeRoleSection( item ){
 			const sectionWrap = item.closest( '.pr-item' );
@@ -156,7 +159,7 @@
 		isFormSubmitReady(){
 			this.$settings = {}; // empty settings state.
 
-			if( 'undefined' !== typeof $( 'input[name="proler_stype"]' ) ){
+			if ( 'undefined' !== typeof $( 'input[name="proler_stype"]' ) ) {
 				this.$tab = $( 'input[name="proler_stype"]:checked' ).val();
 			}
 
@@ -164,7 +167,6 @@
 				( _, el ) => this.setRoleSettings( $( el ) )
 			);
 
-			console.log('[settings]', this.$settings);
 			this.setSettingsFieldValue();
 			return ! $.isEmptyObject( this.$settings );
 		}
@@ -175,7 +177,7 @@
 			}
 
 			this.$roleSection = roleSection;
-			
+
 			Object.keys( this.$fields ).forEach(
 				key => this.setFieldValue( key )
 			);
@@ -184,8 +186,8 @@
 			if ( ! this.$settings[ this.$role ] ) {
 				this.$settings[ this.$role ] = {};
 			}
-			
-			if( 'ranges' === key ) {
+
+			if ( 'ranges' === key ) {
 				this.getDiscountTiers();
 				return;
 			} else if ( 'schedule' === key ) {
@@ -196,14 +198,16 @@
 			const type = this.$fields[ key ];
 
 			let value = null;
-			if( 'selectbox' === type ) {
-				value = this.$roleSection.find( `select[name="${key}[]"]` ).val();
-			} else if( 'checkbox' === type ) {
-				value = this.$roleSection.find( `input[name="${key}"]` ).is( ':checked' );
+			if ( 'selectbox' === type ) {
+				value = this.$roleSection.find( `select[name = "${key}[]"]` ).val();
+			} else if ( 'checkbox' === type ) {
+				value = this.$roleSection.find( `input[name = "${key}"]` ).is( ':checked' );
 			} else if ( 'select' === type ) {
-				value = this.$roleSection.find( `select[name="${key}"] option:selected` ).val();
+				value = this.$roleSection.find( `select[name = "${key}"] option:selected` ).val();
 			} else if ( 'text' === type ) {
-				value = this.$roleSection.find( `input[name="${key}"]` ).val();
+				value = this.$roleSection.find( `input[name = "${key}"]` ).val();
+			} else if ( 'textarea' === type ) {
+				value = this.$roleSection.find( `textarea[name = "${key}"]` ).val();
 			}
 
 			if ( 'undefined' !== typeof value ) {
@@ -233,10 +237,10 @@
 		addTierItem( el ){
 			const min = el.find( 'input[name="min_value"]' ).val();
 			const max = el.find( 'input[name="max_value"]' ).val();
-			if ( ( ! min || 0 === min.length ) && ( !max || 0 === max.length ) ){
+			if ( ( ! min || 0 === min.length ) && ( ! max || 0 === max.length ) ) {
 				return;
 			}
-			
+
 			if ( ! this.$settings[ this.$role ]['ranges'] ) {
 				this.$settings[ this.$role ]['ranges'] = [];
 			}
@@ -253,11 +257,13 @@
 			if ( $.isEmptyObject( this.$settings ) ) {
 				return true;
 			}
-			$( 'input[name="proler_data"]' ).val( JSON.stringify(
-				{
-					roles: this.$settings
-				}
-			).replaceAll( '\"', '\"' ) );
+			$( 'input[name="proler_data"]' ).val(
+				JSON.stringify(
+					{
+						roles: this.$settings
+					}
+				)
+			);
 		}
 
 		switchBoxHandler( btn ){
@@ -277,9 +283,9 @@
 				item.blur();
 			}
 
-			$( '.proler-popup-wrap span.marker').text( item.attr( 'data-protxt' ) );
-			$( '.proler-popup-wrap').show();
+			$( '.proler-popup-wrap span.marker' ).text( item.attr( 'data-protxt' ) );
+			$( '.proler-popup-wrap' ).show();
 		}
 	}
 	new roleBasedPricing();
-})(jQuery, window, document);
+})( jQuery, window, document );

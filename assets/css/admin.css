@@ -390,7 +390,7 @@ span.proler-arrow img {
 	transform: translateX(3px);
 }
 .settings-desc-txt.prdis-msg{
-	color: #fff;
+	color: #ca0000;
 }
 #mpcdp_settings .mpcdp_settings_option_ribbon{
 	display: inline-block;
@@ -547,7 +547,7 @@ textarea.proler-widefat {
 }
 textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 	margin-top: 10px;
-	height: 130px;
+	height: 70px;
 }
 .pr-settings .proler-option-content .discount-ranges-main .mpcdp_row.discount-range-demo{
 	display: none;
@@ -672,10 +672,10 @@ span.delete-disrange:hover{
 	font-weight: bold;
 }
 .proler-admin-page-title, .mpcdp_settings_section_title{
-    font-size: 14px;
+    font-size: 19px;
     border-bottom: 1px solid #afafaf;
     font-weight: 600;
-    color: #7f7f7f;
+    color: #696969;
 }
 .mpcdp_settings_section_title{
 	margin: 45px 0 15px;

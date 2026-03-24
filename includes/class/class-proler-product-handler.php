@@ -101,7 +101,7 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			}
 
 			$hide_price = $settings['hide_price'] ?? '';
-			if ( ! empty( $hide_price ) && ( $hide_price || '1' === $hide_price ) ) {
+			if ( $hide_price || '1' === $hide_price ) {
 				return '';
 			}
 
@@ -124,13 +124,13 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			}
 
 			$hide_price = $rs['hide_price'] ?? '';
-			if ( ! empty( $hide_price ) && ( $hide_price || '1' === $hide_price ) ) {
+			if ( $hide_price || '1' === $hide_price ) {
 				remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 				return;
 			}
 
 			$is_disabled = $rs['discount_text'] ?? '';
-			if ( empty( $is_disabled ) || ! $is_disabled || '1' !== $is_disabled ) {
+			if ( $is_disabled || '1' === $is_disabled ) {
 				return;
 			}
 
@@ -179,7 +179,8 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 				return $on_sale;
 			}
 
-			if ( isset( $settings['hide_price'] ) && '1' === $settings['hide_price'] ) {
+			$hide_price = $settings['hide_price'] ?? '';
+			if ( $hide_price || '1' === $hide_price ) {
 				return false;
 			}
 
@@ -200,7 +201,7 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			}
 
 			$hide_price = $settings['hide_price'] ?? '';
-			return ! empty( $hide_price ) && '1' === $hide_price ? '' : $button;
+			return $hide_price || '1' === $hide_price ? '' : $button;
 		}
 	}
 }
