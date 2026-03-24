@@ -91,6 +91,18 @@
 				'.add-new-disrange',
 				( e ) => $( e.currentTarget ).closest( '.discount-ranges-main' ).find( '.discount-range-wrap' ).append( $( '.discount-range-demo' ).html() )
 			);
+			$( 'body' ).on(
+				'click',
+				'.delete-disrange',
+				( e ) =>
+				{
+					const wrap = $( e.currentTarget ).closest( '.disrange-item' );
+					wrap.hide(
+						'slow',
+						() => wrap.remove()
+					);
+				}
+			);
 
 			// fields.
 			$( '.pr-settings' ).on(
