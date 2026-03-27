@@ -27,14 +27,6 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
 			$id   = $product->is_type( 'variation' ) ? $product->get_parent_id() : $product->get_id();
 			$role = self::user_roles()[0];
 
-			// New approach using transients | caching.
-			$cs = get_transient( 'proler_settings' ); // cached settings.
-			$cs = ! $cs ? array() : $cs;
-
-			if ( isset( $cs[ $id ] ) && isset( $cs[ $id ][ $role ] ) ) {
-				return $cs[ $id ][ $role ];
-			}
-
 			// get settings.
 			$rs = self::product_settings( $id, $role );
 			if ( empty( $rs ) || ( ! is_array( $rs ) && -1 !== $rs ) ) { // empty or not disabled.
@@ -58,18 +50,7 @@ if ( ! class_exists( 'Proler_Product_Settings' ) ) {
 			}
 
 			// apply hooks to modify role settings.
-			$rs = apply_filters( 'proler_get_settings', $rs, $product );
-
-			// update cache.
-			if ( ! isset( $cs[ $id ] ) ) {
-				$cs[ $id ] = array(
-					$role => array()
-				);
-			}
-			$cs[ $id ][ $role ] = $rs;
-			set_transient( 'proler_settings', $cs, 2 );
-
-			return $rs;
+			return apply_filters( 'proler_get_settings', $rs, $product );
 		}
 
 		/**

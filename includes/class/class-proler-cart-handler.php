@@ -18,68 +18,12 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 		 * Frontend hooks initialization
 		 */
 		public static function init() {
-			add_filter( 'woocommerce_cart_item_price', array( __CLASS__, 'cart_item_price' ), 10, 3 );
-			add_filter( 'woocommerce_cart_item_subtotal', array( __CLASS__, 'cart_item_subtotal' ), 10, 3 );
-			add_action( 'woocommerce_before_calculate_totals', array( __CLASS__, 'cart_total' ), 10, 1 );
-
 			add_action( 'woocommerce_before_mini_cart', array( __CLASS__, 'before_minicart' ) );
 
 			add_action( 'wp_ajax_proler_minicart', array( __CLASS__, 'proler_minicart' ) );
 			add_action( 'wp_ajax_nopriv_proler_minicart', array( __CLASS__, 'proler_minicart' ) );
-		}
 
-		/**
-		 * Modifies the cart item price HTML.
-		 *
-		 * @param string $price_html    HTML of the cart item price.
-		 * @param mixed  $cart_item     Cart item data.
-		 * @param string $cart_item_key Cart item key.
-		 *
-		 * @return string Modified price HTML.
-		 *
-		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
-		 */
-		public static function cart_item_price( $price_html, $cart_item, $cart_item_key ) {
-			$pd = Proler_Price_Handler::get_price_html( $cart_item['data'] ); // price data.
-			if ( isset( $pd['hide'] ) && $pd['hide'] ) {
-				self::remove_add_to_cart(); // price is hidden.
-				return $pd['price'];
-			}
-			return empty( $pd['price'] ) ? $price_html : $pd['price'];
-		}
-		/**
-		 * Remove add to cart button from product page
-		 */
-		public static function remove_add_to_cart() {
-			remove_action( 'woocommerce_simple_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
-			remove_action( 'woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30 );
-			remove_action( 'woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30 );
-			remove_action( 'woocommerce_external_add_to_cart', 'woocommerce_external_add_to_cart', 30 );
-		}
-
-		/**
-		 * Modifies the cart total price HTML.
-		 *
-		 * @param string $subtotal      HTML of the cart item price.
-		 * @param mixed  $cart_item     Cart item data.
-		 * @param string $cart_item_key Cart item key.
-		 *
-		 * @return string Modified price HTML.
-		 *
-		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
-		 */
-		public static function cart_item_subtotal( $subtotal, $cart_item, $cart_item_key ) {
-			$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
-			if ( $pd['hide'] ) {
-				return $pd['prices'];
-			}
-
-			if ( empty( $pd['prices'] ) ) {
-				return $subtotal;
-			}
-
-			$item_price = ! empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
-			return wc_price( $item_price * $cart_item['quantity'] );
+			add_action( 'woocommerce_check_cart_items', array( __CLASS__, 'check_cart' ), 30 );
 		}
 
 		/**
@@ -100,6 +44,38 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 
 			foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
 				$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
+				// error_log( '[cart total] prices [qty: ' . $cart_item['quantity'] . ' ]' );
+				// error_log( print_r( $pd['prices'], true ) );
+
+				if ( $pd['hide'] ) {
+					WC()->cart->remove_cart_item( $cart_item_key );
+					continue;
+				} elseif ( empty( $pd['prices'] ) ) {
+					continue;
+				}
+
+				$item_price = ! empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
+				// error_log( '[cart total] item price ' . $item_price );
+				$cart_item['data']->set_price( $item_price );
+			}
+		}
+
+		/**
+		 * Check cart items one final time to apply additional discounts
+		 * @return void
+		 */
+		public static function check_cart(){
+			self::update_cart_items();
+		}
+
+		/**
+		 * Update cart items where change price or remove item.
+		 * @return void
+		 */
+		public static function update_cart_items(){
+			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+				$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
+
 				if ( $pd['hide'] ) {
 					WC()->cart->remove_cart_item( $cart_item_key );
 					continue;
@@ -110,24 +86,16 @@ if ( ! class_exists( 'Proler_Cart_Handler' ) ) {
 				$item_price = ! empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
 				$cart_item['data']->set_price( $item_price );
 			}
+
+			// refresh cart again to cover new price changes.
+			WC()->cart->calculate_totals();
 		}
 
 		/**
 		 * Update product price and update minicart
 		 */
 		public static function before_minicart() {
-			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-				$pd = Proler_Price_Handler::get_price_amount( $cart_item['data'] ); // price data.
-				if ( $pd['hide'] ) {
-					WC()->cart->remove_cart_item( $cart_item_key );
-					continue;
-				} elseif ( empty( $pd['prices'] ) ) {
-					continue;
-				}
-
-				$item_price = ! empty( $pd['prices']['min'] ) ? (float) $pd['prices']['min'] : (float) $pd['prices']['max'];
-				$cart_item['data']->set_price( $item_price );
-			}
+			self::update_cart_items();
 		}
 
 		/**

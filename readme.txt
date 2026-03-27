@@ -18,14 +18,15 @@ Role Based Pricing is a truly lightweight and simple yet powerful plugin without
 
 **FEATURES**
 
-* NEW! Discounts by multiple categories
-* Dynamic pricing for different user roles and non-registered visitors
-* Global and product specific settings available (except variations)
+* New! Discount process update
+* Set **custom discount rules** for any user role and **visitors**
+* **Hide price** or **show custom message**
+* Automatic hide **add to cart button** or **remove product**
+* Add **new user role**
+* **Global** and **product** specific settings available
+* Discounts by multiple categories
 * Discount by product type
 * Simple, variable and grouped products support
-* Hide price or display curstom text instead of price
-* Automatic add to cart button hide if the price is hidden
-* Add new user roles
 * **Block themes support**
 * Custom themes like Avada, Astra, Bricks, Divi supported
 * Translation ready: you can translate the plugin using Loco Translate, TranslatePress plugins
@@ -35,6 +36,7 @@ Role Based Pricing is a truly lightweight and simple yet powerful plugin without
 https://www.youtube.com/watch?v=xytsfBndYoA
 
 **PRO**
+
 * **Purchase limit** - set **minimum and maximum quantity** limit
 * **Discount tiers** - discount range based on quantity and product total
 * **Schedule based discount** - set discount for a specific time
@@ -84,16 +86,19 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 
 **Product Role Rules**
 
-* Update - New price class added
-* Update - Price functions on both product and cart handler
-* Fix    - Discounted variable price not working correctly
+* Update - Cart price handler class.
+* Update - Removed settings cache.
+* Update - New price class added.
+* Update - Price functions on both product and cart handler.
+* Fix    - Discounted variable price not working correctly.
 
 = 4.0.0 2026-03-18 =
 
 **Product Role Rules Premium**
 
-* Update - New loading spinner added to process cart actions.
-* Fix    - Cart item remove event not triggering issue.
+* Update - Only product specific settings applying to those products only
+* Update - New loading spinner added to process cart actions
+* Fix    - Cart item remove event not triggering issue
 * Update - AJAX quantity limit notice added
 * Update - New quantity limit class added
 * Update - New sale notice class added
