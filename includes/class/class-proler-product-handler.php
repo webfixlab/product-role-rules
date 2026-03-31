@@ -18,18 +18,54 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		 * Frontend hooks initialization
 		 */
 		public static function init() {
+			// when price is hidden, make it not purchaseable.
+			add_filter( 'woocommerce_is_purchasable', array( __CLASS__, 'product_is_purchaseable' ), 10, 2 );
+
+			// when price is hidden, remove add to cart button and quantity field.
+			add_action( 'woocommerce_single_product_summary', array( __CLASS__, 'cart_form_handler' ), 19 );
+
 			add_filter( 'woocommerce_get_price_html', array( __CLASS__, 'get_price_html' ), 11, 2 );
 
 			add_filter( 'render_block_woocommerce/product-price', array( __CLASS__, 'block_price_template' ), 19, 2 );
 			add_action( 'woocommerce_before_template_part', array( __CLASS__, 'before_price' ), 19, 4 );
 
-			add_filter( 'render_block_woocommerce/product-button', array( __CLASS__, 'block_loop_add_to_cart' ), 10, 2 );
 			if ( ! function_exists( 'wc_get_theme_support' ) || ! current_theme_supports( 'block-templates' ) ) {
 				add_action( 'woocommerce_after_shop_loop_item_title', array( __CLASS__, 'discount_text_loop' ), 11 );
 			}
-
+			
 			add_filter( 'woocommerce_product_is_on_sale', array( __CLASS__, 'is_on_sale' ), 20, 2 );
+			
+			// add to cart button handler.
 			add_filter( 'woocommerce_loop_add_to_cart_link', array( __CLASS__, 'archive_page_cart_btn' ), 10, 2 );
+			add_filter( 'render_block_woocommerce/product-button', array( __CLASS__, 'block_loop_add_to_cart' ), 10, 2 );
+		}
+
+		/**
+		 * Check if product is purchaseable
+		 *
+		 * @param bool   $is_purchasable If the product is purchaseable.
+		 * @param object $product        Product object.
+		 * @return bool
+		 */
+		public static function product_is_purchaseable( $is_purchasable, $product ) {
+			$pd = Proler_Price_Handler::get_price_html( $product ); // price data.
+			return isset( $pd['hide'] ) && $pd['hide'] ? false : $is_purchasable;
+		}
+
+		/**
+		 * Hide add to cart when necessary
+		 *
+		 * @return void
+		 */
+		public static function cart_form_handler() {
+			global $product;
+
+			$pd = Proler_Price_Handler::get_price_html( $product ); // price data.
+			if ( ! isset( $pd['hide'] ) || ! $pd['hide'] ) {
+				return;
+			}
+
+			remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', 20 );
 		}
 
 		/**
@@ -81,34 +117,6 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 		}
 
 		/**
-		 * Add to cart handler for loop pages
-		 *
-		 * @param string $content Block content.
-		 * @param array  $block   Block data.
-		 *
-		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
-		 */
-		public static function block_loop_add_to_cart( $content, $block ) {
-			global $product;
-
-			if ( 'external' === $product->get_type() ) {
-				return;
-			}
-
-			$settings = Proler_Product_Settings::get_settings( $product );
-			if ( empty( $settings ) ) {
-				return;
-			}
-
-			$hide_price = $settings['hide_price'] ?? '';
-			if ( $hide_price || '1' === $hide_price ) {
-				return '';
-			}
-
-			return $content;
-		}
-
-		/**
 		 * Display discount text on shop and archive pages after price
 		 */
 		public static function discount_text_loop() {
@@ -125,7 +133,6 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 
 			$hide_price = $rs['hide_price'] ?? '';
 			if ( $hide_price || '1' === $hide_price ) {
-				remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 				return;
 			}
 
@@ -202,6 +209,34 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 
 			$hide_price = $settings['hide_price'] ?? '';
 			return $hide_price || '1' === $hide_price ? '' : $button;
+		}
+
+		/**
+		 * Add to cart handler for loop pages
+		 *
+		 * @param string $content Block content.
+		 * @param array  $block   Block data.
+		 *
+		 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+		 */
+		public static function block_loop_add_to_cart( $content, $block ) {
+			global $product;
+
+			if ( 'external' === $product->get_type() ) {
+				return;
+			}
+
+			$settings = Proler_Product_Settings::get_settings( $product );
+			if ( empty( $settings ) ) {
+				return;
+			}
+
+			$hide_price = $settings['hide_price'] ?? '';
+			if ( $hide_price || '1' === $hide_price ) {
+				return '';
+			}
+
+			return $content;
 		}
 	}
 }

@@ -88,6 +88,7 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 **Product Role Rules**
 
 * Fix    - Update button not working when editing product issue.
+* Fix    - Add to cart button not removed when price is hidden issue.
 
 = 4.0.1 2026-03-31 =
 
