@@ -3,7 +3,7 @@ Contributors: aikya, smshahriar, webfixlab
 Tags: role based pricing, dynamic pricing, wholesale pricing, prices by user role, hide price, woocommerce
 Requires at least: 4.9
 Tested up to: 6.9.4
-Stable tag: 5.0.0
+Stable tag: 5.0.1
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -29,7 +29,7 @@ Role Based Pricing is a truly lightweight and simple yet powerful plugin without
 * Simple, variable and grouped products support
 * **Block themes support**
 * Custom themes like Avada, Astra, Bricks, Divi supported
-* Translation ready: you can translate the plugin using Loco Translate, TranslatePress plugins
+* **Translation ready** - you can translate the plugin using Loco Translate, TranslatePress plugins
 
 **SEE THE DEMO**
 
@@ -81,6 +81,20 @@ Yes, just send your [request here](https://webfixlab.com/contact/).
 6. Discount tiers and purchase limits (Pro)
 
 == Changelog ==
+
+
+= 5.0.1 2026-03-31 =
+
+**Product Role Rules**
+
+* Fix    - Update button not working when editing product issue.
+
+= 4.0.1 2026-03-31 =
+
+**Product Role Rules Premium**
+
+* Update - Flash sale notice redesign.
+* Fix    - Missing domain name for translating strings.
 
 = 5.0.0 2026-03-18 =
 

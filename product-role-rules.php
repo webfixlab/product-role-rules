@@ -5,7 +5,7 @@
  * Description:          EASY to use and super FAST WooCommerce product role based pricing solution to add different prices for different roles.
  * Author:               WebFix Lab
  * Author URI:           https://webfixlab.com/
- * Version:              5.0.0
+ * Version:              5.0.1
  * Requires at least:    4.9
  * Tested up to:         6.9.4
  * Requires PHP:         7.0
@@ -24,7 +24,7 @@ defined( 'ABSPATH' ) || exit;
 
 // plugin path.
 define( 'PROLER', __FILE__ );
-define( 'PROLER_VER', '5.0.0' );
+define( 'PROLER_VER', '5.0.1' );
 define( 'PROLER_PATH', plugin_dir_path( PROLER ) );
 
 require PROLER_PATH . 'includes/class/admin/class-proler-loader.php';

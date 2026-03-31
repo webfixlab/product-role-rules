@@ -70,7 +70,7 @@ class Proler_Settings_Page {
 		// set a flag in which page the settings is rendering | option page or product level.
 		$proler__['which_page'] = 'option_page';
 		?>
-		<form action="" method="POST">
+		<form id="proler-option-form" action="" method="POST">
 			<div id="mpcdp_settings" class="mpcdp_container">
 				<?php self::get_settings_page_header(); ?>
 				<div class="mpcdp_row">

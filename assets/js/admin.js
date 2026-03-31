@@ -112,14 +112,9 @@
 			);
 
 			// form submit.
-			$( 'input[type="submit"],button.mpcdp_submit_button' ).on( // single product update/save button clicked event.
-				'click',
-				( e ) =>
-				{
-					if ( ! this.isFormSubmitReady() ) {
-						e.preventDefault();
-					}
-				}
+			$( 'form#post, form#proler-option-form' ).on( // single product update/save button clicked event.
+				'submit',
+				( e ) => this.prepareFormSubmit()
 			);
 
 			// others.
@@ -168,7 +163,7 @@
 			);
 		}
 
-		isFormSubmitReady(){
+		prepareFormSubmit(){
 			this.$settings = {}; // empty settings state.
 
 			if ( 'undefined' !== typeof $( 'input[name="proler_stype"]' ) ) {
@@ -180,7 +175,6 @@
 			);
 
 			this.setSettingsFieldValue();
-			return ! $.isEmptyObject( this.$settings );
 		}
 		setRoleSettings( roleSection ){
 			this.$role = roleSection.find( 'select.proler-roles option:selected' ).val();
