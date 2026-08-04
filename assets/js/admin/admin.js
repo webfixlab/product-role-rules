@@ -29,25 +29,19 @@
 				additional_discount_display: 'select',
 				schedule:                    '',
 			};
-			$( document ).ready(
-				() =>
-				{
-					this.eventTriggers();
-					this.init();
-				}
-			);
+			$( document ).ready( () => {
+				this.eventTriggers();
+				this.init();
+			} );
 		}
 		init(){
 			// initialize a blank discount range.
-			$( '.discount-ranges-main' ).each(
-				( _, el ) =>
-				{
-					const discountRanges = $( el ).find( '.discount-range-wrap .mpcdp_row' );
-					if ( ! discountRanges || 0 === discountRanges.length ) {
-						$( el ).find( '.add-new-disrange' ).trigger( 'click' );
-					}
+			$( '.discount-ranges-main' ).each( ( _, el ) => {
+				const discountRanges = $( el ).find( '.discount-range-wrap .disrange-item' );
+				if ( ! discountRanges || 0 === discountRanges.length ) {
+					$( el ).find( '.add-new-disrange' ).trigger( 'click' );
 				}
-			);
+			} );
 
 			// initialize product tab section content.
 			const productOptionTab = $( 'input[name="proler_stype"]' );
@@ -67,81 +61,30 @@
 		}
 		eventTriggers(){
 			// content.
-			$( document ).on(
-				'click',
-				'input[name="proler_stype"]',
-				e => this.navigateTabContent( $( e.currentTarget ).val() )
-			);
-			$( '.pr-settings' ).on(
-				'click',
-				'.proler-arrow img',
-				( e ) => this.collapseContent( $( e.currentTarget ) )
-			);
-			$( '.mpc-opt-sc-btn.add-new' ).on(
-				'click',
-				() => this.addNewRoleSection()
-			);
-			$( '.pr-settings' ).on(
-				'click',
-				'.proler-delete',
-				( e ) => this.removeRoleSection( $( e.currentTarget ) )
-			);
-			$( 'body' ).on(
-				'click',
-				'.add-new-disrange',
-				( e ) => $( e.currentTarget ).closest( '.discount-ranges-main' ).find( '.discount-range-wrap' ).append( $( '.discount-range-demo' ).html() )
-			);
-			$( 'body' ).on(
-				'click',
-				'.delete-disrange',
-				( e ) =>
-				{
-					const wrap = $( e.currentTarget ).closest( '.disrange-item' );
-					wrap.hide(
-						'slow',
-						() => wrap.remove()
-					);
-				}
-			);
+			$( document ).on( 'click', 'input[name="proler_stype"]', e => this.navigateTabContent( $( e.currentTarget ).val() ) );
+			$( '.pr-settings' ).on( 'click', '.proler-arrow img', ( e ) => this.collapseContent( $( e.currentTarget ) ) );
+			$( '.mpc-opt-sc-btn.add-new' ).on( 'click', () => this.addNewRoleSection() );
+			$( '.pr-settings' ).on( 'click', '.proler-delete', ( e ) => this.removeRoleSection( $( e.currentTarget ) ) );
+			$( 'body' ).on( 'click', '.add-new-disrange', ( e ) => $( e.currentTarget ).closest( '.discount-ranges-main' ).find( '.discount-range-wrap' ).append( $( '.discount-range-demo' ).html() ) );
+			$( 'body' ).on( 'click', '.delete-disrange', ( e ) => {
+				const wrap = $( e.currentTarget ).closest( '.disrange-item' );
+				wrap.hide( 'slow', () => wrap.remove() );
+			} );
 
-			// fields.
-			$( '.pr-settings' ).on(
-				'click',
-				'.switch-point',
-				e => this.switchBoxHandler( $( e.currentTarget ) )
-			);
-
-			// form submit.
-			$( 'form#post, form#proler-option-form' ).on( // single product update/save button clicked event.
-				'submit',
-				( e ) => this.prepareFormSubmit()
-			);
-
-			// others.
-			$( 'body' ).on(
-				'click input',
-				'.wfl-nopro',
-				( e ) =>
-				{
+			$( '.pr-settings' ).on( 'click', '.switch-point', e => this.switchBoxHandler( $( e.currentTarget ) ) );
+			$( 'form#post, form#proler-option-form' ).on( 'submit', ( e ) => this.prepareFormSubmit() );
+			$( 'body' ).on( 'click input', '.wfl-nopro', ( e ) => {
+				e.preventDefault();
+				this.popupHandler( $( e.currentTarget ) )
+			} );
+			$( 'body' ).on( 'click', '.popup-close', e => $( '.proler-popup-wrap' ).hide() );
+			
+			$( '.proler-delete-role' ).on( 'click', ( e ) => {
+				e.preventDefault(); // delete.
+				if ( proler.has_pro && ! confirm( proler.delete_role_msg ) ) {
 					e.preventDefault();
-					this.popupHandler( $( e.currentTarget ) )
 				}
-			);
-			$( 'body' ).on(
-				'click',
-				'.popup-close',
-				e => $( '.proler-popup-wrap' ).hide()
-			);
-			$( '.proler-delete-role' ).on( // delete user role.
-				'click',
-				( e ) =>
-				{
-					e.preventDefault(); // delete.
-					if ( proler.has_pro && ! confirm( proler.delete_role_msg ) ) {
-						e.preventDefault();
-					}
-				}
-			);
+			} );
 		}
 		navigateTabContent(tab){
 			$( '.role-settings-content' ).toggle( 'proler-based' === tab );
@@ -157,10 +100,7 @@
 		}
 		removeRoleSection( item ){
 			const sectionWrap = item.closest( '.pr-item' );
-			sectionWrap.hide(
-				'slow',
-				() => sectionWrap.remove()
-			);
+			sectionWrap.hide( 'slow', () => sectionWrap.remove() );
 		}
 
 		prepareFormSubmit(){
@@ -170,9 +110,7 @@
 				this.$tab = $( 'input[name="proler_stype"]:checked' ).val();
 			}
 
-			$( '.pr-settings .pr-item' ).each(
-				( _, el ) => this.setRoleSettings( $( el ) )
-			);
+			$( '.pr-settings .pr-item' ).each( ( _, el ) => this.setRoleSettings( $( el ) ) );
 
 			this.setSettingsFieldValue();
 		}
@@ -250,33 +188,25 @@
 			if ( ! this.$settings[ this.$role ]['ranges'] ) {
 				this.$settings[ this.$role ]['ranges'] = [];
 			}
-			this.$settings[ this.$role ]['ranges'].push(
-				{
-					discount_type: el.find( 'select[name="discount_type"] option:selected' ).val(),
-					min: min,
-					max: max,
-					discount: el.find( 'input[name="discount_value"]' ).val()
-				}
-			);
+			this.$settings[ this.$role ]['ranges'].push( {
+				discount_type: el.find( 'select[name="discount_type"] option:selected' ).val(),
+				min: min,
+				max: max,
+				discount: el.find( 'input[name="discount_value"]' ).val()
+			} );
 		}
 		setSettingsFieldValue(){
 			if ( $.isEmptyObject( this.$settings ) ) {
 				return true;
 			}
-			$( 'input[name="proler_data"]' ).val(
-				JSON.stringify(
-					{
-						proler_stype: this.$tab,
-						roles: this.$settings
-					}
-				)
-			);
+			$( 'input[name="proler_data"]' ).val( JSON.stringify( {
+				proler_stype: this.$tab,
+				roles: this.$settings
+			} ) );
 		}
 
 		switchBoxHandler( btn ){
-			btn.closest( '.switch-box' ).find( '.switch-point' ).each(
-				( _, el ) => $( el ).toggleClass( 'active' )
-			);
+			btn.closest( '.switch-box' ).find( '.switch-point' ).each( ( _, el ) => $( el ).toggleClass( 'active' ) );
 
 			const checkBox = btn.closest( '.switch-box-wrap' ).find( 'input[type="checkbox"]' );
 			if ( checkBox && checkBox.length > 0 ) {

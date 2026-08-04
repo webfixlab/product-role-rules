@@ -325,13 +325,14 @@ span.proler-arrow img {
 	padding: 5px 30px 0 0;
 	color: #b3b0b0;
 	font-size: 13px;
-	transition: transform 0.3s ease-in, color 0.3s ease-out;
 	cursor: default;
+	transform: translateX(0);
 }
 .settings-desc-txt:hover {
 	color: #4a4a4a;
 	font-size: 15px;
 	transform: translateX(3px);
+	transition: color 0.3s ease-in 1s, transform 0.3s ease-in 1s, font-size 0.3s ease-out 1s;
 }
 .settings-desc-txt.prdis-msg{
 	color: #ca0000;
@@ -415,16 +416,14 @@ span.proler-arrow img {
 	padding: 3px 15px;
 	border-radius: 5px;
 	border: 1px solid #dfdfdf;
-	line-height: 36px;
+	min-width: 70px;
+}
+#mpcdp_settings .col-md-6 > select{
+	width: 50%;
 }
 #mpcdp_settings input {
 	padding: 7px 15px;
     border: 1px solid #dfdfdf;
-}
-#mpcdp_settings select, #mpcdp_settings input {
-    width: calc(100% - 3px);
-    max-width: calc(100% - 3px);
-	min-height: 44px;
 }
 
 /* Switch */
@@ -540,7 +539,34 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 .proler-pro-info-row span.dashicons {
 	padding-right: 10px;
 }
-span.delete-disrange {
+.disrange-item {
+	display: grid;
+	grid-template-columns: 1.5fr 1fr 1fr 1fr 40px;
+	gap: 5px;
+	align-items: center;
+	border: 1px solid #cdcdcd;
+	margin-bottom: 20px;
+	padding: 5px;
+	border-radius: 5px;
+	background-color: #dce7e7;
+}
+.disrange-item input, .disrange-item select {
+	width: 100%;
+}
+.disrange-input {
+	position: relative;
+}
+.disrange-input span {
+	position: absolute;
+	right: 9px;
+	top: 12px;
+	color: #b4b4b4;
+	font-size: 13px;
+}
+.disrange-item .dashicons.dashicons-trash.delete-disrange {
+	width: 42px;
+}
+/* span.delete-disrange {
     position: absolute;
     right: 25px;
 	font-size: 20px;
@@ -551,7 +577,7 @@ span.delete-disrange {
 span.proler-delete:hover, span.delete-disrange:hover{
 	color: var(--proler-warning-color);
 	cursor: pointer;
-}
+} */
 span.delete-disrange:hover{
 	transform: scale(1.5);
 }

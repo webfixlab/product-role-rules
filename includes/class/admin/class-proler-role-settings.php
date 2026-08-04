@@ -280,15 +280,11 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 						</div>
 						<div class="col-md-6">
 							<div class="mpcdp_row proler-inline">
-								<div class="col-md-6">
-									<input type="text" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>">
-								</div>
-								<div class="col-md-6">
-									<select name="discount_type">
-										<option value="percent" <?php echo esc_attr( 'percent' === $discount_type ? 'selected' : '' ); ?>>%</option>
-										<option value="price" <?php echo esc_attr( 'price' === $discount_type ? 'selected' : '' ); ?>><?php echo esc_html( get_woocommerce_currency_symbol() ); ?></option>
-									</select>
-								</div>
+								<input type="text" name="discount" value="<?php echo isset( $rd['discount'] ) ? esc_attr( $rd['discount'] ) : ''; ?>">
+								<select name="discount_type">
+									<option value="percent" <?php echo esc_attr( 'percent' === $discount_type ? 'selected' : '' ); ?>>%</option>
+									<option value="price" <?php echo esc_attr( 'price' === $discount_type ? 'selected' : '' ); ?>><?php echo esc_html( get_woocommerce_currency_symbol() ); ?></option>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -356,7 +352,9 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 								<?php self::saved_discount_ranges( $rd['ranges'] ?? array() ); ?>
 							</div>
 							<div class="mpcdp_row discount-range-demo">
-								<?php self::discount_range_row(); ?>
+								<div class="disrange-item">
+									<?php self::discount_range_row(); ?>
+								</div>
 							</div>
 							<div class="mpcdp_row">
 								<div class="col-md-12">
@@ -510,9 +508,12 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 			if ( ! isset( $data ) || empty( $data ) ) {
 				return;
 			}
-
 			foreach ( $data as $item ) {
-				self::discount_range_row( $item );
+				?>
+				<div class="disrange-item">
+					<?php self::discount_range_row( $item ); ?>
+				</div>
+				<?php
 			}
 		}
 
@@ -532,26 +533,33 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 			$max      = isset( $data['max'] ) ? $data['max'] : '';
 			$discount = isset( $data['discount'] ) ? $data['discount'] : '';
 			?>
-			<div class="mpcdp_row disrange-item">
-				<select name="discount_type" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo __( 'Discount tier', 'product-role-rules' ); ?>">
-					<option value="amount_percent" <?php echo 'amount_percent' === $type ? esc_attr( 'selected' ) : ''; ?>>
-						(%) <?php echo __( 'Discount on Total', 'product-role-rules' ); ?>
-					</option>
-					<option value="amount_fixed" <?php echo 'amount_fixed' === $type ? esc_attr( 'selected' ) : ''; ?>>
-						(<?php echo esc_html( $symbol ); ?>) <?php echo __( 'Discount on Total', 'product-role-rules' ); ?>
-					</option>
-					<option value="quantity_percent" <?php echo 'quantity_percent' === $type ? esc_attr( 'selected' ) : ''; ?>>
-						(%) <?php echo __( 'Discount on Quantity', 'product-role-rules' ); ?>
-					</option>
-					<option value="quantity_fixed" <?php echo 'quantity_fixed' === $type ? esc_attr( 'selected' ) : ''; ?>>
-						(<?php echo esc_html( $symbol ); ?>) <?php echo __( 'Discount on Quantity', 'product-role-rules' ); ?>
-					</option>
-				</select>
-				<input type="text" name="min_value" class="<?php echo esc_attr( $pro_class ); ?>" placeholder="<?php echo __( 'Min', 'product-role-rules' ); ?>" value="<?php echo esc_attr( $min ); ?>" data-protxt="<?php echo __( 'Discount tier', 'product-role-rules' ); ?>">
-				<input type="text" name="max_value" class="<?php echo esc_attr( $pro_class ); ?>" placeholder="<?php echo __( 'Max', 'product-role-rules' ); ?>" value="<?php echo esc_attr( $max ); ?>" data-protxt="<?php echo __( 'Discount tier', 'product-role-rules' ); ?>">
-				<input type="text" name="discount_value" class="<?php echo esc_attr( $pro_class ); ?>" placeholder="<?php echo __( 'Discount', 'product-role-rules' ); ?>" value="<?php echo esc_attr( $discount ); ?>" data-protxt="<?php echo __( 'Discount tier', 'product-role-rules' ); ?>">
-				<span class="dashicons dashicons-trash delete-disrange"></span>
+			<select name="discount_type" class="<?php echo esc_attr( $pro_class ); ?>" data-protxt="<?php echo __( 'Discount tier', 'product-role-rules' ); ?>">
+				<option value="amount_percent" <?php echo 'amount_percent' === $type ? esc_attr( 'selected' ) : ''; ?>>
+					<?php echo __( 'Discount on Total', 'product-role-rules' ); ?> - %
+				</option>
+				<option value="amount_fixed" <?php echo 'amount_fixed' === $type ? esc_attr( 'selected' ) : ''; ?>>
+					<?php echo __( 'Discount on Total', 'product-role-rules' ); ?> - <?php echo esc_html( $symbol ); ?>
+				</option>
+				<option value="quantity_percent" <?php echo 'quantity_percent' === $type ? esc_attr( 'selected' ) : ''; ?>>
+					<?php echo __( 'Discount on Quantity', 'product-role-rules' ); ?> - %
+				</option>
+				<option value="quantity_fixed" <?php echo 'quantity_fixed' === $type ? esc_attr( 'selected' ) : ''; ?>>
+					<?php echo __( 'Discount on Quantity', 'product-role-rules' ); ?> - <?php echo esc_html( $symbol ); ?>
+				</option>
+			</select>
+			<div class="disrange-input">
+				<span>Min</span>
+				<input type="text" name="min_value" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo esc_attr( $min ); ?>" data-protxt="<?php echo __( 'Discount tier', 'product-role-rules' ); ?>">
 			</div>
+			<div class="disrange-input">
+				<span>Max</span>
+				<input type="text" name="max_value" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo esc_attr( $max ); ?>" data-protxt="<?php echo __( 'Discount tier', 'product-role-rules' ); ?>">
+			</div>
+			<div class="disrange-input">
+				<span>Discount</span>
+				<input type="text" name="discount_value" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo esc_attr( $discount ); ?>" data-protxt="<?php echo __( 'Discount tier', 'product-role-rules' ); ?>">
+			</div>
+			<span class="dashicons dashicons-trash delete-disrange"></span>
 			<?php
 		}
 
