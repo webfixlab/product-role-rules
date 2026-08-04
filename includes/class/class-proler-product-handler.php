@@ -159,7 +159,7 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 					echo wp_kses_post(
 						sprintf(
 							// translators: %1$s: maximum discount volume, %2$s: discount type, either percent or amount.
-							__( 'Get up to <span>%1$s%2$s</span> discount', 'product-role-rules' ),
+							__( 'Up to <span>%1$s%2$s</span> off', 'product-role-rules' ),
 							esc_attr( $discount ),
 							'percent' === $type ? '%' : esc_attr( get_woocommerce_currency_symbol() )
 						)

@@ -191,11 +191,11 @@ if ( ! class_exists( 'Proler_Loader' ) ) {
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 			// enqueue style.
-			wp_register_style( 'proler-admin-style', plugin_dir_url( PROLER ) . 'assets/css/admin' . $suffix . '.css', array(), PROLER_VER );
+			wp_register_style( 'proler-admin-style', plugin_dir_url( PROLER ) . 'assets/css/admin/admin' . $suffix . '.css', array(), PROLER_VER );
 			wp_enqueue_style( 'proler-admin-style' );
 
 			// enqueue scripts.
-			wp_register_script( 'proler-admin-script', plugin_dir_url( PROLER ) . 'assets/js/admin' . $suffix . '.js', array( 'jquery', 'jquery-ui-slider', 'jquery-ui-sortable' ), PROLER_VER, false );
+			wp_register_script( 'proler-admin-script', plugin_dir_url( PROLER ) . 'assets/js/admin/admin' . $suffix . '.js', array( 'jquery', 'jquery-ui-slider', 'jquery-ui-sortable' ), PROLER_VER, false );
 			wp_enqueue_script( 'proler-admin-script' );
 
 			wp_localize_script( 'proler-admin-script', 'proler', $this->get_admin_local_data() );

@@ -44,9 +44,6 @@ a.nav-tab {
 	text-align: center;
 }
 /* sidebar */
-.proler-sidebar{
-	float: right;
-}
 .col-12{
 	width: 100%;
 }
@@ -62,59 +59,6 @@ a.nav-tab {
 }
 .col-12, .col-9, .col-6, .col-3{
 	display: inline-block;
-}
-/* admin sidebar promo */
-.proler-sidebar .sidebar_top{
-	padding: 20px 20px 35px 20px;
-    background: #dbdbdb;
-    margin: 10px 10px 10px 0;
-    border-radius: 5px;
-}
-.proler-sidebar .sidebar_top h1{
-	padding-bottom: 5px;
-	line-height: 1.2;
-}
-.proler-sidebar .sidebar_top .price_side{
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 17px;
-	color: #fff;
-	padding-bottom: 20px;
-}
-.proler-sidebar .sidebar_top .tagline_side{
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 13.5px;
-	padding-bottom: 30px;
-}
-.proler-side-pro{
-	display: block;
-	text-align: right;
-}
-.proler-sidebar .sidebar_top a {
-	background: #007cba;
-    color: #ffffff;
-    cursor: pointer;
-    border-radius: 25px;
-    padding: 10px 25px;
-	text-decoration: none;
-}
-.proler-sidebar .sidebar_top a:hover{
-	text-decoration: underline;
-}
-.proler-sidebar .sidebar_bottom{
-	padding: 20px 20px;
-}
-.proler-sidebar .sidebar_bottom li {
-	padding-bottom: 18px;
-}
-.proler-sidebar .support{
-	padding: 20px;
-    margin: 10px 10px 10px 0;
-    background: #dbdbdb;
-    border-radius: 5px;
-}
-.proler-sidebar .support a{
-	color: #000;
-	cursor: pointer;
 }
 /* New Look :start */
 #mpcdp_settings{
@@ -187,10 +131,9 @@ div#proler_product_data_tab #mpcdp_settings{
 	padding: 18px 15px;
 	color: #c7cbce;
 	background: #f8f8f8;
-	font-size: 1.2em;
+	font-size: 15px;
 	display: flex;
 	align-items: center;
-	font-weight: 700;
 	cursor: pointer;
 }
 .mpcdp_settings_sidebar .mpcdp_settings_tab_control:not(.active){
@@ -242,7 +185,7 @@ div#proler_product_data_tab #mpcdp_settings{
     border-radius: 100px;
     font-weight: 600;
     border: unset;
-    padding: 10px 20px;
+    padding: 13px;
     width: 100%;
     background: #2271b1;
 }
@@ -371,7 +314,7 @@ span.proler-arrow img {
 	margin-bottom:25px
 }
 .mpcdp_option_label{
-    font-size: 14px;
+    font-size: 16px;
     color: #1d2327;
 }
 .proler-option-head .col-md-6:nth-child(2){
@@ -386,7 +329,8 @@ span.proler-arrow img {
 	cursor: default;
 }
 .settings-desc-txt:hover {
-	color: #000;
+	color: #4a4a4a;
+	font-size: 15px;
 	transform: translateX(3px);
 }
 .settings-desc-txt.prdis-msg{
@@ -480,6 +424,7 @@ span.proler-arrow img {
 #mpcdp_settings select, #mpcdp_settings input {
     width: calc(100% - 3px);
     max-width: calc(100% - 3px);
+	min-height: 44px;
 }
 
 /* Switch */
@@ -528,7 +473,7 @@ span.proler-arrow img {
 .mpc-opt-sc-btn {
 	padding: 10px 20px;
 	border-radius: 30px;
-	margin-left: 0;
+	margin: 0 0 15px 0;
 	position: relative;
 	cursor: pointer;
 	display: inline-block;
@@ -589,6 +534,8 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
     background: #fff0f1;
     padding: 20px;
     border: 1px solid #ebb4b5;
+	font-size: 16px;
+	font-weight: 300;
 }
 .proler-pro-info-row span.dashicons {
 	padding-right: 10px;
@@ -672,13 +619,13 @@ span.delete-disrange:hover{
 	font-weight: bold;
 }
 .proler-admin-page-title, .mpcdp_settings_section_title{
-    font-size: 19px;
+    font-size: 16px;
     border-bottom: 1px solid #afafaf;
     font-weight: 600;
-    color: #696969;
+    color: #9a9a9a;
 }
 .mpcdp_settings_section_title{
-	margin: 45px 0 15px;
+	margin: 50px 0 25px;
 }
 .proler-admin-page-title::after, .mpcdp_settings_section_title:after{
 	content:"";
@@ -767,12 +714,73 @@ span.delete-disrange:hover{
 	margin: 10px auto 0 auto;
 	cursor: pointer;
 }
+.site-intro{
+	background: #dbdbdb;
+	margin: 20px 10px 0 0;
+	border-radius: 5px;
+}
+.site-intro h3{
+	margin: 0;
+    padding: 35px 0px 10px 20px;
+    font-size: 20px;
+    font-weight: 400;
+}
+.site-intro .tagline_side{
+	padding: 0 20px;
+    font-size: 13px;
+    color: #676767;
+}
+.site-intro .tagline_side:hover{
+	font-size: 16px;
+	transition: all .2s ease-in-out;
+}
+.mpc-pro-badge {
+    display: flex;
+    margin: 20px 10px 20px 0;
+    padding: 25px 10px 25px 15px;
+    background: #dbdbdb;
+    border-radius: 5px;
+    border-left: 10px solid #3f6a3e;
+}
+.mpc-pro-badge svg {
+    width: 20px;
+    padding-right: 10px;
+    stroke: #3f6a3e;
+    stroke-width: 2;
+    fill: none;
+}
+.mpc-pro-badge h3 {
+	margin: 0;
+    color: #3f6a3e;
+    font-size: 16px;
+    font-weight: normal;
+}
+#mpcdp_settings .site-intro a{
+    display: block;
+    margin: 20px 0 0 0;
+    padding: 15px 0 17px 20px;
+    background: #3f6a3f; /* #429cc8 */
+    color: #fff;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+#mpcdp_settings .site-intro a
+#mpcdp_settings{
+	background:white;
+	max-width:97%;
+	margin:40px 0 0 20px;
+	border-radius:5px;
+	overflow:hidden;
+	display:flex;
+	flex-direction:column;
+	box-shadow:0 10px 60px #e4e4e4
+}
 @media screen and (max-width: 1600px){
 	#mpcdp_settings{
 		width: 95%;
 	}
 	div#proler_product_data_tab #mpcdp_settings{
-		width: 100%;
+		width: 15px;
 	}
 	#mpcdp_settings input{
 		padding: 4px 15px;
@@ -780,21 +788,11 @@ span.delete-disrange:hover{
 	.proler-option-content input[type="datetime-local"], .pr-settings select{
 		border-radius: 5px;
 		padding: 0 25px 0 10px;
-		font-size: 100%;
+		font-size: 15px;
 	}
 	.proler-option-content textarea{
 		padding: 10px;
-		font-size: 100%;
-	}
-	#mpcdp_settings .disrange-item select, #mpcdp_settings .disrange-item input[type="text"]{
-		border-radius: 0;
-		margin-bottom: 2px;
-	}
-	#mpcdp_settings .disrange-item input[type="text"]:last-of-type {
-		border-right: 1px solid #dfdfdf;
-	}
-	#mpcdp_settings .disrange-item select:focus, #mpcdp_settings .disrange-item input[type="text"]:focus{
-		border-right: 1px solid;
+		font-size: 15px;
 	}
 	#mpcdp_settings select{
 		line-height: 30px;
@@ -941,9 +939,6 @@ span.delete-disrange:hover{
         padding: 3px 7px;
         min-height: 30px;
         border-radius: 3px;
-	}
-	#mpcdp_settings .disrange-item select, #mpcdp_settings .disrange-item input[type="text"]{
-		margin: 0;
 	}
 	#mpcdp_settings input[type="datetime-local"] {
 		margin-bottom: 10px;

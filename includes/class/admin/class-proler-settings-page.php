@@ -88,11 +88,7 @@ class Proler_Settings_Page {
 						</div>
 					</div>
 					<div id="right-side">
-						<div class="mpcdp_settings_promo">
-							<div id="wfl-promo">
-								<?php self::settings_page_sidebar(); ?>
-							</div>
-						</div>
+						<?php self::sidebar(); ?>
 					</div>
 				</div>
 			</div>
@@ -436,52 +432,82 @@ class Proler_Settings_Page {
 	}
 
 	/**
-	 * Display sidebar
+	 * Display admin sidebar
 	 */
-	public static function settings_page_sidebar() {
+	public static function sidebar() {
 		global $proler__;
 
-		$sidebar_title = __( 'Upgrade to PRO Now', 'product-role-rules' );
-		$side_tagline  = __( 'Get maximum/minimum quantity support with PRO', 'product-role-rules' );
-		$side_button   = __( 'Get PRO', 'product-role-rules' );
+		self::sidebar_badge( $proler__ );
+		self::sidebar_support( $proler__ );
+		self::sidebar_pro_info( $proler__ );
+		self::sidebar_customize();
+	}
 
-		// change on prostate.
-		if ( 'installed' === $proler__['prostate'] ) {
-			$sidebar_title = __( 'Activate PRO Now', 'product-role-rules' );
-			$side_tagline  = __( 'Get maximum/minimum quantity support with PRO', 'product-role-rules' );
-			$side_button   = __( 'Activate PRO', 'product-role-rules' );
-		} elseif ( 'activated' === $proler__['prostate'] ) {
-			$sidebar_title = __( 'PRO License Activated', 'product-role-rules' );
-			$side_tagline  = __( 'Get our exclusive PRO Support 24/7 only for you.', 'product-role-rules' );
+	/**
+	 * Pro license activated badge
+	 *
+	 * @param string $pro_state Pro state.
+	 */
+	private static function sidebar_badge( $proler__ ) {
+		if ( empty( $proler__['prostate'] ) || 'activated' !== $proler__['prostate'] ) {
+			return;
 		}
 		?>
-		<div class="proler-sidebar">
-			<div class="sidebar_top">
-				<h2><?php echo esc_html( $sidebar_title ); ?></h2>
-				<div class="tagline_side"><?php echo wp_kses_post( $side_tagline ); ?></div>
-				<?php if ( isset( $proler__['prostate'] ) && 'activated' !== $proler__['prostate'] ) : ?>
-					<div class="proler-side-pro"><a href="<?php echo esc_url( $proler__['url']['pro'] ); ?>" target="_blank"><?php echo esc_html( $side_button ); ?></a></div>
-				<?php endif; ?>
+		<div class="mpc-pro-badge">
+			<svg viewBox="0 0 24 24"><g><polyline points="7 13 10 16 17 9"></polyline><circle cx="12" cy="12" r="10"></circle></g></svg>
+			<h3><?php echo esc_html__( 'License Activated', 'product-role-rules' ); ?></h3>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Support section
+	 *
+	 * @param array $proler__ Plugin data.
+	 */
+	private static function sidebar_support( $proler__ ) {
+		?>
+		<div class="site-intro">
+			<h3><?php echo empty( $proler__['prostate'] ) ? esc_html__( 'Contact', 'product-role-rules' ) : esc_html__( 'Premium support', 'product-role-rules' ); ?></h3>
+			<div class="tagline_side">
+				<?php echo esc_html__( 'Our support is what makes us No.1. We are available round the clock for any support.', 'product-role-rules' ); ?>
 			</div>
-			<div class="sidebar_bottom">
-				<ul>
-					<li>
-						<span class="dashicons dashicons-yes-alt"></span>
-						<?php echo esc_html__( 'Maximum Quantity: Set an upper limit on the number of items a customer can purchase for a specific product.', 'product-role-rules' ); ?>
-					</li>
-					<li>
-					<span class="dashicons dashicons-yes-alt"></span>
-						<?php echo esc_html__( 'Minimum Quantity: Establish a minimum number of items that a customer must purchase for a specific product.', 'product-role-rules' ); ?>
-					</li>
-					<li>
-					<span class="dashicons dashicons-yes-alt"></span>
-						<?php echo esc_html__( 'Rocket speed support: Most of our customer\'s problem solved within 24 hours of their first contact.', 'product-role-rules' ); ?>
-					</li>
-				</ul>
+			<a href="<?php echo esc_url( $proler__['url']['support'] ); ?>" target="_blank"><?php echo esc_html__( 'Submit this form', 'product-role-rules' ); ?></a>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Pro promotional message section
+	 *
+	 * @param array $proler__ Plugin data.
+	 */
+	private static function sidebar_pro_info( $proler__ ) {
+		if ( ! empty( $proler__['prostate'] ) && 'activated' === $proler__['prostate'] ) {
+			return;
+		}
+		?>
+		<div class="site-intro">
+			<h3><?php echo empty( $proler__['prostate'] ) ? esc_html__( 'Add premium version', 'product-role-rules' ) : esc_html__( 'Activate your license', 'product-role-rules' ); ?></h3>
+			<div class="tagline_side">
+				<?php echo empty( $proler__['prostate'] ) ? esc_html__( 'Get exclusive PRO features, like Discount Tiers, Minimum-Maximum Quantity and Schedule Based Discount', 'product-role-rules' ) : esc_html__( 'Activate your license key to get regular new updates.', 'product-role-rules' ); ?>
 			</div>
-			<div class="support">
-				<p><a href="<?php echo esc_url( $proler__['url']['support'] ); ?>" target="_blank"><?php echo esc_html__( 'Contact us', 'product-role-rules' ); ?></a></p>
+			<a href="<?php echo esc_url( $proler__['url']['pro'] ); ?>" target="_blank"><?php echo empty( $proler__['prostate'] ) ? esc_html__( 'Unlock all PRO features', 'product-role-rules' ) : esc_html__( 'Activate PRO', 'product-role-rules' ); ?></a>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Display sidebar paid customization section
+	 */
+	private static function sidebar_customize() {
+		?>
+		<div class="site-intro">
+			<h3><?php echo esc_html__( 'Add new feature', 'product-role-rules' ); ?></h3>
+			<div class="tagline_side">
+				<?php echo esc_html__( 'Add any custom feature quickly.', 'product-role-rules' ); ?>
 			</div>
+			<a href="https://webfixlab.com/wordpress-offer/" target="_blank"><?php echo esc_html__( 'Starting at $99', 'product-role-rules' ); ?></a>
 		</div>
 		<?php
 	}

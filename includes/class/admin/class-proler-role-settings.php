@@ -296,7 +296,7 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 						<div class="col-md-6">
 							<div class="mpcdp_option_label"><?php echo __( 'Hide Discount Text?', 'product-role-rules' ); ?></div>
 							<div class="settings-desc-txt">
-								<?php echo __( 'Hides "Get up to ... discount" text message.', 'product-role-rules' ); ?>
+								<?php echo __( 'Hides "Up to ... off" text message.', 'product-role-rules' ); ?>
 							</div>
 						</div>
 						<div class="col-md-6">
