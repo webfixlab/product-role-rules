@@ -550,7 +550,7 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 	border-radius: 5px;
 	background-color: #dce7e7;
 }
-.disrange-item input, .disrange-item select {
+.disrange-item input, .disrange-item select, .woocommerce_options_panel .disrange-item input[type="text"], .woocommerce_options_panel .disrange-item select {
 	width: 100%;
 }
 .disrange-input {
@@ -804,9 +804,6 @@ span.delete-disrange:hover{
 @media screen and (max-width: 1600px){
 	#mpcdp_settings{
 		width: 95%;
-	}
-	div#proler_product_data_tab #mpcdp_settings{
-		width: 15px;
 	}
 	#mpcdp_settings input{
 		padding: 4px 15px;
