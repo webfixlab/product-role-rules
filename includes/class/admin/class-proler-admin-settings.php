@@ -61,12 +61,30 @@ if ( ! class_exists( 'Proler_Admin_Settings' ) ) {
 		public static function save_settings( $post_id = 0, $post = array(), $update = false ) {
 			global $proler__;
 
+			if ( ! isset( $_POST['proler_settings_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_settings_nonce'] ) ), 'proler_settings' ) ) {
+				return;
+			}
+
 			if ( isset( $_POST['proler_product_settings_nonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['proler_product_settings_nonce'] ) ), 'proler_product_settings' ) ) {
 				self::$page = 'product';
 			}
 
 			if ( empty( self::$page ) ) {
 				return;
+			}
+
+			// save labels.
+			$labels = array(
+				'proler_discount_txt_lbl',
+				'proler_tier_list_lbl',
+				'proler_tier_table_buy_lbl',
+				'proler_tier_table_discount_lbl',
+			);
+
+			foreach( $labels as $key ){
+				if( isset( $_POST[ $key ] ) ){
+					update_option( $key, sanitize_text_field( wp_unslash( $_POST[$key ] ) ) );
+				}
 			}
 
 			// General settings data.

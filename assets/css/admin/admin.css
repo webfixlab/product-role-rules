@@ -179,18 +179,18 @@ div#proler_product_data_tab #mpcdp_settings{
 	padding: 0;
 }
 .mpcdp_settings_submit button.mpcdp_submit_button, .mpcdp_settings_submit .submit input#submit{
-    display: block;
-    cursor: pointer;
-    color: white;
-    border-radius: 100px;
-    font-weight: 600;
-    border: unset;
-    padding: 13px;
-    width: 100%;
-    background: #2271b1;
+	cursor: pointer;
+	color: white;
+	border-radius: 100px;
+	font-weight: 600;
+	border: unset;
+	padding: 15px 40px;
+	background: #2271b1;
+	float: right;
+	margin: 0 0 20px 0;
 }
 #proler-role-create button.mpcdp_submit_button{
-	padding: 12px 20px;
+	padding: 10px 20px;
 	border-radius: 3px;
 	font-weight: normal;
 	width: auto;
@@ -225,8 +225,29 @@ div#proler_product_data_tab #mpcdp_settings .mpcdp_settings_content{
 .new-role-wrap, .pr-settings{
 	margin: 25px 0 0;
 }
+.new-role-form{
+	background-color: #e1e1e1;
+	padding: 20px;
+}
+.new-role-form input[type="text"]{
+	width: 75%;
+}
 .proler-option-head {
     background: #dbdbdb;
+}
+.labels-settings input[type="text"]{
+	width: 100%;
+}
+.labels-settings .multi-fields input[type="text"] {
+	margin: 0 0 5px 0;
+}
+.col-md-6.multi-fields {
+	display: grid;
+	grid-template-columns: 1fr 1fr 0fr 0fr 0;
+	align-items: center;
+}
+.col-md-6.multi-fields .disrange-input:first-child {
+	margin-right: 5px;
 }
 #proler-role-create .submit {
 	margin: 0 0 0 15px;
@@ -249,7 +270,7 @@ a.proler-delete img {
 	background: #f8f8f8;
 }
 .proler-role-list .role-list-type {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     border-bottom: 1px solid #dbdbdb;
     padding-bottom: 15px;
@@ -267,6 +288,7 @@ a.proler-delete img {
 	margin-bottom: 0;
 }
 .proler-role-list ul li {
+	font-size: 15px;
 	padding:5px 10px 5px 15px;
     border-radius: 25px;
     border: 1px solid #f8f8f8;
@@ -496,9 +518,6 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 .pr-settings .proler-option-content .discount-ranges-main .mpcdp_row.discount-range-demo{
 	display: none;
 }
-.add-new-disrange{
-	margin-top: 20px;
-}
 .mpcdp_settings_section .notice {
     margin: 20px 0 0 0;
 }
@@ -512,10 +531,10 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 .woocommerce_options_panel .pr-settings select{
 	float: none;
 }
-#mpcdp_settings .proler-saved-settings, .proler-pro-info-row  {
+#mpcdp_settings .proler-saved-settings, .proler-pro-info-row {
 	display: flex;
 	border-radius: 5px;
-	margin: 25px 0 0;
+	margin: 25px 0 20px;
 }
 #mpcdp_settings .proler-saved-settings {
     padding: 20px 15px;
@@ -528,6 +547,7 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 }
 #mpcdp_settings .proler-saved-settings strong{
 	font-weight: bold;
+	padding-right: 5px;
 }
 .proler-pro-info-row {
     background: #fff0f1;
@@ -541,7 +561,7 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 }
 .disrange-item {
 	display: grid;
-	grid-template-columns: 1.5fr 1fr 1fr 1fr 40px;
+	grid-template-columns: 2fr 1fr 1fr 1fr 20px;
 	gap: 5px;
 	align-items: center;
 	border: 1px solid #cdcdcd;
@@ -563,21 +583,6 @@ textarea.proler-widefat, .woocommerce_options_panel textarea.proler-widefat{
 	color: #b4b4b4;
 	font-size: 13px;
 }
-.disrange-item .dashicons.dashicons-trash.delete-disrange {
-	width: 42px;
-}
-/* span.delete-disrange {
-    position: absolute;
-    right: 25px;
-	font-size: 20px;
-	color: #c1c1c1;
-	line-height: 19px;
-	transition: transform 0.5s;
-}
-span.proler-delete:hover, span.delete-disrange:hover{
-	color: var(--proler-warning-color);
-	cursor: pointer;
-} */
 span.delete-disrange:hover{
 	transform: scale(1.5);
 }
@@ -887,6 +892,15 @@ span.delete-disrange:hover{
 	.mpcdp_settings_sidebar .mpcdp_settings_tab_control span.label{
 		display: none;
 	}
+	.mpcdp_row{
+		flex-wrap: wrap;
+	}
+	.mpcdp_row.new-role-form{
+		flex-wrap: nowrap;
+	}
+	#mpcdp_settings .col-md-6 > select, #mpcdp_settings input[type="datetime-local"]{
+		width: 100%;
+	}
 	#mpcdp_settings .proler-option-head .mpcdp_row {
 		display: flex;
 	}
@@ -904,9 +918,6 @@ span.delete-disrange:hover{
 	}
 	.settings-desc-txt{
 		padding: 0 0 10px;
-	}
-	.mpcdp_settings_submit .submit{
-		margin: 5px;
 	}
 	#proler-role-create .submit{
 		margin: 0 0 0 10px;
@@ -998,10 +1009,12 @@ span.delete-disrange:hover{
 	.pr-settings .proler-option-content .discount-ranges-main .mpcdp_row:not(:last-of-type){
 		margin-bottom: 15px;
 	}
+	.mpcdp_settings_submit .submit {
+		margin: 0;
+		padding: 0;
+	}
 	.mpcdp_settings_submit button.mpcdp_submit_button{
-		border-radius: 3px;
-		margin: 15px 0 0;
-		padding: 7px 0;
+		margin: 15px 0 20px;
 	}
 	#proler-role-create button.mpcdp_submit_button{
 		padding: 7px 15px;
@@ -1009,10 +1022,6 @@ span.delete-disrange:hover{
 	.mpcdp_settings_sidebar .mpcdp_settings_tab_control, .mpcdp_settings_sidebar .mpcdp_settings_tab_control.active {
         padding: 15px;
     }
-	span.delete-disrange{
-		right: 7px;
-        bottom: 11px;
-	}
 	textarea.proler-widefat{
 		margin-top: 0;
 	}
@@ -1043,5 +1052,13 @@ span.delete-disrange:hover{
 	.proler-role-list .role-list-type span{
 		margin-right: 9px;
 		padding: 1px;
+	}
+	.disrange-item{
+		display: block;
+		text-align: right;
+		margin-bottom: 15px;
+	}
+	.disrange-item select, .disrange-item .disrange-input{
+		margin-bottom: 5px;
 	}
 }

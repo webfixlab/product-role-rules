@@ -152,19 +152,16 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 			if ( empty( $discount ) ) {
 				return;
 			}
+
+			$discount_txt = $discount . ( 'percent' === $type ? '%' : get_woocommerce_currency_symbol() );
+
+			// translators: %s is the maximum discount.
+			$label = get_option( 'proler_discount_txt_lbl', __( 'Up to %s off', 'product-role-rules' ) );
+			$label = str_replace( '%s', '<span>' . $discount_txt . '</span>', $label );
 			?>
 			<div class="proler-save-wrap">
 				<div class="proler-saving">
-					<?php
-					echo wp_kses_post(
-						sprintf(
-							// translators: %1$s: maximum discount volume, %2$s: discount type, either percent or amount.
-							__( 'Up to <span>%1$s%2$s</span> off', 'product-role-rules' ),
-							esc_attr( $discount ),
-							'percent' === $type ? '%' : esc_attr( get_woocommerce_currency_symbol() )
-						)
-					);
-					?>
+					<?php echo wp_kses_post( $label ); ?>
 				</div>
 			</div>
 			<?php

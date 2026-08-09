@@ -163,7 +163,7 @@ class Proler_Admin_Product_Settings {
 		<div class="mpcdp_settings_option visible" style="margin-top:20px;">
 			<div class="mpcdp_row">
 				<input type="hidden" value="" name="proler_data">
-				<a class="mpc-opt-sc-btn add-new" href="javaScript:void(0)"><?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
+				<a class="mpc-opt-sc-btn add-new" href="javaScript:void(0)">+ <?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
 			</div>
 		</div>
 		<?php

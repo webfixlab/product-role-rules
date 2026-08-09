@@ -67,14 +67,26 @@ if ( ! class_exists( 'Proler_Admin_Settings_Helper' ) ) {
 		 * @param string $page_slug Page slug.
 		 */
 		public static function pro_info_msg( $page_slug ) {
+			if( 'new-role' === $page_slug ){
+				?>
+				<div class="proler-pro-info-row">
+					<span class="dashicons dashicons-info-outline"></span>
+					<?php echo esc_html__( 'Please note: Role name must start with a letter and allows only letters, numbers, spaces or underscores!', 'product-role-rules' ); ?>
+				</div>
+				<?php
+			} elseif ( 'labels' === $page_slug ){
+				?>
+				<div class="proler-saved-settings">
+					<span class="dashicons dashicons-saved"></span>
+					<?php echo esc_html__( 'Please note: You have the option use dynamic special values like "%s" and "%1$s" inside the input fields. Details are in the field descriptions.', 'product-role-rules' ); ?>
+				</div>
+				<?php
+			}
 			if ( 'new-role' !== $page_slug ) {
 				return;
 			}
 			?>
-			<div class="proler-pro-info-row">
-				<span class="dashicons dashicons-info-outline"></span>
-				<?php echo esc_html__( 'Please note: Role name must start with a letter and allows only letters, numbers, spaces or underscores!', 'product-role-rules' ); ?>
-			</div>
+			
 			<?php
 		}
 

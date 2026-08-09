@@ -22,6 +22,13 @@ class Proler_Settings_Page {
 	private static $page;
 
 	/**
+	 * Current settings page tab
+	 *
+	 * @var string.
+	 */
+	private static $tab;
+
+	/**
 	 * Render global settings page
 	 */
 	public static function global_settings_page() {
@@ -53,6 +60,7 @@ class Proler_Settings_Page {
 		}
 
 		self::$page = $page_slug;
+		self::$tab  = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
 
 		self::get_settings_page( $page_slug );
 	}
@@ -85,6 +93,7 @@ class Proler_Settings_Page {
 								<?php self::get_settings_page_content(); ?>
 								<?php wp_nonce_field( 'proler_settings', 'proler_settings_nonce' ); ?>
 							</div>
+							<?php self::settings_submit(); ?>
 						</div>
 					</div>
 					<div id="right-side">
@@ -122,7 +131,6 @@ class Proler_Settings_Page {
 		?>
 		<div class="mpcdp_settings_sidebar" style="position: relative;">
 			<?php self::settings_menu(); ?>
-			<?php self::settings_submit(); ?>
 		</div>
 		<?php
 	}
@@ -158,6 +166,14 @@ class Proler_Settings_Page {
 				'target' => 'general-settings',
 				'class'  => '',
 			),
+			array(
+				'slug'   => 'labels',
+				'url'    => get_admin_url( null, 'admin.php?page=proler-general-settings&tab=labels' ),
+				'name'   => __( 'Labels', 'product-role-rules' ),
+				'icon'   => 'dashicons dashicons-admin-settings',
+				'target' => 'labels',
+				'class'  => '',
+			),
 		);
 
 		if ( 'activated' !== $proler__['prostate'] ) {
@@ -172,10 +188,11 @@ class Proler_Settings_Page {
 		}
 
 		foreach ( $pages as $menu ) {
+			$tab = empty( self::$tab ) ? self::$page : self::$tab;
 			printf(
 				'<a href="%s"><div class="mpcdp_settings_tab_control %s"><span class="%s"></span><span class="label">%s</span></div></a>',
 				esc_url( $menu['url'] ),
-				$menu['slug'] === self::$page ? esc_attr( 'active' ) : '',
+				$menu['slug'] === $tab ? esc_attr( 'active' ) : '',
 				esc_html( $menu['icon'] ),
 				esc_html( $menu['name'] )
 			);
@@ -219,8 +236,10 @@ class Proler_Settings_Page {
 				echo esc_html__( 'Global Role Based Settings', 'product-role-rules' );
 			} elseif ( 'newrole' === self::$page ) {
 				echo esc_html__( 'Add a Custom User Role', 'product-role-rules' );
-			} elseif ( 'general-settings' === self::$page ) {
+			} elseif ( empty( self::$tab ) && 'general-settings' === self::$page ) {
 				echo esc_html__( 'General Settings', 'product-role-rules' );
+			} elseif( ! empty( self::$tab ) && 'labels' === self::$tab ){
+				echo esc_html__( 'Labels', 'product-role-rules' );
 			}
 			?>
 		</div>
@@ -231,7 +250,9 @@ class Proler_Settings_Page {
 	 * Navigate settings page content
 	 */
 	public static function get_settings_page_content() {
-		if ( 'settings' === self::$page ) {
+		if( ! empty( self::$tab ) && 'labels' === self::$tab ){
+			self::labels_settings();
+		}elseif ( 'settings' === self::$page ) {
 			self::role_settings_content();
 		} elseif ( 'newrole' === self::$page ) {
 			self::new_role_content();
@@ -256,7 +277,7 @@ class Proler_Settings_Page {
 		<div class="mpcdp_settings_option visible" style="margin-top:20px;">
 			<div class="mpcdp_row">
 				<input type="hidden" value="" name="proler_data">
-				<a class="mpc-opt-sc-btn add-new" href="javaScript:void(0)"><?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
+				<a class="mpc-opt-sc-btn add-new" href="javaScript:void(0)">+ <?php echo esc_html__( 'Add New', 'product-role-rules' ); ?></a>
 			</div>
 		</div>
 		<?php
@@ -269,23 +290,15 @@ class Proler_Settings_Page {
 		Proler_Admin_Settings_Helper::pro_info_msg( 'new-role' );
 		?>
 		<div class="new-role-wrap">
-			<div class="mpcdp_settings_toggle mpcdp_container">
-				<div class="mpcdp_settings_option visible">
-					<div class="mpcdp_row">
-						<div class="col-md-6">
-							<input type="text" name="proler_admin_new_role" placeholder="<?php echo esc_html__( 'Example: \'B2B Customer\'', 'product-role-rules' ); ?>" >
-							<?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
-						</div>
-						<div class="col-md-6">
-							<div class="mpcdp_settings_submit" id="proler-role-create">
-								<div class="submit">
-									<button class="mpcdp_submit_button">
-										<div class="save-text"><?php echo esc_html__( 'Add New Role', 'product-role-rules' ); ?></div>
-										<div class="save-text save-text-mobile"><?php echo esc_html__( 'Add', 'product-role-rules' ); ?></div>
-									</button>
-								</div>
-							</div>
-						</div>
+			<div class="mpcdp_row new-role-form">
+				<input type="text" name="proler_admin_new_role" placeholder="<?php echo esc_html__( 'Example: \'B2B Customer\'', 'product-role-rules' ); ?>" >
+				<?php wp_nonce_field( 'proler_admin_create_new_role_customer' ); ?>
+				<div class="mpcdp_settings_submit" id="proler-role-create">
+					<div class="submit">
+						<button class="mpcdp_submit_button">
+							<div class="save-text"><?php echo esc_html__( 'Add New Role', 'product-role-rules' ); ?></div>
+							<div class="save-text save-text-mobile"><?php echo esc_html__( 'Add', 'product-role-rules' ); ?></div>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -369,6 +382,62 @@ class Proler_Settings_Page {
 						self::general_settings_section( $field );
 					}
 					?>
+				</div>
+			</div>
+		</div>
+		<?php
+	}
+
+	public static function labels_settings(){
+		global $proler__;
+		Proler_Admin_Settings_Helper::pro_info_msg( 'labels' );
+		?>
+		<div class="mpcdp_settings_toggle mpcdp_container labels-settings">
+			<div class="mpcdp_settings_option visible">
+				<div class="mpcdp_settings_section">
+					<?php self::render_settings_field(); ?>
+				</div>
+			</div>
+		</div>
+		<?php
+	}
+	public static function render_settings_field(){
+		global $proler__;
+		
+		$pro_class = 'activated' !== $proler__['prostate'] ? 'wfl-nopro' : '';
+		?>
+		<div class="mpcdp_row">
+			<div class="col-md-6">
+				<div class="mpcdp_option_label"><?php echo esc_html__( 'Discount text', 'product-role-rules' ); ?></div>
+				<div class="settings-desc-txt"><?php echo esc_html__( 'Discount info text where "%s" is the dynamic maximum discount available.', 'product-role-rules' ); ?></div>
+			</div>
+			<div class="col-md-6">
+				<input type="text" name="proler_discount_txt_lbl" value="<?php echo esc_html( get_option( 'proler_discount_txt_lbl' ) ); ?>" data-protxt="<?php echo esc_html__( 'Discount text', 'product-role-rules' ); ?>" placeholder="<?php echo esc_html__( 'Up to %s off', 'product-role-rules' ); ?>">
+			</div>
+		</div>
+		<div class="mpcdp_settings_section_title">Discount tier</div>
+		<div class="mpcdp_row">
+			<div class="col-md-6">
+				<div class="mpcdp_option_label"><?php echo esc_html__( 'List item', 'product-role-rules' ); ?></div>
+				<div class="settings-desc-txt"><?php echo esc_html__( 'List item text where "%1$s" is requirements and "%2$s" is available discount.', 'product-role-rules' ); ?></div>
+			</div>
+			<div class="col-md-6">
+				<input type="text" name="proler_tier_list_lbl" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo esc_html( get_option( 'proler_tier_list_lbl' ) ); ?>" data-protxt="<?php echo esc_html__( 'Discount text', 'product-role-rules' ); ?>" placeholder="<?php echo esc_html__( 'Buy %1$s more and get %2$s discount', 'product-role-rules' ); ?>">
+			</div>
+		</div>
+		<div class="mpcdp_row">
+			<div class="col-md-6">
+				<div class="mpcdp_option_label"><?php echo esc_html__( 'Table Columns', 'product-role-rules' ); ?></div>
+				<div class="settings-desc-txt"><?php echo esc_html__( 'Change the names of discount tier table columns.', 'product-role-rules' ); ?></div>
+			</div>
+			<div class="col-md-6 multi-fields">
+				<div class="disrange-input">
+					<span><?php echo esc_html__( 'Buy', 'product-role-rules' ); ?></span>
+					<input type="text" name="proler_tier_table_buy_lbl" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo esc_html( get_option( 'proler_tier_table_buy_lbl' ) ); ?>" data-protxt="<?php echo esc_html__( 'Tier buy column', 'product-role-rules' ); ?>">
+				</div>
+				<div class="disrange-input">
+					<span><?php echo esc_html__( 'Discount', 'product-role-rules' ); ?></span>
+					<input type="text" name="proler_tier_table_discount_lbl" class="<?php echo esc_attr( $pro_class ); ?>" value="<?php echo esc_html( get_option( 'proler_tier_table_discount_lbl' ) ); ?>" data-protxt="<?php echo esc_html__( 'Tier discount column', 'product-role-rules' ); ?>">
 				</div>
 			</div>
 		</div>
@@ -468,7 +537,7 @@ class Proler_Settings_Page {
 	private static function sidebar_support( $proler__ ) {
 		?>
 		<div class="site-intro">
-			<h3><?php echo empty( $proler__['prostate'] ) ? esc_html__( 'Contact', 'product-role-rules' ) : esc_html__( 'Premium support', 'product-role-rules' ); ?></h3>
+			<h3><?php echo 'none' === $proler__['prostate'] ? esc_html__( 'Contact', 'product-role-rules' ) : esc_html__( 'Premium support', 'product-role-rules' ); ?></h3>
 			<div class="tagline_side">
 				<?php echo esc_html__( 'Our support is what makes us No.1. We are available round the clock for any support.', 'product-role-rules' ); ?>
 			</div>
@@ -487,12 +556,12 @@ class Proler_Settings_Page {
 			return;
 		}
 		?>
-		<div class="site-intro">
-			<h3><?php echo empty( $proler__['prostate'] ) ? esc_html__( 'Add premium version', 'product-role-rules' ) : esc_html__( 'Activate your license', 'product-role-rules' ); ?></h3>
+		<div class="site-intro <?php echo esc_html( $proler__['prostate'] ); ?>">
+			<h3><?php echo 'none' === $proler__['prostate'] ? esc_html__( 'Add premium version', 'product-role-rules' ) : esc_html__( 'Activate your license', 'product-role-rules' ); ?></h3>
 			<div class="tagline_side">
-				<?php echo empty( $proler__['prostate'] ) ? esc_html__( 'Get exclusive PRO features, like Discount Tiers, Minimum-Maximum Quantity and Schedule Based Discount', 'product-role-rules' ) : esc_html__( 'Activate your license key to get regular new updates.', 'product-role-rules' ); ?>
+				<?php echo 'none' === $proler__['prostate'] ? esc_html__( 'Get exclusive PRO features, like Discount Tiers, Minimum-Maximum Quantity and Schedule Based Discount', 'product-role-rules' ) : esc_html__( 'Activate your license key to get regular new updates.', 'product-role-rules' ); ?>
 			</div>
-			<a href="<?php echo esc_url( $proler__['url']['pro'] ); ?>" target="_blank"><?php echo empty( $proler__['prostate'] ) ? esc_html__( 'Unlock all PRO features', 'product-role-rules' ) : esc_html__( 'Activate PRO', 'product-role-rules' ); ?></a>
+			<a href="<?php echo esc_url( $proler__['url']['pro'] ); ?>" target="_blank"><?php echo 'none' === $proler__['prostate'] ? esc_html__( 'Unlock all PRO features', 'product-role-rules' ) : esc_html__( 'Activate PRO', 'product-role-rules' ); ?></a>
 		</div>
 		<?php
 	}

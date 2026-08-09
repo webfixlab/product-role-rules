@@ -351,14 +351,10 @@ if ( ! class_exists( 'Proler_Role_Settings' ) ) {
 							<div class="discount-range-wrap">
 								<?php self::saved_discount_ranges( $rd['ranges'] ?? array() ); ?>
 							</div>
+							<div class="mpc-opt-sc-btn add-new-disrange"><?php echo __( 'Add Tier', 'product-role-rules' ); ?></div>
 							<div class="mpcdp_row discount-range-demo">
 								<div class="disrange-item">
 									<?php self::discount_range_row(); ?>
-								</div>
-							</div>
-							<div class="mpcdp_row">
-								<div class="col-md-12">
-									<div class="mpc-opt-sc-btn add-new-disrange"><?php echo __( 'Add Tier', 'product-role-rules' ); ?></div>
 								</div>
 							</div>
 						</div>
