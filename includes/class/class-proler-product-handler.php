@@ -126,6 +126,11 @@ if ( ! class_exists( 'Proler_Product_Handler' ) ) {
 				return;
 			}
 
+			$prices = Proler_Price_Handler::get_product_prices( $product );
+			if( empty( $prices['min'] ) && empty( $prices['max'] ) ){
+				return;
+			}
+
 			$rs = Proler_Product_Settings::get_settings( $product ); // role settings.
 			if ( empty( $rs ) ) {
 				return;
